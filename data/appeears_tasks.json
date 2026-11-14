@@ -1,0 +1,12 @@
+{
+  "simcoe_lake_lst": {
+    "task_id": "056f1be8-4faf-489a-bcd2-c7537d732837",
+    "task_name": "lakepulse_simcoe_lake_lst",
+    "status_at_submit": "pending"
+  },
+  "simcoe_catchment": {
+    "task_id": "c4786a0c-3f3a-4e1d-b4ff-5a9ad66b0848",
+    "task_name": "lakepulse_simcoe_catchment",
+    "status_at_submit": "pending"
+  }
+}

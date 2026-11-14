@@ -1,0 +1,12 @@
+# Runtime
+numpy>=1.26,<3
+pandas>=2.1,<3
+# scipy 1.15.3 wheels fail to load scipy.stats on this macOS (dlopen __thread_bss error); 1.14.1 works.
+scipy>=1.11,<1.15
+requests>=2.31,<3
+shapely>=2.1,<3
+pyproj>=3.6,<4
+xarray>=2024.1
+netCDF4>=1.6
+h5netcdf>=1.3
+h5py>=3.10

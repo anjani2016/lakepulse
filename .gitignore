@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+.env*
+.netrc
+.claude/launch.json
+.claude/settings.local.json
+z_notes+summaries/
+# Raw downloads (large; rebuilt by the fetch scripts)
+data/raw/
