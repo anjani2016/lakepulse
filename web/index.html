@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lake Trend Detective</title>
+<meta name="description" content="Pick a lake and a variable, see its long record, and find out whether it is really trending.">
+<style>
+:root {
+  --bg: #f7f8f6; --panel: #ffffff; --ink: #1d2422; --muted: #5b6662; --line: #d9dfdc;
+  --accent: #1f6f8b; --accent-soft: #e3f0f5; --trend: #c2410c; --dots: #1f6f8b; --month: #9fb4bd;
+  --ok: #166534; --ok-soft: #dcfce7; --no: #6b7280; --no-soft: #f1f3f4; --warn: #92400e; --warn-soft: #fef3c7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111615; --panel: #1a201f; --ink: #e6ebe9; --muted: #9aa6a2; --line: #2e3836;
+    --accent: #6cc0dc; --accent-soft: #16323c; --trend: #fb923c; --dots: #6cc0dc; --month: #3f5862;
+    --ok: #86efac; --ok-soft: #14301f; --no: #b0b7bd; --no-soft: #23292b; --warn: #fcd34d; --warn-soft: #3a2f10;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111615; --panel: #1a201f; --ink: #e6ebe9; --muted: #9aa6a2; --line: #2e3836;
+  --accent: #6cc0dc; --accent-soft: #16323c; --trend: #fb923c; --dots: #6cc0dc; --month: #3f5862;
+  --ok: #86efac; --ok-soft: #14301f; --no: #b0b7bd; --no-soft: #23292b; --warn: #fcd34d; --warn-soft: #3a2f10;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 980px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font-size: 1.7rem; margin: 0 0 4px; }
+h2 { font-size: 1.15rem; margin: 0 0 10px; }
+p.lede { color: var(--muted); margin: 0 0 20px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+.pickers { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 640px) { .pickers { grid-template-columns: 1fr; } }
+label { display: block; font-weight: 600; font-size: .9rem; margin-bottom: 4px; }
+select { width: 100%; padding: 9px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font: inherit; }
+ul.facts { margin: 10px 0 0; padding-left: 20px; color: var(--muted); font-size: .92rem; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: .78rem; font-weight: 600; background: var(--accent-soft); color: var(--accent); margin-right: 6px; }
+.badge.practice { background: var(--warn-soft); color: var(--warn); }
+.definition { font-size: 1.02rem; margin: 10px 0 6px; }
+.notes { color: var(--muted); font-size: .88rem; margin: 0; padding-left: 18px; }
+.banner { background: var(--warn-soft); color: var(--warn); border-radius: 10px; padding: 10px 12px; font-weight: 600; margin-bottom: 16px; }
+.chart-wrap { width: 100%; overflow: hidden; }
+svg text { fill: var(--muted); font-size: 13px; }
+@media (max-width: 640px) { svg text { font-size: 22px; } }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: .85rem; color: var(--muted); margin-top: 6px; }
+.legend i { display: inline-block; width: 18px; height: 3px; vertical-align: middle; margin-right: 6px; }
+.verdict { border-radius: 10px; padding: 12px 14px; font-size: 1.02rem; }
+.verdict.sig { background: var(--ok-soft); }
+.verdict.non { background: var(--no-soft); }
+.verdict strong { display: block; margin-bottom: 4px; }
+table.nums { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: .92rem; }
+table.nums td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: top; }
+table.nums td:first-child { color: var(--muted); width: 46%; }
+.demo-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+button { font: inherit; padding: 9px 14px; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: var(--panel); cursor: pointer; }
+button.secondary { background: transparent; color: var(--accent); }
+.demo-box { margin-top: 12px; border-left: 4px solid var(--accent); padding: 8px 12px; background: var(--accent-soft); border-radius: 0 8px 8px 0; display: none; }
+.demo-box .step { font-size: .8rem; color: var(--muted); }
+.corr p { margin: 0 0 8px; font-size: .94rem; }
+dl.glossary dt { font-weight: 600; margin-top: 10px; }
+dl.glossary dd { margin: 2px 0 0; color: var(--muted); }
+footer { color: var(--muted); font-size: .82rem; }
+.muted { color: var(--muted); }
+.flag { color: var(--warn); font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Lake Trend Detective</h1>
+  <p class="lede">Pick a lake and a variable. See its long record, and find out whether it is really trending or just wiggling.</p>
+
+  <section class="panel">
+    <h2>Watch a demo first</h2>
+    <div class="demo-buttons" id="demoButtons"></div>
+    <div class="demo-box" id="demoBox" aria-live="polite">
+      <div class="step" id="demoStep"></div>
+      <p id="demoText" style="margin:4px 0 8px"></p>
+      <button class="secondary" id="demoNext">Next</button>
+    </div>
+  </section>
+
+  <div id="practiceBanner" class="banner" hidden>Practice lake: these numbers are made up so you can practise. They are not real measurements.</div>
+
+  <section class="panel">
+    <div class="pickers">
+      <div><label for="lakePick">1. Choose a lake</label><select id="lakePick"></select></div>
+      <div><label for="varPick">2. Choose a variable</label><select id="varPick"></select></div>
+    </div>
+    <div id="sourceRow" style="margin-top:12px" hidden><label for="sourcePick">Data source</label><select id="sourcePick"></select></div>
+    <ul class="facts" id="lakeFacts"></ul>
+  </section>
+
+  <section class="panel">
+    <div id="varBadges"></div>
+    <p class="definition" id="varDefinition"></p>
+    <ul class="notes" id="varNotes"></ul>
+  </section>
+
+  <section class="panel">
+    <h2 id="chartTitle">Record</h2>
+    <div class="chart-wrap"><svg id="chart" role="img" aria-label="Time series chart" width="100%" viewBox="0 0 900 340" preserveAspectRatio="xMidYMid meet"></svg></div>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <section class="panel">
+    <h2>3. The verdict</h2>
+    <div id="verdict" class="verdict"></div>
+    <table class="nums" id="nums"></table>
+  </section>
+
+  <section class="panel corr" id="corrPanel">
+    <h2>What moves with lake temperature?</h2>
+    <div id="corrList"></div>
+    <p class="muted" id="causeCaveat"></p>
+  </section>
+
+  <section class="panel" id="driftPanel">
+    <h2>Cross-check: satellite vs. model</h2>
+    <p id="driftText"></p>
+  </section>
+
+  <section class="panel">
+    <h2>What do the variables mean?</h2>
+    <dl class="glossary" id="glossary"></dl>
+  </section>
+
+  <section class="panel">
+    <h2>How the detective works</h2>
+    <p class="muted">Each year we average the open-water season (May to October) into one number. The trend rate is <b>Sen's slope</b>: the middle value of the slopes between every pair of years, so one odd year cannot pull it far. The <b>Mann-Kendall test</b> asks whether later years beat earlier years more often than chance would allow; we call a trend significant when its p-value is below 0.05. The 95% range shows how fast or slow the true trend could plausibly be.</p>
+  </section>
+
+  <footer class="panel" id="footer"></footer>
+</main>
+
+<script src="site_data.js"></script>
+<script>
+(() => {
+  const D = window.SITE_DATA;
+  if (!D) { document.querySelector("main").innerHTML = "<p>Data file site_data.js is missing. Run scripts/run_analysis.py.</p>"; return; }
+  const $ = id => document.getElementById(id);
+  const ROLE_GROUPS = [["lake", "The lake"], ["driver", "Weather and water drivers"], ["landscape", "The land around the lake"], ["diagnostic", "Checks"]];
+  const fmt = (x, d = 2) => (x === null || x === undefined || Number.isNaN(x)) ? "n/a" : Number(x).toFixed(d);
+  const fmtP = p => p === null || p === undefined ? "n/a" : (p < 0.001 ? "< 0.001" : p.toFixed(3));
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  // ---- pickers
+  const lakeIds = Object.keys(D.lakes).filter(id => D.series[id]);
+  lakeIds.sort((a, b) => (D.lakes[a].kind === "practice") - (D.lakes[b].kind === "practice"));
+  $("lakePick").innerHTML = lakeIds.map(id => `<option value="${id}">${esc(D.lakes[id].name)}</option>`).join("");
+
+  function fillVariables(lake, keep) {
+    const avail = Object.keys(D.series[lake] || {});
+    let html = "";
+    for (const [role, title] of ROLE_GROUPS) {
+      const ids = avail.filter(v => D.variables[v].role === role);
+      if (!ids.length) continue;
+      html += `<optgroup label="${title}">` + ids.map(v => `<option value="${v}">${esc(D.variables[v].label)}</option>`).join("") + "</optgroup>";
+    }
+    $("varPick").innerHTML = html;
+    if (keep && avail.includes(keep)) $("varPick").value = keep;
+  }
+  function fillSources(lake, v, keep) {
+    const list = D.series[lake][v];
+    $("sourceRow").hidden = list.length < 2;
+    $("sourcePick").innerHTML = list.map((s, i) => `<option value="${i}">${esc(s.source)} — ${esc(s.tier)}</option>`).join("");
+    const k = list.findIndex(s => s.source === keep);
+    $("sourcePick").value = String(k >= 0 ? k : 0);
+  }
+
+  // ---- chart (inline SVG)
+  function drawChart(series, v) {
+    const svg = $("chart"), W = 900, H = 340, L = 58, R = 16, T = 16, B = 36;
+    const spec = D.variables[v];
+    const pts = series.points.map(([d, y]) => { const [Y, M] = d.split("-").map(Number); return [Y + (M - 1) / 12 + (spec.frequency === "monthly" ? 1 / 24 : 0), y]; });
+    const season = series.season.map(([yr, y]) => [yr + (spec.frequency === "monthly" ? 0.625 : 0), y]);
+    const tr = series.trend;
+    const xs = pts.map(p => p[0]).concat(season.map(p => p[0]));
+    const ys = pts.map(p => p[1]).concat(season.map(p => p[1]));
+    if (!xs.length) { svg.innerHTML = ""; return; }
+    let x0 = Math.floor(Math.min(...xs)), x1 = Math.ceil(Math.max(...xs));
+    let y0 = Math.min(...ys), y1 = Math.max(...ys);
+    let trendLine = null;
+    if (tr && tr.status === "ok" && tr.sen_intercept !== null) {
+      const slope = tr.slope_per_decade / 10, a = tr.first_year, b = tr.last_year;
+      const off = spec.frequency === "monthly" ? 0.625 : 0;
+      trendLine = [[a + off, tr.sen_intercept + slope * a], [b + off, tr.sen_intercept + slope * b]];
+      y0 = Math.min(y0, trendLine[0][1], trendLine[1][1]); y1 = Math.max(y1, trendLine[0][1], trendLine[1][1]);
+    }
+    const pad = (y1 - y0) * 0.08 || 1; y0 -= pad; y1 += pad;
+    const sx = x => L + (x - x0) / (x1 - x0 || 1) * (W - L - R);
+    const sy = y => T + (1 - (y - y0) / (y1 - y0 || 1)) * (H - T - B);
+    let g = "";
+    const nT = 5;
+    for (let i = 0; i <= nT; i++) {
+      const yv = y0 + (y1 - y0) * i / nT;
+      g += `<line x1="${L}" x2="${W - R}" y1="${sy(yv)}" y2="${sy(yv)}" stroke="var(--line)" stroke-width="1"/>`;
+      g += `<text x="${L - 6}" y="${sy(yv) + 4}" text-anchor="end">${fmt(yv, Math.abs(y1 - y0) < 2 ? 2 : 1)}</text>`;
+    }
+    const step = (x1 - x0) > 16 ? 5 : 2;
+    for (let yr = Math.ceil(x0 / step) * step; yr <= x1; yr += step) g += `<text x="${sx(yr)}" y="${H - 12}" text-anchor="middle">${yr}</text>`;
+    g += `<text x="12" y="${T + (H - T - B) / 2}" transform="rotate(-90 12 ${T + (H - T - B) / 2})" text-anchor="middle">${esc(spec.unit)}</text>`;
+    if (spec.frequency === "monthly" && pts.length > 1) {
+      // break the line where months are missing
+      let path = "", prev = null;
+      for (const [x, y] of pts) { path += (prev !== null && x - prev > 0.1) ? `M${sx(x)},${sy(y)}` : (path ? `L${sx(x)},${sy(y)}` : `M${sx(x)},${sy(y)}`); prev = x; }
+      g += `<path d="${path}" fill="none" stroke="var(--month)" stroke-width="1.2"/>`;
+    }
+    for (const [x, y] of season) g += `<circle cx="${sx(x)}" cy="${sy(y)}" r="4" fill="var(--dots)"><title>${Math.floor(x)}: ${fmt(y, 2)} ${esc(spec.unit)}</title></circle>`;
+    if (trendLine) g += `<line x1="${sx(trendLine[0][0])}" y1="${sy(trendLine[0][1])}" x2="${sx(trendLine[1][0])}" y2="${sy(trendLine[1][1])}" stroke="var(--trend)" stroke-width="3" stroke-dasharray="${tr.significant ? "" : "8 6"}"/>`;
+    svg.innerHTML = g;
+    const what = spec.frequency === "monthly" ? "open-water season (May–Oct) average" : "yearly value";
+    $("legend").innerHTML = (spec.frequency === "monthly" ? `<span><i style="background:var(--month)"></i>monthly values</span>` : "") +
+      `<span><i style="background:var(--dots);height:8px;width:8px;border-radius:50%"></i>${what}</span>` +
+      (trendLine ? `<span><i style="background:var(--trend)"></i>trend line (Sen's slope)${tr.significant ? "" : ", dashed = not significant"}</span>` : "");
+  }
+
+  // ---- render
+  function render() {
+    const lake = $("lakePick").value, v = $("varPick").value;
+    const series = D.series[lake][v][Number($("sourcePick").value) || 0];
+    const spec = D.variables[v], meta = D.lakes[lake];
+    $("practiceBanner").hidden = meta.kind !== "practice";
+    $("lakeFacts").innerHTML = meta.facts.map(f => `<li>${esc(f)}</li>`).join("");
+    const practice = series.tier.startsWith("Synthetic");
+    $("varBadges").innerHTML = `<span class="badge ${practice ? "practice" : ""}">${esc(series.tier)}</span><span class="muted" style="font-size:.85rem">${esc(series.source)}</span>`;
+    $("varDefinition").textContent = spec.definition;
+    $("varNotes").innerHTML = spec.notes.map(n => `<li>${esc(n)}</li>`).join("");
+    $("chartTitle").textContent = `${spec.label} — ${meta.name}`;
+    drawChart(series, v);
+    const tr = series.trend;
+    const box = $("verdict");
+    if (!tr) { box.className = "verdict non"; box.textContent = "No trend result for this series."; $("nums").innerHTML = ""; }
+    else {
+      box.className = "verdict " + (tr.significant ? "sig" : "non");
+      box.innerHTML = `<strong>${tr.status !== "ok" ? "Not enough data yet" : tr.significant ? "Significant trend" : "No significant trend"}</strong>${esc(tr.verdict)}`;
+      const unit = esc(spec.unit);
+      const rows = tr.status === "ok" ? [
+        ["Direction", esc(tr.direction)],
+        ["Sen's slope", `${fmt(tr.slope_per_decade, 3)} ${unit} per decade`],
+        ["95% confidence range", `${fmt(tr.ci_low_per_decade, 3)} to ${fmt(tr.ci_high_per_decade, 3)} ${unit} per decade`],
+        ["Mann-Kendall p-value", `${fmtP(tr.mann_kendall_p)} ${tr.significant ? "(significant, below 0.05)" : "(not significant)"}`],
+        ["Years used", `${tr.n_seasons} (${tr.first_year}–${tr.last_year})`],
+        ["Total change over the record", `${fmt(tr.total_change, 3)} ${unit}`],
+        ["Compared with sensor accuracy", esc(tr.accuracy_verdict) + (tr.accuracy_citation ? `<br><span class="muted" style="font-size:.82rem">${esc(tr.accuracy_citation)}</span>` : "")],
+      ] : [["Years available", String(tr.n_seasons)]];
+      $("nums").innerHTML = rows.map(([k, val]) => `<tr><td>${k}</td><td>${val}</td></tr>`).join("");
+    }
+    const corr = D.correlations.filter(c => c.lake === lake);
+    $("corrPanel").hidden = !corr.length;
+    $("corrList").innerHTML = corr.map(c => `<p>${esc(c.text)}</p>`).join("");
+    $("causeCaveat").textContent = D.cause_caveat;
+    const dr = D.drift[lake];
+    $("driftPanel").hidden = !dr || dr.status !== "ok";
+    if (dr) $("driftText").innerHTML = (dr.flag ? `<span class="flag">Flag:</span> ` : "") + esc(dr.text);
+  }
+
+  // ---- glossary and footer
+  $("glossary").innerHTML = Object.entries(D.variables).map(([id, v]) => `<dt>${esc(v.label)} <span class="badge">${esc(v.tier)}</span></dt><dd>${esc(v.definition)}</dd>`).join("");
+  const attr = Object.values(D.lakes).map(l => l.attribution).filter(Boolean);
+  $("footer").innerHTML = `<p style="margin:0 0 6px">Data: MODIS MOD11A2, MOD13A3 and MCD12Q1 Version 6.1 (NASA LP DAAC, via AppEEARS); MERRA-2 M2TMNXSLV, M2TMNXFLX and M2TMNXRAD (NASA GES DISC); GPM IMERG Final V07 monthly (NASA GES DISC).</p>` +
+    attr.map(a => `<p style="margin:0 0 6px">${esc(a)}</p>`).join("") +
+    `<p style="margin:0">A submission to the 2026 NASA Space Apps Challenge, "Be An Earth System Trend Detective!". Results updated ${esc(D.generated)}.</p>`;
+
+  // ---- events
+  $("lakePick").addEventListener("change", () => { fillVariables($("lakePick").value, $("varPick").value); fillSources($("lakePick").value, $("varPick").value); render(); });
+  $("varPick").addEventListener("change", () => { fillSources($("lakePick").value, $("varPick").value); render(); });
+  $("sourcePick").addEventListener("change", render);
+
+  function select(lake, v, source) {
+    $("lakePick").value = lake; fillVariables(lake, v); $("varPick").value = v; fillSources(lake, v, source); render();
+  }
+
+  // ---- guided demos
+  function demoSteps(d) {
+    const s = D.series[d.lake][d.variable].find(x => x.source === d.source) || D.series[d.lake][d.variable][0];
+    const tr = s.trend, spec = D.variables[d.variable], lake = D.lakes[d.lake].name;
+    const steps = [
+      `We picked ${lake} and the variable "${spec.label}". ${spec.definition}` + (d.practice ? " (Practice lake: made-up data.)" : ""),
+      spec.frequency === "monthly"
+        ? `The thin line shows every month: up in summer, down in winter. That yearly cycle is not a trend, so each dot averages one open-water season (May to October) into one number per year.`
+        : `Each dot is one year's value.`,
+      `The orange line is the trend. Its slope is ${fmt(tr.slope_per_decade, 3)} ${spec.unit} per decade, with a 95% range of ${fmt(tr.ci_low_per_decade, 3)} to ${fmt(tr.ci_high_per_decade, 3)}.`,
+      d.kind === "significant"
+        ? `The range does not include zero, and the Mann-Kendall p-value is ${fmtP(tr.mann_kendall_p)}, below 0.05. Verdict: a significant ${tr.direction === "rising" ? "rise" : "fall"}.`
+        : `The p-value is ${fmtP(tr.mann_kendall_p)}, not below 0.05, and the range includes zero. Verdict: the dots wiggle, but we cannot call it a trend. More years might change that.`,
+    ];
+    if (tr.accuracy_verdict === "not distinguishable from sensor accuracy") steps.push(`One more check: the total change is smaller than the satellite's stated accuracy, so we report it as not distinguishable from sensor accuracy.`);
+    return steps;
+  }
+  let demo = null;
+  $("demoButtons").innerHTML = D.demos.map((d, i) => `<button class="${i ? "secondary" : ""}" data-i="${i}">Demo ${i + 1}: ${esc(d.title)}${d.practice ? " (practice data)" : ""}</button>`).join("");
+  $("demoButtons").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    const d = D.demos[Number(b.dataset.i)];
+    demo = { d, steps: demoSteps(d), i: 0 };
+    select(d.lake, d.variable, d.source);
+    showStep();
+  });
+  function showStep() {
+    $("demoBox").style.display = "block";
+    $("demoStep").textContent = `Step ${demo.i + 1} of ${demo.steps.length}`;
+    $("demoText").textContent = demo.steps[demo.i];
+    $("demoNext").textContent = demo.i + 1 < demo.steps.length ? "Next" : "Close";
+  }
+  $("demoNext").addEventListener("click", () => {
+    if (!demo) return;
+    if (demo.i + 1 < demo.steps.length) { demo.i++; showStep(); } else { $("demoBox").style.display = "none"; demo = null; }
+  });
+
+  const first = lakeIds[0];
+  fillVariables(first, "lake_skin_temp"); fillSources(first, $("varPick").value); render();
+})();
+</script>
+</body>
+</html>

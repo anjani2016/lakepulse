@@ -1,0 +1,25 @@
+{
+  "practice_lake": {
+    "lake": "practice_lake",
+    "status": "ok",
+    "late_window_seasons": 10,
+    "lake_day_slope_per_decade": 0.4935964912280704,
+    "lake_day_p": 0.002720691276079115,
+    "lake_night_slope_per_decade": 0.47638888888888786,
+    "lake_night_p": 0.0011057080962591495,
+    "air_slope_per_decade": 0.4570833333333324,
+    "air_p": 0.017289748509042368,
+    "gap_day_full_slope_per_decade": 0.07412280701754563,
+    "gap_day_full_p": 0.5968073797467659,
+    "gap_day_late_slope_per_decade": 0.18499999999999517,
+    "gap_day_late_p": 0.7205147871362552,
+    "gap_day_late_years": [
+      2016,
+      2025
+    ],
+    "view_time_slope_minutes_per_decade": -0.30909090909089926,
+    "view_time_p": 0.49431993533183904,
+    "flag": false,
+    "text": "Practice 'satellite' daytime lake trend 0.494 \u00b0C/decade vs practice 'model' air trend 0.457 \u00b0C/decade. No sign of orbit drift in this check: the pass time shows no significant trend and the lake and air series do not diverge significantly late in the record."
+  }
+}
