@@ -21,5 +21,11 @@
     "view_time_p": 0.49431993533183904,
     "flag": false,
     "text": "Practice 'satellite' daytime lake trend 0.494 \u00b0C/decade vs practice 'model' air trend 0.457 \u00b0C/decade. No sign of orbit drift in this check: the pass time shows no significant trend and the lake and air series do not diverge significantly late in the record."
+  },
+  "simcoe_on": {
+    "lake": "simcoe_on",
+    "status": "missing inputs",
+    "flag": null,
+    "text": "The drift check needs both the MODIS lake temperature and the MERRA-2 air temperature."
   }
 }

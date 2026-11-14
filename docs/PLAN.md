@@ -32,7 +32,11 @@ Consequences:
   open-water season is incomplete and is dropped by the six-month rule.
 - **Giovanni**: the catalog and `api.giovanni.earthdata.nasa.gov` returned 403 / "Missing
   Authentication Token" without a login, and no public spec for the time-series call
-  was found. We read the same GES DISC monthly files with `earthaccess` instead.
+  was found. We read the same GES DISC monthly files through the Earthdata cloud OPeNDAP
+  server (`opendap.earthdata.nasa.gov`), asking only for the grid cells we need. Streaming
+  whole files took over 10 minutes for one month; a subset request takes about a second.
+  Access needs the "NASA GESDISC DATA ARCHIVE" application approved in the Earthdata
+  profile, and a bearer token (fetched in memory from the same credentials).
   [verify: run one Giovanni area-averaged time series for T2M over the Simcoe box and compare.]
 - **Tiers**: MERRA-2 rows are "Modeled (Simulation)". MODIS and IMERG rows are
   "Satellite-derived". Lake-minus-air is "Derived (satellite minus model)".
