@@ -52,6 +52,14 @@ ul.facts { margin: 10px 0 0; padding-left: 20px; color: var(--muted); font-size:
 .notes { color: var(--muted); font-size: .88rem; margin: 0; padding-left: 18px; }
 .banner { background: var(--warn-soft); color: var(--warn); border-radius: 10px; padding: 10px 12px; font-weight: 600; margin-bottom: 16px; }
 .chart-wrap { width: 100%; overflow: hidden; }
+.zoom-block { margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--line); }
+.zoom-row { display: grid; grid-template-columns: minmax(0, 1fr) 210px; gap: 14px; align-items: center; }
+@media (max-width: 760px) { .zoom-row { grid-template-columns: 1fr; } }
+.zoom-stats { display: grid; gap: 10px; font-size: .88rem; background: var(--accent-soft); border-radius: 10px; padding: 12px 14px; }
+.zoom-stats .k { display: block; font-size: .7rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.zoom-stats .zs-rate { color: var(--muted); }
+.zoom-stats .zs-big { display: block; font-size: 1.9rem; font-weight: 700; color: var(--trend); line-height: 1.1; }
+svg text.trend-label { fill: var(--trend); font-weight: 700; }
 svg text { fill: var(--muted); font-size: 13px; }
 @media (max-width: 640px) { svg text { font-size: 22px; } }
 .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: .85rem; color: var(--muted); margin-top: 6px; }
@@ -148,6 +156,14 @@ table.trendtable th { text-align: left; font-size: .8rem; color: var(--muted); p
 .pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: .78rem; font-weight: 600; }
 .pill.sig { background: var(--ok-soft); color: var(--ok); }
 .pill.non { background: var(--no-soft); color: var(--no); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.purpose { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-top: 12px; }
+.purpose > div { border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 8px; padding: 8px 12px; font-size: .92rem; }
+.purpose .k { display: block; font-size: .72rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--accent); }
+table.lcscore th { text-align: left; font-size: .8rem; color: var(--muted); padding: 6px 4px; }
+table.lcscore td { width: auto !important; font-size: .9rem; }
+table.lcscore td:first-child { color: var(--ink); font-weight: 600; width: 26% !important; }
+table.lcscore td:last-child { white-space: nowrap; }
 .model-labels { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
 .linkrow { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
 a.btnlink { display: inline-block; padding: 8px 14px; border-radius: 8px; background: var(--accent); color: var(--panel); text-decoration: none; font-weight: 600; font-size: .92rem; border: 1px solid var(--accent); }
@@ -189,7 +205,7 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
     <section class="panel keyres" id="keyPanel">
       <h2>Key result</h2>
       <div id="keyResult" class="keylist"></div>
-      <button data-goto="explore">See it on the chart →</button>
+      <button id="seeChart">See it on the chart →</button>
       <button class="secondary" data-goto="analysis">Every variable's result →</button>
     </section>
 
@@ -255,6 +271,15 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
             <h2 id="chartTitle">Record</h2>
             <div class="chart-wrap"><svg id="chart" role="img" aria-label="Time series chart" width="100%" viewBox="0 0 900 340" preserveAspectRatio="xMidYMid meet"></svg></div>
             <div class="legend" id="legend"></div>
+            <div id="zoomWrap" class="zoom-block" hidden>
+              <h3 style="margin:0 0 2px">Zoomed in: open-water season averages and trend</h3>
+              <p class="muted" id="zoomNote" style="margin:0 0 6px;font-size:.9rem"></p>
+              <div class="zoom-row">
+                <div class="chart-wrap"><svg id="chartZoom" role="img" aria-label="Season averages and trend line, zoomed in" width="100%" viewBox="0 0 900 400" preserveAspectRatio="xMidYMid meet"></svg></div>
+                <div class="zoom-stats" id="zoomStats"></div>
+              </div>
+              <div class="legend"><span><i style="background:var(--dots)"></i>season average, year to year</span><span><i style="background:var(--trend)"></i>trend line (Sen's slope)</span><span><i style="background:var(--trend);opacity:.25;height:10px"></i>95% range of the trend</span></div>
+            </div>
             <p class="definition" id="varDefinition"></p>
             <ul class="notes" id="varNotes"></ul>
           </div>
@@ -298,6 +323,17 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
       <h2>Why we trained a model</h2>
       <p>To ask whether the land around the lake affects it, we need to know how much of the catchment is forest, cropland and built-up. The obvious source, MODIS land cover, maps the land in 500 m cells, and its user guide warns against reading change from it. Runoff enters the lake through a narrow strip along the shoreline and streams, far finer than 500 m.</p>
       <p>So we fine-tuned <b>Prithvi-EO-2.0</b>, an Earth-observation foundation model from IBM, NASA and Jülich Supercomputing Centre, to draw a 30 m land-cover map from Sentinel-2 satellite imagery, and ran it on each summer from 2017 to 2025.</p>
+      <div class="purpose">
+        <div><span class="k">Purpose 1</span>Measure how much of the catchment is forest, cropland and built-up, every year.</div>
+        <div><span class="k">Purpose 2</span>Measure the land in the 30 m strip along the shoreline and streams, where runoff enters the lake.</div>
+        <div><span class="k">Purpose 3</span>Do it better than a simple classifier, on land the model never saw.</div>
+      </div>
+    </section>
+
+    <section class="panel" id="lcAchieved">
+      <h2>What we achieved</h2>
+      <p class="muted" style="font-size:.9rem;margin:0 0 10px">Scores are IoU (intersection over union): for each class, how much the model's map and the 2020 Land Cover of Canada map overlap; 1 means they match exactly, 0 not at all. Tested on a watershed held out of training entirely. Read from the land-cover track's result files.</p>
+      <div style="overflow-x:auto"><table class="nums lcscore" id="lcScore"></table></div>
     </section>
 
     <section class="panel">
@@ -337,6 +373,7 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
 </main>
 
 <script src="site_data.js"></script>
+<script src="landcover-data.js"></script>
 <script>
 (() => {
   const D = window.SITE_DATA;
@@ -403,48 +440,96 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
   })();
 
   // ---- chart (inline SVG)
-  function drawChart(series, v) {
-    const svg = $("chart"), W = 900, H = 340, L = 58, R = 16, T = 16, B = 36;
-    const spec = D.variables[v];
-    const pts = series.points.map(([d, y]) => { const [Y, M] = d.split("-").map(Number); return [Y + (M - 1) / 12 + (spec.frequency === "monthly" ? 1 / 24 : 0), y]; });
-    const season = series.season.map(([yr, y]) => [yr + (spec.frequency === "monthly" ? 0.625 : 0), y]);
-    const tr = series.trend;
-    const xs = pts.map(p => p[0]).concat(season.map(p => p[0]));
-    const ys = pts.map(p => p[1]).concat(season.map(p => p[1]));
+  // Round tick spacing (1, 2, 2.5 or 5 × a power of ten) so the axis reads 15.0, 15.5, 16.0 rather than 16.2, 25.7.
+  function niceTicks(lo, hi, target) {
+    const raw = (hi - lo) / target || 1, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= raw);
+    const a = Math.floor(lo / step) * step, b = Math.ceil(hi / step) * step;
+    const ticks = []; for (let v = a; v <= b + step / 2; v += step) ticks.push(+v.toFixed(10));
+    return { a, b, ticks, dec: Math.max(0, -Math.floor(Math.log10(step) + 1e-9)) + (step / mag === 2.5 ? 1 : 0) };
+  }
+  // Draws one panel. line = monthly points (may be empty); yFrom = the points that set the y-axis range.
+  function plot(svg, H, line, season, trendLine, spec, tr, yFrom, label, opts = {}) {
+    const W = 900, L = 58, R = label ? 150 : 16, T = 16, B = 36;
+    const xs = line.map(p => p[0]).concat(season.map(p => p[0]));
     if (!xs.length) { svg.innerHTML = ""; return; }
-    let x0 = Math.floor(Math.min(...xs)), x1 = Math.ceil(Math.max(...xs));
-    let y0 = Math.min(...ys), y1 = Math.max(...ys);
-    let trendLine = null;
-    if (tr && tr.status === "ok" && tr.sen_intercept !== null) {
-      const slope = tr.slope_per_decade / 10, a = tr.first_year, b = tr.last_year;
-      const off = spec.frequency === "monthly" ? 0.625 : 0;
-      trendLine = [[a + off, tr.sen_intercept + slope * a], [b + off, tr.sen_intercept + slope * b]];
-      y0 = Math.min(y0, trendLine[0][1], trendLine[1][1]); y1 = Math.max(y1, trendLine[0][1], trendLine[1][1]);
-    }
+    const x0 = Math.floor(Math.min(...xs)), x1 = Math.ceil(Math.max(...xs));
+    let y0 = Math.min(...yFrom), y1 = Math.max(...yFrom);
     const pad = (y1 - y0) * 0.08 || 1; y0 -= pad; y1 += pad;
+    const nt = niceTicks(y0, y1, H > 360 ? 6 : 5); y0 = nt.a; y1 = nt.b;
     const sx = x => L + (x - x0) / (x1 - x0 || 1) * (W - L - R);
     const sy = y => T + (1 - (y - y0) / (y1 - y0 || 1)) * (H - T - B);
     let g = "";
-    const nT = 5;
-    for (let i = 0; i <= nT; i++) {
-      const yv = y0 + (y1 - y0) * i / nT;
+    for (const yv of nt.ticks) {
       g += `<line x1="${L}" x2="${W - R}" y1="${sy(yv)}" y2="${sy(yv)}" stroke="var(--line)" stroke-width="1"/>`;
-      g += `<text x="${L - 6}" y="${sy(yv) + 4}" text-anchor="end">${fmt(yv, Math.abs(y1 - y0) < 2 ? 2 : 1)}</text>`;
+      g += `<text x="${L - 6}" y="${sy(yv) + 4}" text-anchor="end">${fmt(yv, nt.dec)}</text>`;
     }
     const step = (x1 - x0) > 16 ? 5 : 2;
     for (let yr = Math.ceil(x0 / step) * step; yr <= x1; yr += step) g += `<text x="${sx(yr)}" y="${H - 12}" text-anchor="middle">${yr}</text>`;
     g += `<text x="12" y="${T + (H - T - B) / 2}" transform="rotate(-90 12 ${T + (H - T - B) / 2})" text-anchor="middle">${esc(spec.unit)}</text>`;
-    if (spec.frequency === "monthly" && pts.length > 1) {
+    if (line.length > 1) {
       // break the line where months are missing
       let path = "", prev = null;
-      for (const [x, y] of pts) { path += (prev !== null && x - prev > 0.1) ? `M${sx(x)},${sy(y)}` : (path ? `L${sx(x)},${sy(y)}` : `M${sx(x)},${sy(y)}`); prev = x; }
+      for (const [x, y] of line) { path += (prev !== null && x - prev > 0.1) ? `M${sx(x)},${sy(y)}` : (path ? `L${sx(x)},${sy(y)}` : `M${sx(x)},${sy(y)}`); prev = x; }
       g += `<path d="${path}" fill="none" stroke="var(--month)" stroke-width="1.2"/>`;
     }
-    for (const [x, y] of season) g += `<circle cx="${sx(x)}" cy="${sy(y)}" r="4" fill="var(--dots)"><title>${Math.floor(x)}: ${fmt(y, 2)} ${esc(spec.unit)}</title></circle>`;
+    // 95% range of the trend: lines at the low and high slopes, pivoting where the trend crosses the middle year (a bow-tie band).
+    if (opts.band) g += `<polygon points="${opts.band.map(([x, y]) => `${sx(x)},${sy(y)}`).join(" ")}" fill="var(--trend)" fill-opacity="0.13" stroke="none"/>`;
+    // Join the season averages year to year; skip the join across a missing year.
+    if (opts.connect && season.length > 1) {
+      let path = "", prev = null;
+      for (const [x, y] of season) { path += (prev === null || x - prev > 1.5) ? `M${sx(x)},${sy(y)}` : `L${sx(x)},${sy(y)}`; prev = x; }
+      g += `<path d="${path}" fill="none" stroke="var(--dots)" stroke-width="2" stroke-linejoin="round"/>`;
+    }
+    const r = H > 360 ? 5 : 4;
+    for (const [x, y] of season) g += `<circle cx="${sx(x)}" cy="${sy(y)}" r="${r}" fill="var(--dots)"><title>${Math.floor(x)}: ${fmt(y, 2)} ${esc(spec.unit)}</title></circle>`;
     if (trendLine) g += `<line x1="${sx(trendLine[0][0])}" y1="${sy(trendLine[0][1])}" x2="${sx(trendLine[1][0])}" y2="${sy(trendLine[1][1])}" stroke="var(--trend)" stroke-width="3" stroke-dasharray="${tr.significant ? "" : "8 6"}"/>`;
+    if (trendLine && label) g += `<text class="trend-label" x="${sx(trendLine[1][0]) + 10}" y="${sy(trendLine[1][1]) + 5}">${esc(label)}</text>`;
     svg.innerHTML = g;
-    const what = spec.frequency === "monthly" ? "open-water season (May–Oct) average" : "yearly value";
-    $("legend").innerHTML = (spec.frequency === "monthly" ? `<span><i style="background:var(--month)"></i>monthly values</span>` : "") +
+  }
+  function drawChart(series, v) {
+    const spec = D.variables[v], monthly = spec.frequency === "monthly";
+    const pts = series.points.map(([d, y]) => { const [Y, M] = d.split("-").map(Number); return [Y + (M - 1) / 12 + (monthly ? 1 / 24 : 0), y]; });
+    const season = series.season.map(([yr, y]) => [yr + (monthly ? 0.625 : 0), y]);
+    const tr = series.trend;
+    let trendLine = null;
+    if (tr && tr.status === "ok" && tr.sen_intercept !== null) {
+      const slope = tr.slope_per_decade / 10, a = tr.first_year, b = tr.last_year;
+      const off = monthly ? 0.625 : 0;
+      trendLine = [[a + off, tr.sen_intercept + slope * a], [b + off, tr.sen_intercept + slope * b]];
+    }
+    const tys = trendLine ? [trendLine[0][1], trendLine[1][1]] : [];
+    const ys = pts.map(p => p[1]).concat(season.map(p => p[1]), tys);
+    // Change along the trend line over the record, e.g. "+1.2 °C since 2001".
+    const change = trendLine ? trendLine[1][1] - trendLine[0][1] : null;
+    const cdec = change ? Math.min(4, Math.max(2, 1 - Math.floor(Math.log10(Math.abs(change))))) : 2; // two significant figures for small changes
+    const cunit = spec.unit === "unitless" ? "" : ` ${spec.unit.replace(/\s*\(.*\)$/, "")}`; // "index (−0.2 to 1)" → "index", to fit beside the line
+    const label = trendLine ? `${change >= 0 ? "+" : "−"}${fmt(Math.abs(change), cdec)}${cunit} since ${tr.first_year}` : "";
+    plot($("chart"), 340, monthly ? pts : [], season, trendLine, spec, tr, ys, monthly ? "" : label);
+    // Monthly series swing with the seasons, which squashes the season averages into a flat band.
+    // A second panel scales the y-axis to the season averages and trend only, so the slope is visible.
+    const zoom = monthly && season.length > 1;
+    $("zoomWrap").hidden = !zoom;
+    if (zoom) {
+      let band = null;
+      if (trendLine && tr.ci_low_per_decade !== null && tr.ci_high_per_decade !== null) {
+        const [[xa, ya], [xb, yb]] = trendLine, xm = (xa + xb) / 2, ym = (ya + yb) / 2;
+        const lo = tr.ci_low_per_decade / 10, hi = tr.ci_high_per_decade / 10;
+        band = [[xa, ym + lo * (xa - xm)], [xb, ym + lo * (xb - xm)], [xb, ym + hi * (xb - xm)], [xa, ym + hi * (xa - xm)]];
+      }
+      const zy = season.map(p => p[1]).concat(tys, band ? band.map(p => p[1]) : []);
+      plot($("chartZoom"), 400, [], season, trendLine, spec, tr, zy, label, { connect: true, band });
+      const u = esc(spec.unit);
+      $("zoomStats").innerHTML = tr && tr.status === "ok" ? `
+        <div class="zs-rate"><span class="zs-big">${tr.slope_per_decade >= 0 ? "+" : "−"}${fmt(Math.abs(tr.slope_per_decade), 2)}</span> ${u} per decade</div>
+        <div><span class="k">95% range</span>${fmt(tr.ci_low_per_decade, 2)} to ${fmt(tr.ci_high_per_decade, 2)} ${u} per decade</div>
+        <div><span class="k">Mann-Kendall p</span>${fmtP(tr.mann_kendall_p)}: ${tr.significant ? "significant" : "not significant"}</div>
+        <div><span class="k">Change along the trend</span>${change >= 0 ? "+" : "−"}${fmt(Math.abs(change), cdec)} ${u}, ${tr.first_year}–${tr.last_year}</div>` : "";
+      $("zoomStats").hidden = !(tr && tr.status === "ok");
+      $("zoomNote").textContent = `Same dots and trend line as above, with the y-axis covering only ${fmt(Math.min(...zy), 1)} to ${fmt(Math.max(...zy), 1)} ${spec.unit} instead of the full summer-to-winter swing.`;
+    }
+    const what = monthly ? "open-water season (May–Oct) average" : "yearly value";
+    $("legend").innerHTML = (monthly ? `<span><i style="background:var(--month)"></i>monthly values</span>` : "") +
       `<span><i style="background:var(--dots);height:8px;width:8px;border-radius:50%"></i>${what}</span>` +
       (trendLine ? `<span><i style="background:var(--trend)"></i>trend line (Sen's slope)${tr.significant ? "" : ", dashed = not significant"}</span>` : "");
   }
@@ -605,6 +690,31 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
   </div>
   <div class="foot-bottom"><span>LakePulse · Lake Trend Detective</span><span>Results updated ${esc(D.generated)}</span></div>`;
 
+  // ---- land-cover model scorecard (read from the land-cover track's result tables)
+  (function lcScorecard() {
+    const T = (window.LC_DATA || {}).tables;
+    if (!T || !T.test_scores) { $("lcAchieved").hidden = true; return; }
+    const score = (model, area) => T.test_scores.rows.find(r => r.model === model && r.area === area) || {};
+    const ft = score("Fine-tune v2, class-weighted", "Whole test block"), gb = score("Gradient boosting", "Whole test block");
+    const ftS = score("Fine-tune v2, class-weighted", "30 m strip"), gbS = score("Gradient boosting", "30 m strip");
+    const n = (x, d = 2) => fmt(Number(x), d);
+    const share = (year, area, cls) => ((T.shares.rows.find(r => r.year === year && r.area === area && r.class === cls) || {}).share_pct);
+    const years = [...new Set(T.shares.rows.map(r => r.year))].sort();
+    const last = years[years.length - 1], first = years[0];
+    const units = (T.compute ? T.compute.rows.reduce((a, r) => a + Number(r.units), 0) : null);
+    const pill = s => `<span class="pill ${{ yes: "sig", part: "warn", no: "non" }[s]}">${{ yes: "Achieved", part: "Partly", no: "Not yet" }[s]}</span>`;
+    const rows = [
+      ["Beat a simple classifier on unseen land", `Mean IoU ${n(ft.mean_iou, 3)} against ${n(gb.mean_iou, 3)} for gradient boosting on the same test area; ${n(ftS.mean_iou, 3)} against ${n(gbS.mean_iou, 3)} in the 30 m strip.`, "yes"],
+      ["Map the classes LakePulse uses", `Water ${n(ft.water)}, cropland ${n(ft.cropland)}, forest ${n(ft.forest)}, built-up ${n(ft.built_up)}.`, "yes"],
+      ["Map every class", `Wetland ${n(ft.wetland)} and "other" ${n(ft.other)}: too rare in training to learn, so not used.`, "no"],
+      ["Yearly catchment shares (purpose 1)", `${first}–${last}: forest ${n(share(last, "Catchment", "forest"), 1)}%, cropland ${n(share(last, "Catchment", "cropland"), 1)}%, built-up ${n(share(last, "Catchment", "built_up"), 1)}% of land in ${last}. Shown in the explorer.`, "yes"],
+      ["Measure the 30 m runoff strip (purpose 2)", `In ${last} the strip was ${n(share(last, "30 m strip", "forest"), 1)}% forest and ${n(share(last, "30 m strip", "cropland"), 1)}% cropland, against ${n(share(last, "Catchment", "forest"), 1)}% and ${n(share(last, "Catchment", "cropland"), 1)}% for the whole catchment. On the training page; not yet in the explorer.`, "part"],
+      ["Test whether land cover is changing", `${years.length} years is fewer than the ${D.min_seasons} our trend test needs, so no trend is claimed yet.`, "no"],
+    ];
+    $("lcScore").innerHTML = `<tr><th>Goal</th><th>Result</th><th>Status</th></tr>` + rows.map(([g, r, s]) => `<tr><td>${esc(g)}</td><td>${esc(r)}</td><td>${pill(s)}</td></tr>`).join("") +
+      (units !== null ? `<tr><td>Compute used</td><td>${n(units)} Google Colab units, L4 and A100 GPUs.</td><td></td></tr>` : "");
+  })();
+
   // ---- methodology numbers, read from the data
   const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const sm = D.season_months || [];
@@ -668,7 +778,8 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
       spec.frequency === "monthly"
         ? `The thin line shows every month: up in summer, down in winter. That yearly cycle is not a trend, so each dot averages one open-water season (May to October) into one number per year.`
         : `Each dot is one year's value.`,
-      `The orange line is the trend. Its slope is ${fmt(tr.slope_per_decade, 3)} ${spec.unit} per decade, with a 95% range of ${fmt(tr.ci_low_per_decade, 3)} to ${fmt(tr.ci_high_per_decade, 3)}.`,
+      `The orange line is the trend. Its slope is ${fmt(tr.slope_per_decade, 3)} ${spec.unit} per decade, with a 95% range of ${fmt(tr.ci_low_per_decade, 3)} to ${fmt(tr.ci_high_per_decade, 3)}.` +
+        (spec.frequency === "monthly" ? ` The summer-to-winter swing makes it look flat; the zoomed chart below the main one shows only the season averages, where the slope is clear.` : ""),
       d.kind === "significant"
         ? `The range does not include zero, and the Mann-Kendall p-value is ${fmtP(tr.mann_kendall_p)}, below 0.05. Verdict: a significant ${tr.direction === "rising" ? "rise" : "fall"}.`
         : `The p-value is ${fmtP(tr.mann_kendall_p)}, not below 0.05, and the range includes zero. Verdict: the dots wiggle, but we cannot call it a trend. More years might change that.`,
@@ -706,6 +817,12 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
   $("trendTable").addEventListener("keydown", e => { const tr = e.target.closest("tr.go"); if (tr && e.key === "Enter") openRow(tr); });
   renderAnalysis();
   showTab(location.hash.slice(1));
+  // "See it on the chart": the key result's own series, scrolled to the zoomed season-average chart.
+  $("seeChart").addEventListener("click", () => {
+    if ((D.series.simcoe_on || {}).lake_skin_temp_night) select("simcoe_on", "lake_skin_temp_night");
+    showTab("explore");
+    requestAnimationFrame(() => ($("zoomWrap").hidden ? $("chart") : $("zoomWrap")).scrollIntoView({ behavior: "smooth", block: "start" }));
+  });
 })();
 </script>
 </body>
