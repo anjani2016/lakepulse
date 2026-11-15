@@ -98,17 +98,41 @@ def verdict(label: str, unit: str, res: stats.TrendResult, first: int | None, la
 
 
 # ---------------------------------------------------------------- trends
+COMPARISON_ONLY_REASON = (
+    "Shown for comparison only. For this variable the analysis uses one chosen source "
+    "(see the notes), so no trend is tested on this one."
+)
+
+
+def _excluded(lake: str, var_id: str, source: str, chosen: dict) -> str | None:
+    """Reason a series gets no statistics, or None. Fail closed: for a variable whose
+    analysis source is chosen by tier, every other source on a real lake is excluded."""
+    listed = V.excluded_reason(var_id, source)
+    if listed:
+        return listed
+    if var_id in V.ANALYSIS_TIER and lake != "practice_lake" and chosen.get(lake, {}).get(var_id) != source:
+        return COMPARISON_ONLY_REASON
+    return None
+
+
 def trend_table(seasonal: pd.DataFrame) -> pd.DataFrame:
     out = []
+    chosen = {lake: analysis_sources(seasonal, lake) for lake in seasonal["lake"].unique()}
     for (lake, var_id, source), g in seasonal.groupby(["lake", "variable", "source"]):
         spec = V.get(var_id)
         g = g.sort_values("year")
         t, y = g["year"].to_numpy(float), g["value"].to_numpy(float)
-        res = stats.trend(t, y)
-        change = stats.total_change(res, t)
-        acc = _accuracy_for(var_id, source)
-        acc_verdict, text = verdict(spec.label, spec.unit, res,
-                                    int(t.min()) if len(t) else None, int(t.max()) if len(t) else None, change, acc)
+        excluded = _excluded(lake, var_id, source, chosen)
+        if excluded:
+            # No statistics are presented for a series the project does not use.
+            res = stats.TrendResult(n=len(y), status="excluded")
+            change, acc, acc_verdict, text = None, None, "not assessed", excluded
+        else:
+            res = stats.trend(t, y)
+            change = stats.total_change(res, t)
+            acc = _accuracy_for(var_id, source)
+            acc_verdict, text = verdict(spec.label, spec.unit, res,
+                                        int(t.min()) if len(t) else None, int(t.max()) if len(t) else None, change, acc)
         out.append({
             "lake": lake, "variable": var_id, "label": spec.label, "source": source,
             "tier": g["tier"].iloc[0], "unit": spec.unit, "role": spec.role,
@@ -129,12 +153,43 @@ def trend_table(seasonal: pd.DataFrame) -> pd.DataFrame:
 
 
 # ---------------------------------------------------------------- correlations
-def _wide(seasonal: pd.DataFrame, lake: str) -> pd.DataFrame:
-    """Season means for one lake, one column per variable. Uses the registry (NASA) source,
-    or the practice source for the practice lake; model-training-track rows are left out."""
+class AnalysisSourceError(ValueError):
+    pass
+
+
+def _analysis_rows(seasonal: pd.DataFrame, lake: str) -> pd.DataFrame:
+    """The one series per variable that the analysis uses for a lake.
+
+    - Variables in V.ANALYSIS_TIER use the rows with that tier (land cover: the land-cover-ca
+      model); more than one source with that tier stops the analysis (fail closed).
+    - Other variables use the registry source, or the practice source for the practice lake.
+    - Series listed in V.EXCLUDED_FROM_ANALYSIS are never used.
+    """
     s = seasonal[seasonal["lake"] == lake]
-    s = s[s.apply(lambda r: r["source"] in (V.get(r["variable"]).source, V.SOURCE_PRACTICE), axis=1)]
-    return s.pivot_table(index="year", columns="variable", values="value")
+    keep = []
+    for var_id, g in s.groupby("variable"):
+        tier = V.ANALYSIS_TIER.get(var_id)
+        if tier and lake != "practice_lake":
+            g = g[g["tier"] == tier]
+            if g["source"].nunique() > 1:
+                raise AnalysisSourceError(f"{lake}/{var_id}: more than one '{tier}' source: {sorted(g['source'].unique())}")
+        else:
+            g = g[g["source"].isin([V.get(var_id).source, V.SOURCE_PRACTICE])]
+        # Row mask as a Series: an empty Python list would select columns, not rows.
+        g = g.loc[g["source"].map(lambda src: V.excluded_reason(var_id, src) is None).astype(bool)]
+        keep.append(g)
+    return pd.concat(keep) if keep else s.iloc[0:0]
+
+
+def analysis_sources(seasonal: pd.DataFrame, lake: str) -> dict:
+    """{variable: source} actually used for this lake (for the page and the record)."""
+    r = _analysis_rows(seasonal, lake)
+    return {v: g["source"].iloc[0] for v, g in r.groupby("variable")}
+
+
+def _wide(seasonal: pd.DataFrame, lake: str) -> pd.DataFrame:
+    """Season means for one lake, one column per variable, from the analysis series."""
+    return _analysis_rows(seasonal, lake).pivot_table(index="year", columns="variable", values="value")
 
 
 def _strength(r: float) -> str:

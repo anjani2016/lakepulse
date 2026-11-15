@@ -1,0 +1,16 @@
+model,probe,mean_iou,pixel_accuracy
+Fine-tune v1,Cloudy scene (91% cloud),0.1353,0.4874
+Fine-tune v1,Winter scene (7 Mar 2020),0.0478,0.2221
+Fine-tune v1,Catchment edge (60% inside),0.2534,0.814
+Fine-tune v1,Mostly water (96.5%),0.3743,0.9842
+Fine-tune v1,"Half water, half shore",0.4616,0.9051
+Fine-tune v2,Cloudy scene (91% cloud),0.1819,0.5793
+Fine-tune v2,Winter scene (7 Mar 2020),0.0465,0.2405
+Fine-tune v2,Catchment edge (60% inside),0.314,0.8413
+Fine-tune v2,Mostly water (96.5%),0.3627,0.9833
+Fine-tune v2,"Half water, half shore",0.4929,0.9175
+"Fine-tune v2, class-weighted",Cloudy scene (91% cloud),0.2117,0.6898
+"Fine-tune v2, class-weighted",Winter scene (7 Mar 2020),0.0484,0.2398
+"Fine-tune v2, class-weighted",Catchment edge (60% inside),0.3211,0.8242
+"Fine-tune v2, class-weighted",Mostly water (96.5%),0.386,0.9844
+"Fine-tune v2, class-weighted","Half water, half shore",0.4875,0.9111

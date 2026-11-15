@@ -42,6 +42,38 @@ MOD11_ACCURACY = {
 }
 
 
+# Land cover: two sources disagree; decision recorded 2026-11-14 (owner: "we use the guideline
+# and our own assessment and exclude it for analysis"; "we choose one and say why").
+LANDCOVER_NOTES = (
+    "Two maps, both made from satellite images. MODIS land cover (MCD12Q1) is NASA's standard "
+    "yearly map at 500 m. land-cover-ca is this project's own map at 30 m: the Prithvi-EO-2.0 "
+    "foundation model (released under Apache-2.0; its model card says it was \"jointly "
+    "developed by IBM, NASA, and Jülich Supercomputing Centre\" and pretrained on NASA's HLS "
+    "imagery) fine-tuned by this project on Sentinel-2 summer images to reproduce the 2020 Land "
+    "Cover of Canada map. Prithvi on its own does not label land cover; the labels come from "
+    "that training.",
+    "Two sources disagree on how much of the land is forest, cropland and built-up. Over the "
+    "same area (the 6,962 km² box around the catchment, 2020), MODIS shows forest 7.2%, "
+    "cropland 35.0% and built-up 3.0%; the land-cover-ca model shows 31.6%, 48.8% and 14.3%.",
+    "Different areas on this page: the MODIS series covers that box; the land-cover-ca series "
+    "covers the six watershed units used as the lake's catchment (3,383 km²), where in 2020 it shows "
+    "29.7%, 49.6% and 14.4%.",
+    "Why: MODIS sorts each 500 m square into one class. It calls land forest only above 60% "
+    "tree cover and urban only above 30% paved surface (MCD12 User Guide V6.1, Table 3, p. 9). "
+    "Around Lake Simcoe, farm fields, woodlots and small towns are mixed together at a finer "
+    "scale, so MODIS puts 48.4% of the land into in-between classes (woody savanna, savanna, "
+    "cropland/natural-vegetation mosaic) that count as neither forest nor cropland, and most "
+    "built-up land falls below its 30% threshold.",
+    "What we use: the 30 m land-cover-ca model for how much of each kind of land there is. It "
+    "sees fields, woodlots and towns at their own scale and stays close to the 2020 Land Cover "
+    "of Canada map it was trained on. That map is 86.9% accurate by its own assessment, so the "
+    "model is not ground truth either.",
+    "Neither source is used for trends. MODIS: its user guide (V6.1, p. 3) warns against "
+    "reading land-cover change from its yearly labels, and we agree with that warning. The "
+    "model: 9 years (2017 to 2025), fewer than the 10 this project needs to test a trend.",
+)
+
+
 @dataclass(frozen=True)
 class Variable:
     id: str
@@ -206,10 +238,7 @@ VARIABLES: dict[str, Variable] = {
             "yearly",
             "The percentage of land around the lake that a satellite classifies as forest each year.",
             None,
-            (
-                "The MCD12 User Guide V6.1 (p. 3) warns against using this product to detect "
-                "land-cover change: label uncertainty in any one year is too high.",
-            ),
+            LANDCOVER_NOTES,
             role="landscape",
         ),
         Variable(
@@ -222,10 +251,7 @@ VARIABLES: dict[str, Variable] = {
             "yearly",
             "The percentage of land around the lake that a satellite classifies as farm fields each year.",
             None,
-            (
-                "The MCD12 User Guide V6.1 (p. 3) warns against using this product to detect "
-                "land-cover change: label uncertainty in any one year is too high.",
-            ),
+            LANDCOVER_NOTES,
             role="landscape",
         ),
         Variable(
@@ -239,10 +265,7 @@ VARIABLES: dict[str, Variable] = {
             "The percentage of land around the lake that a satellite classifies as built-up "
             "(towns, roads, buildings) each year.",
             None,
-            (
-                "The MCD12 User Guide V6.1 (p. 3) warns against using this product to detect "
-                "land-cover change: label uncertainty in any one year is too high.",
-            ),
+            LANDCOVER_NOTES,
             role="landscape",
         ),
         Variable(
@@ -342,3 +365,29 @@ def get(variable_id: str) -> Variable:
         return VARIABLES[variable_id]
     except KeyError as exc:
         raise KeyError(f"unknown variable '{variable_id}'") from exc
+
+
+# ---------------------------------------------------------------- analysis source choice
+EXCLUDED_REASON_MCD12 = (
+    "The MODIS land-cover user guide (MCD12 V6.1, p. 3) warns against "
+    "reading land-cover change from its yearly labels, and our own check agrees: at 500 m it "
+    "places 48.4% of this catchment's land in in-between classes. Shown for comparison only."
+)
+# (variable, source) pairs left out of trend verdicts and correlations, with the reason shown.
+EXCLUDED_FROM_ANALYSIS = {
+    ("forest_share", SOURCE_MCD12): EXCLUDED_REASON_MCD12,
+    ("cropland_share", SOURCE_MCD12): EXCLUDED_REASON_MCD12,
+    ("urban_share", SOURCE_MCD12): EXCLUDED_REASON_MCD12,
+}
+# Variables whose analysis series is chosen by tier rather than the registry source.
+# The land-cover-ca source name changes with model versions, so it is matched by tier;
+# more than one source with that tier for a lake stops the analysis (fail closed).
+ANALYSIS_TIER = {
+    "forest_share": TIER_ML,
+    "cropland_share": TIER_ML,
+    "urban_share": TIER_ML,
+}
+
+
+def excluded_reason(variable_id: str, source: str) -> str | None:
+    return EXCLUDED_FROM_ANALYSIS.get((variable_id, source))

@@ -3678,14 +3678,23 @@ simcoe_on,cropland_share,2014-01-01,32.96,%,MODIS MCD12Q1.061 land cover (AppEEA
 simcoe_on,cropland_share,2015-01-01,31.64,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
 simcoe_on,cropland_share,2016-01-01,31.64,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
 simcoe_on,cropland_share,2017-01-01,31.33,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,cropland_share,2017-01-01,50.506,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,cropland_share,2018-01-01,34.64,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,cropland_share,2018-01-01,50.169,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,cropland_share,2019-01-01,36.56,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,cropland_share,2019-01-01,49.271,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,cropland_share,2020-01-01,35.02,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,cropland_share,2020-01-01,49.553,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,cropland_share,2021-01-01,32.29,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,cropland_share,2021-01-01,48.912,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,cropland_share,2022-01-01,33.45,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,cropland_share,2022-01-01,50.73,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,cropland_share,2023-01-01,33.77,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,cropland_share,2023-01-01,49.784,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,cropland_share,2024-01-01,33.48,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,cropland_share,2024-01-01,48.663,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,cropland_share,2025-01-01,34.05,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,cropland_share,2025-01-01,50.886,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,forest_share,2001-01-01,7.5,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
 simcoe_on,forest_share,2002-01-01,7.76,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
 simcoe_on,forest_share,2003-01-01,5.93,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
@@ -3703,14 +3712,23 @@ simcoe_on,forest_share,2014-01-01,7.39,%,MODIS MCD12Q1.061 land cover (AppEEARS)
 simcoe_on,forest_share,2015-01-01,7.49,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
 simcoe_on,forest_share,2016-01-01,7.5,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
 simcoe_on,forest_share,2017-01-01,7.64,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,forest_share,2017-01-01,29.174,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,forest_share,2018-01-01,7.62,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,forest_share,2018-01-01,30.239,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,forest_share,2019-01-01,6.9,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,forest_share,2019-01-01,30.314,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,forest_share,2020-01-01,7.22,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,forest_share,2020-01-01,29.738,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,forest_share,2021-01-01,7.68,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,forest_share,2021-01-01,30.354,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,forest_share,2022-01-01,8.42,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,forest_share,2022-01-01,30.066,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,forest_share,2023-01-01,8.86,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,forest_share,2023-01-01,30.726,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,forest_share,2024-01-01,10.21,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,forest_share,2024-01-01,31.505,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,forest_share,2025-01-01,9.24,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,forest_share,2025-01-01,29.445,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,lake_minus_air,2000-03-01,-2.339,°C,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model)
 simcoe_on,lake_minus_air,2000-04-01,-0.14,°C,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model)
 simcoe_on,lake_minus_air,2000-05-01,-1.962,°C,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model)
@@ -7048,14 +7066,23 @@ simcoe_on,urban_share,2014-01-01,2.78,%,MODIS MCD12Q1.061 land cover (AppEEARS),
 simcoe_on,urban_share,2015-01-01,2.83,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
 simcoe_on,urban_share,2016-01-01,2.88,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
 simcoe_on,urban_share,2017-01-01,2.92,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,urban_share,2017-01-01,14.342,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,urban_share,2018-01-01,2.94,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,urban_share,2018-01-01,14.236,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,urban_share,2019-01-01,2.95,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,urban_share,2019-01-01,14.177,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,urban_share,2020-01-01,2.96,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,urban_share,2020-01-01,14.368,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,urban_share,2021-01-01,3.0,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,urban_share,2021-01-01,14.657,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,urban_share,2022-01-01,3.01,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,urban_share,2022-01-01,14.919,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,urban_share,2023-01-01,3.01,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,urban_share,2023-01-01,14.453,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,urban_share,2024-01-01,3.07,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,urban_share,2024-01-01,14.27,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,urban_share,2025-01-01,3.07,%,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived
+simcoe_on,urban_share,2025-01-01,14.695,%,"land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",Modeled (Machine learning)
 simcoe_on,wind_speed,2000-01-01,7.6881,m/s,MERRA-2 M2TMNXFLX 5.12.4 (GES DISC),Modeled (Simulation)
 simcoe_on,wind_speed,2000-02-01,7.595,m/s,MERRA-2 M2TMNXFLX 5.12.4 (GES DISC),Modeled (Simulation)
 simcoe_on,wind_speed,2000-03-01,6.857,m/s,MERRA-2 M2TMNXFLX 5.12.4 (GES DISC),Modeled (Simulation)

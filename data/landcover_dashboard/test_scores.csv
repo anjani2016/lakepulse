@@ -1,0 +1,11 @@
+model,kind,area,mean_iou,pixel_accuracy,forest,cropland,built_up,water,wetland,other
+"Fine-tune v2, class-weighted",Fine-tune,Whole test block,0.5145,0.8392,0.655,0.801,0.5727,0.9044,0.0846,0.069
+"Fine-tune v2, class-weighted",Fine-tune,30 m strip,0.404,0.7598,0.5959,0.7408,0.4204,0.5138,0.0991,0.0542
+Fine-tune v2,Fine-tune,Whole test block,0.4983,0.841,0.6631,0.7996,0.5692,0.9067,0.0114,0.0397
+Fine-tune v2,Fine-tune,30 m strip,0.386,0.7641,0.5995,0.7392,0.42,0.5207,0.011,0.0257
+Fine-tune v1,Fine-tune,Whole test block,0.4724,0.821,0.6253,0.7777,0.4975,0.886,0.0,0.0478
+Fine-tune v1,Fine-tune,30 m strip,0.3558,0.7409,0.5604,0.719,0.3534,0.4633,0.0,0.0389
+Gradient boosting,Baseline,Whole test block,0.4794,0.8143,0.6269,0.7539,0.5244,0.888,0.0302,0.053
+Gradient boosting,Baseline,30 m strip,0.3684,0.7337,0.5649,0.6853,0.4005,0.5066,0.0164,0.0366
+Always forest,Baseline,Whole test block,0.0293,0.1756,0.1756,0.0,0.0,0.0,0.0,0.0
+Always forest,Baseline,30 m strip,0.0384,0.2304,0.2304,0.0,0.0,0.0,0.0,0.0

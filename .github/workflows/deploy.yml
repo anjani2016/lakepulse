@@ -57,8 +57,10 @@ jobs:
           curl -fsS http://127.0.0.1:8080/ | grep -q "Lake Trend Detective"
           curl -fsS -o /dev/null http://127.0.0.1:8080/site_data.js
           curl -fsS -o /dev/null http://127.0.0.1:8080/assets/logo-header.png
+          curl -fsS http://127.0.0.1:8080/landcover.html | grep -q "Land cover around Lake Simcoe"
+          for p in /landcover-data.js /landcover-runtime.js /vendor/d3-7.9.0.min.js; do curl -fsS -o /dev/null "http://127.0.0.1:8080$p"; done
           # Nothing outside web/ may be served (incl. nginx's own sample pages).
-          for p in /Dockerfile /deploy/nginx.conf /50x.html /index.nginx-debian.html /data/lake_trend_table.csv; do
+          for p in /Dockerfile /deploy/nginx.conf /50x.html /index.nginx-debian.html /data/lake_trend_table.csv /data/landcover_dashboard/manifest.json; do
             code=$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:8080$p")
             echo "$p -> $code"; test "$code" = "404"
           done

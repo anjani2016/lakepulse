@@ -127,6 +127,7 @@ def main() -> None:
         "series": series,
         "correlations": _clean(corr.to_dict(orient="records")),
         "drift": _clean(drift),
+        "analysis_sources": {lake: analysis.analysis_sources(seasonal, lake) for lake in sorted(table["lake"].unique())},
         "demos": pick_demos(trends),
     }
     js = "window.SITE_DATA = " + json.dumps(_clean(site), ensure_ascii=False) + ";\n"
