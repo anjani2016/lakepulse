@@ -150,6 +150,14 @@ table.trendtable th { text-align: left; font-size: .8rem; color: var(--muted); p
 .pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: .78rem; font-weight: 600; }
 .pill.sig { background: var(--ok-soft); color: var(--ok); }
 .pill.non { background: var(--no-soft); color: var(--no); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.purpose { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-top: 12px; }
+.purpose > div { border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 8px; padding: 8px 12px; font-size: .92rem; }
+.purpose .k { display: block; font-size: .72rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--accent); }
+table.lcscore th { text-align: left; font-size: .8rem; color: var(--muted); padding: 6px 4px; }
+table.lcscore td { width: auto !important; font-size: .9rem; }
+table.lcscore td:first-child { color: var(--ink); font-weight: 600; width: 26% !important; }
+table.lcscore td:last-child { white-space: nowrap; }
 .model-labels { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
 .linkrow { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
 a.btnlink { display: inline-block; padding: 8px 14px; border-radius: 8px; background: var(--accent); color: var(--panel); text-decoration: none; font-weight: 600; font-size: .92rem; border: 1px solid var(--accent); }
@@ -305,6 +313,17 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
       <h2>Why we trained a model</h2>
       <p>To ask whether the land around the lake affects it, we need to know how much of the catchment is forest, cropland and built-up. The obvious source, MODIS land cover, maps the land in 500 m cells, and its user guide warns against reading change from it. Runoff enters the lake through a narrow strip along the shoreline and streams, far finer than 500 m.</p>
       <p>So we fine-tuned <b>Prithvi-EO-2.0</b>, an Earth-observation foundation model from IBM, NASA and Jülich Supercomputing Centre, to draw a 30 m land-cover map from Sentinel-2 satellite imagery, and ran it on each summer from 2017 to 2025.</p>
+      <div class="purpose">
+        <div><span class="k">Purpose 1</span>Measure how much of the catchment is forest, cropland and built-up, every year.</div>
+        <div><span class="k">Purpose 2</span>Measure the land in the 30 m strip along the shoreline and streams, where runoff enters the lake.</div>
+        <div><span class="k">Purpose 3</span>Do it better than a simple classifier, on land the model never saw.</div>
+      </div>
+    </section>
+
+    <section class="panel" id="lcAchieved">
+      <h2>What we achieved</h2>
+      <p class="muted" style="font-size:.9rem;margin:0 0 10px">Scores are IoU (intersection over union): for each class, how much the model's map and the 2020 Land Cover of Canada map overlap; 1 means they match exactly, 0 not at all. Tested on a watershed held out of training entirely. Read from the land-cover track's result files.</p>
+      <div style="overflow-x:auto"><table class="nums lcscore" id="lcScore"></table></div>
     </section>
 
     <section class="panel">
@@ -344,6 +363,7 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
 </main>
 
 <script src="site_data.js"></script>
+<script src="landcover-data.js"></script>
 <script>
 (() => {
   const D = window.SITE_DATA;
@@ -638,6 +658,31 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
       <p>Claude Code (Anthropic) wrote the code, data pipelines, tests, this page and its text under the author's direction. Codex (OpenAI) reviewed the main changes; the logo was designed by our team member under 18 using Codex. The author chose the scope, variables and every analysis decision and approved commits and pushes; reviews were done by an AI agent, not line by line by a person.</p></div>
   </div>
   <div class="foot-bottom"><span>LakePulse · Lake Trend Detective</span><span>Results updated ${esc(D.generated)}</span></div>`;
+
+  // ---- land-cover model scorecard (read from the land-cover track's result tables)
+  (function lcScorecard() {
+    const T = (window.LC_DATA || {}).tables;
+    if (!T || !T.test_scores) { $("lcAchieved").hidden = true; return; }
+    const score = (model, area) => T.test_scores.rows.find(r => r.model === model && r.area === area) || {};
+    const ft = score("Fine-tune v2, class-weighted", "Whole test block"), gb = score("Gradient boosting", "Whole test block");
+    const ftS = score("Fine-tune v2, class-weighted", "30 m strip"), gbS = score("Gradient boosting", "30 m strip");
+    const n = (x, d = 2) => fmt(Number(x), d);
+    const share = (year, area, cls) => ((T.shares.rows.find(r => r.year === year && r.area === area && r.class === cls) || {}).share_pct);
+    const years = [...new Set(T.shares.rows.map(r => r.year))].sort();
+    const last = years[years.length - 1], first = years[0];
+    const units = (T.compute ? T.compute.rows.reduce((a, r) => a + Number(r.units), 0) : null);
+    const pill = s => `<span class="pill ${{ yes: "sig", part: "warn", no: "non" }[s]}">${{ yes: "Achieved", part: "Partly", no: "Not yet" }[s]}</span>`;
+    const rows = [
+      ["Beat a simple classifier on unseen land", `Mean IoU ${n(ft.mean_iou, 3)} against ${n(gb.mean_iou, 3)} for gradient boosting on the same test area; ${n(ftS.mean_iou, 3)} against ${n(gbS.mean_iou, 3)} in the 30 m strip.`, "yes"],
+      ["Map the classes LakePulse uses", `Water ${n(ft.water)}, cropland ${n(ft.cropland)}, forest ${n(ft.forest)}, built-up ${n(ft.built_up)}.`, "yes"],
+      ["Map every class", `Wetland ${n(ft.wetland)} and "other" ${n(ft.other)}: too rare in training to learn, so not used.`, "no"],
+      ["Yearly catchment shares (purpose 1)", `${first}–${last}: forest ${n(share(last, "Catchment", "forest"), 1)}%, cropland ${n(share(last, "Catchment", "cropland"), 1)}%, built-up ${n(share(last, "Catchment", "built_up"), 1)}% of land in ${last}. Shown in the explorer.`, "yes"],
+      ["Measure the 30 m runoff strip (purpose 2)", `In ${last} the strip was ${n(share(last, "30 m strip", "forest"), 1)}% forest and ${n(share(last, "30 m strip", "cropland"), 1)}% cropland, against ${n(share(last, "Catchment", "forest"), 1)}% and ${n(share(last, "Catchment", "cropland"), 1)}% for the whole catchment. On the training page; not yet in the explorer.`, "part"],
+      ["Test whether land cover is changing", `${years.length} years is fewer than the ${D.min_seasons} our trend test needs, so no trend is claimed yet.`, "no"],
+    ];
+    $("lcScore").innerHTML = `<tr><th>Goal</th><th>Result</th><th>Status</th></tr>` + rows.map(([g, r, s]) => `<tr><td>${esc(g)}</td><td>${esc(r)}</td><td>${pill(s)}</td></tr>`).join("") +
+      (units !== null ? `<tr><td>Compute used</td><td>${n(units)} Google Colab units, L4 and A100 GPUs.</td><td></td></tr>` : "");
+  })();
 
   // ---- methodology numbers, read from the data
   const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
