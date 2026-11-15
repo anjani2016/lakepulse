@@ -259,6 +259,58 @@ simcoe_on,air_temp_2m,MERRA-2 M2TMNXSLV 5.12.4 (GES DISC),Modeled (Simulation),�
 simcoe_on,air_temp_2m,MERRA-2 M2TMNXSLV 5.12.4 (GES DISC),Modeled (Simulation),°C,2023,17.346533333333333,6.0
 simcoe_on,air_temp_2m,MERRA-2 M2TMNXSLV 5.12.4 (GES DISC),Modeled (Simulation),°C,2024,18.164550000000002,6.0
 simcoe_on,air_temp_2m,MERRA-2 M2TMNXSLV 5.12.4 (GES DISC),Modeled (Simulation),°C,2025,17.683716666666665,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2000,0.21736666666666668,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2001,0.20855,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2002,0.23601666666666665,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2003,0.21505,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2004,0.1991666666666667,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2005,0.21431666666666668,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2006,0.19956666666666667,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2007,0.21176666666666666,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2008,0.18106666666666668,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2009,0.1798833333333333,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2010,0.16971666666666665,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2011,0.1950333333333333,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2012,0.19083333333333333,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2013,0.16735,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2014,0.1812,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2015,0.18736666666666668,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2016,0.13678333333333334,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2017,0.19486666666666666,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2018,0.1913,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2019,0.18013333333333334,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2020,0.18726666666666666,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2021,0.22366666666666668,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2022,0.1627333333333333,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2023,0.25706666666666667,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2024,0.20048333333333335,6.0
+simcoe_on,aod_model,MERRA-2 M2TMNXAER 5.12.4 (GES DISC),Modeled (Simulation),unitless,2025,0.20961666666666667,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2000,0.17816666666666667,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2001,0.17466666666666666,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2002,0.2643333333333333,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2003,0.21133333333333335,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2004,0.17333333333333334,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2005,0.25016666666666665,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2006,0.20133333333333334,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2007,0.25233333333333335,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2008,0.18283333333333332,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2009,0.19416666666666668,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2010,0.17016666666666666,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2011,0.18433333333333335,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2012,0.20316666666666663,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2013,0.15283333333333335,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2014,0.20033333333333334,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2015,0.20716666666666664,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2016,0.13683333333333333,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2017,0.21316666666666664,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2018,0.214,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2019,0.20833333333333334,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2020,0.1755,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2021,0.23916666666666667,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2022,0.12483333333333334,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2023,0.36399999999999993,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2024,0.19616666666666668,6.0
+simcoe_on,aod_satellite,MODIS Terra MOD08_M3 6.1 aerosol (LAADS DAAC),Satellite-derived,unitless,2025,0.23616666666666666,6.0
 simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2001,16.33,
 simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2002,21.05,
 simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2003,28.89,
@@ -465,6 +517,21 @@ simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (
 simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2023,0.6920333333333333,6.0
 simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2024,0.6985333333333333,6.0
 simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2025,0.6676166666666666,6.0
+simcoe_on,no2_trop_column,OMI/Aura OMNO2d 004 (v5.0) daily NO2 (GES DISC),Satellite-derived,10^15 molecules/cm²,2005,3.1919333333333335,6.0
+simcoe_on,no2_trop_column,OMI/Aura OMNO2d 004 (v5.0) daily NO2 (GES DISC),Satellite-derived,10^15 molecules/cm²,2006,2.2671,6.0
+simcoe_on,no2_trop_column,OMI/Aura OMNO2d 004 (v5.0) daily NO2 (GES DISC),Satellite-derived,10^15 molecules/cm²,2007,2.8906833333333335,6.0
+simcoe_on,no2_trop_column,OMI/Aura OMNO2d 004 (v5.0) daily NO2 (GES DISC),Satellite-derived,10^15 molecules/cm²,2008,2.002083333333333,6.0
+simcoe_on,no2_trop_column,OMI/Aura OMNO2d 004 (v5.0) daily NO2 (GES DISC),Satellite-derived,10^15 molecules/cm²,2010,1.9357333333333333,6.0
+simcoe_on,no2_trop_column,OMI/Aura OMNO2d 004 (v5.0) daily NO2 (GES DISC),Satellite-derived,10^15 molecules/cm²,2011,1.9295833333333334,6.0
+simcoe_on,no2_trop_column,OMI/Aura OMNO2d 004 (v5.0) daily NO2 (GES DISC),Satellite-derived,10^15 molecules/cm²,2012,2.45765,6.0
+simcoe_on,no2_trop_column,OMI/Aura OMNO2d 004 (v5.0) daily NO2 (GES DISC),Satellite-derived,10^15 molecules/cm²,2013,2.040383333333333,6.0
+simcoe_on,no2_trop_column,OMI/Aura OMNO2d 004 (v5.0) daily NO2 (GES DISC),Satellite-derived,10^15 molecules/cm²,2015,2.2362333333333333,6.0
+simcoe_on,no2_trop_column,OMI/Aura OMNO2d 004 (v5.0) daily NO2 (GES DISC),Satellite-derived,10^15 molecules/cm²,2016,2.1698333333333335,6.0
+simcoe_on,no2_trop_column,OMI/Aura OMNO2d 004 (v5.0) daily NO2 (GES DISC),Satellite-derived,10^15 molecules/cm²,2017,2.4240666666666666,6.0
+simcoe_on,no2_trop_column,OMI/Aura OMNO2d 004 (v5.0) daily NO2 (GES DISC),Satellite-derived,10^15 molecules/cm²,2020,1.513366666666667,6.0
+simcoe_on,no2_trop_column,OMI/Aura OMNO2d 004 (v5.0) daily NO2 (GES DISC),Satellite-derived,10^15 molecules/cm²,2022,2.1108666666666664,6.0
+simcoe_on,no2_trop_column,OMI/Aura OMNO2d 004 (v5.0) daily NO2 (GES DISC),Satellite-derived,10^15 molecules/cm²,2024,2.228666666666667,6.0
+simcoe_on,no2_trop_column,OMI/Aura OMNO2d 004 (v5.0) daily NO2 (GES DISC),Satellite-derived,10^15 molecules/cm²,2025,2.2257666666666664,6.0
 simcoe_on,precipitation,GPM IMERG Final GPM_3IMERGM V07 (GES DISC),Satellite-derived,mm/month,2000,102.2,6.0
 simcoe_on,precipitation,GPM IMERG Final GPM_3IMERGM V07 (GES DISC),Satellite-derived,mm/month,2001,83.97666666666667,6.0
 simcoe_on,precipitation,GPM IMERG Final GPM_3IMERGM V07 (GES DISC),Satellite-derived,mm/month,2002,76.00166666666667,6.0

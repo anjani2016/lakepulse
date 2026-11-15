@@ -23,8 +23,17 @@ from lakepulse import analysis, schema  # noqa: E402
 
 
 def main() -> None:
+    import argparse
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--skip-external", action="store_true",
+                    help="leave out data/external/ (model-training track rows); says so in the output")
+    args = ap.parse_args()
+    folders = ("processed", "practice") if args.skip_external else ("processed", "external", "practice")
+    if args.skip_external:
+        print("NOTE: data/external/ left out on request (--skip-external)")
     parts = []
-    for folder in ("processed", "external", "practice"):
+    for folder in folders:
         for f in sorted((ROOT / "data" / folder).glob("*.csv")):
             df = schema.read(f)
             parts.append(df)
