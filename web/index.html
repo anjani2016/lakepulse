@@ -53,6 +53,12 @@ ul.facts { margin: 10px 0 0; padding-left: 20px; color: var(--muted); font-size:
 .banner { background: var(--warn-soft); color: var(--warn); border-radius: 10px; padding: 10px 12px; font-weight: 600; margin-bottom: 16px; }
 .chart-wrap { width: 100%; overflow: hidden; }
 .zoom-block { margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--line); }
+.zoom-row { display: grid; grid-template-columns: minmax(0, 1fr) 210px; gap: 14px; align-items: center; }
+@media (max-width: 760px) { .zoom-row { grid-template-columns: 1fr; } }
+.zoom-stats { display: grid; gap: 10px; font-size: .88rem; background: var(--accent-soft); border-radius: 10px; padding: 12px 14px; }
+.zoom-stats .k { display: block; font-size: .7rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.zoom-stats .zs-rate { color: var(--muted); }
+.zoom-stats .zs-big { display: block; font-size: 1.9rem; font-weight: 700; color: var(--trend); line-height: 1.1; }
 svg text.trend-label { fill: var(--trend); font-weight: 700; }
 svg text { fill: var(--muted); font-size: 13px; }
 @media (max-width: 640px) { svg text { font-size: 22px; } }
@@ -199,7 +205,7 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
     <section class="panel keyres" id="keyPanel">
       <h2>Key result</h2>
       <div id="keyResult" class="keylist"></div>
-      <button data-goto="explore">See it on the chart →</button>
+      <button id="seeChart">See it on the chart →</button>
       <button class="secondary" data-goto="analysis">Every variable's result →</button>
     </section>
 
@@ -268,7 +274,11 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
             <div id="zoomWrap" class="zoom-block" hidden>
               <h3 style="margin:0 0 2px">Zoomed in: open-water season averages and trend</h3>
               <p class="muted" id="zoomNote" style="margin:0 0 6px;font-size:.9rem"></p>
-              <div class="chart-wrap"><svg id="chartZoom" role="img" aria-label="Season averages and trend line, zoomed in" width="100%" viewBox="0 0 900 400" preserveAspectRatio="xMidYMid meet"></svg></div>
+              <div class="zoom-row">
+                <div class="chart-wrap"><svg id="chartZoom" role="img" aria-label="Season averages and trend line, zoomed in" width="100%" viewBox="0 0 900 400" preserveAspectRatio="xMidYMid meet"></svg></div>
+                <div class="zoom-stats" id="zoomStats"></div>
+              </div>
+              <div class="legend"><span><i style="background:var(--dots)"></i>season average, year to year</span><span><i style="background:var(--trend)"></i>trend line (Sen's slope)</span><span><i style="background:var(--trend);opacity:.25;height:10px"></i>95% range of the trend</span></div>
             </div>
             <p class="definition" id="varDefinition"></p>
             <ul class="notes" id="varNotes"></ul>
@@ -439,7 +449,7 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
     return { a, b, ticks, dec: Math.max(0, -Math.floor(Math.log10(step) + 1e-9)) + (step / mag === 2.5 ? 1 : 0) };
   }
   // Draws one panel. line = monthly points (may be empty); yFrom = the points that set the y-axis range.
-  function plot(svg, H, line, season, trendLine, spec, tr, yFrom, label) {
+  function plot(svg, H, line, season, trendLine, spec, tr, yFrom, label, opts = {}) {
     const W = 900, L = 58, R = label ? 150 : 16, T = 16, B = 36;
     const xs = line.map(p => p[0]).concat(season.map(p => p[0]));
     if (!xs.length) { svg.innerHTML = ""; return; }
@@ -462,6 +472,14 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
       let path = "", prev = null;
       for (const [x, y] of line) { path += (prev !== null && x - prev > 0.1) ? `M${sx(x)},${sy(y)}` : (path ? `L${sx(x)},${sy(y)}` : `M${sx(x)},${sy(y)}`); prev = x; }
       g += `<path d="${path}" fill="none" stroke="var(--month)" stroke-width="1.2"/>`;
+    }
+    // 95% range of the trend: lines at the low and high slopes, pivoting where the trend crosses the middle year (a bow-tie band).
+    if (opts.band) g += `<polygon points="${opts.band.map(([x, y]) => `${sx(x)},${sy(y)}`).join(" ")}" fill="var(--trend)" fill-opacity="0.13" stroke="none"/>`;
+    // Join the season averages year to year; skip the join across a missing year.
+    if (opts.connect && season.length > 1) {
+      let path = "", prev = null;
+      for (const [x, y] of season) { path += (prev === null || x - prev > 1.5) ? `M${sx(x)},${sy(y)}` : `L${sx(x)},${sy(y)}`; prev = x; }
+      g += `<path d="${path}" fill="none" stroke="var(--dots)" stroke-width="2" stroke-linejoin="round"/>`;
     }
     const r = H > 360 ? 5 : 4;
     for (const [x, y] of season) g += `<circle cx="${sx(x)}" cy="${sy(y)}" r="${r}" fill="var(--dots)"><title>${Math.floor(x)}: ${fmt(y, 2)} ${esc(spec.unit)}</title></circle>`;
@@ -493,8 +511,21 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
     const zoom = monthly && season.length > 1;
     $("zoomWrap").hidden = !zoom;
     if (zoom) {
-      const zy = season.map(p => p[1]).concat(tys);
-      plot($("chartZoom"), 400, [], season, trendLine, spec, tr, zy, label);
+      let band = null;
+      if (trendLine && tr.ci_low_per_decade !== null && tr.ci_high_per_decade !== null) {
+        const [[xa, ya], [xb, yb]] = trendLine, xm = (xa + xb) / 2, ym = (ya + yb) / 2;
+        const lo = tr.ci_low_per_decade / 10, hi = tr.ci_high_per_decade / 10;
+        band = [[xa, ym + lo * (xa - xm)], [xb, ym + lo * (xb - xm)], [xb, ym + hi * (xb - xm)], [xa, ym + hi * (xa - xm)]];
+      }
+      const zy = season.map(p => p[1]).concat(tys, band ? band.map(p => p[1]) : []);
+      plot($("chartZoom"), 400, [], season, trendLine, spec, tr, zy, label, { connect: true, band });
+      const u = esc(spec.unit);
+      $("zoomStats").innerHTML = tr && tr.status === "ok" ? `
+        <div class="zs-rate"><span class="zs-big">${tr.slope_per_decade >= 0 ? "+" : "−"}${fmt(Math.abs(tr.slope_per_decade), 2)}</span> ${u} per decade</div>
+        <div><span class="k">95% range</span>${fmt(tr.ci_low_per_decade, 2)} to ${fmt(tr.ci_high_per_decade, 2)} ${u} per decade</div>
+        <div><span class="k">Mann-Kendall p</span>${fmtP(tr.mann_kendall_p)}: ${tr.significant ? "significant" : "not significant"}</div>
+        <div><span class="k">Change along the trend</span>${change >= 0 ? "+" : "−"}${fmt(Math.abs(change), cdec)} ${u}, ${tr.first_year}–${tr.last_year}</div>` : "";
+      $("zoomStats").hidden = !(tr && tr.status === "ok");
       $("zoomNote").textContent = `Same dots and trend line as above, with the y-axis covering only ${fmt(Math.min(...zy), 1)} to ${fmt(Math.max(...zy), 1)} ${spec.unit} instead of the full summer-to-winter swing.`;
     }
     const what = monthly ? "open-water season (May–Oct) average" : "yearly value";
@@ -786,6 +817,12 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
   $("trendTable").addEventListener("keydown", e => { const tr = e.target.closest("tr.go"); if (tr && e.key === "Enter") openRow(tr); });
   renderAnalysis();
   showTab(location.hash.slice(1));
+  // "See it on the chart": the key result's own series, scrolled to the zoomed season-average chart.
+  $("seeChart").addEventListener("click", () => {
+    if ((D.series.simcoe_on || {}).lake_skin_temp_night) select("simcoe_on", "lake_skin_temp_night");
+    showTab("explore");
+    requestAnimationFrame(() => ($("zoomWrap").hidden ? $("chart") : $("zoomWrap")).scrollIntoView({ behavior: "smooth", block: "start" }));
+  });
 })();
 </script>
 </body>
