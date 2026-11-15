@@ -132,4 +132,4 @@ uploaded by the owner on 2026-11-14 as a **private** repository (Hub commit `2f8
 safetensors with every tensor checked equal (`cr-geo-models/scripts/ml7_convert_safetensors.py`): 648,862,096 bytes,
 SHA-256 `9f2b3656a0fd5d97b0d763e8182793e36a069c0d54c39e7ed5d980d9fc857135`, which equals the Hub's LFS checksum; the
 seven small files downloaded back pass `shasum -a 256 -c`. Card and NOTICE: `landcover/hf/land-cover-ca/`.
-Licence Apache-2.0, following `burn-scar-ca` [verify: owner confirms before making the repository public].
+Licence Apache-2.0, following `burn-scar-ca`; owner, 2026-11-14: "confirmed".
