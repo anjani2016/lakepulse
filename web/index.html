@@ -69,15 +69,96 @@ button.secondary { background: transparent; color: var(--accent); }
 .demo-box { margin-top: 12px; border-left: 4px solid var(--accent); padding: 8px 12px; background: var(--accent-soft); border-radius: 0 8px 8px 0; display: none; }
 .demo-box .step { font-size: .8rem; color: var(--muted); }
 .corr p { margin: 0 0 8px; font-size: .94rem; }
-dl.glossary dt { font-weight: 600; margin-top: 10px; }
-dl.glossary dd { margin: 2px 0 0; color: var(--muted); }
+.gl-wrap { overflow-x: auto; }
+table.gl { width: 100%; border-collapse: collapse; font-size: .88rem; min-width: 760px; }
+table.gl th { text-align: left; font-size: .76rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); padding: 8px 8px; border-bottom: 2px solid var(--line); }
+table.gl td { padding: 9px 8px; border-top: 1px solid var(--line); vertical-align: top; }
+table.gl td:nth-child(1) { width: 19%; }
+table.gl td:nth-child(2) { width: 37%; }
+table.gl td.prod { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .78rem; color: var(--muted); }
+table.gl tr.grp td { background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; padding: 6px 8px; }
+table.gl tbody tr:not(.grp):hover td { background: var(--bg); }
+.tier { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: .74rem; font-weight: 600; white-space: nowrap; }
+.tier.sat { background: var(--accent-soft); color: var(--accent); }
+.tier.model { background: var(--warn-soft); color: var(--warn); }
+.tier.derived { background: var(--no-soft); color: var(--no); }
 footer { color: var(--muted); font-size: .82rem; }
 .pairbox { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; }
 .pairbox .side { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 6px; }
 table.corrtable td { width: auto !important; font-size: .86rem; }
 table.corrtable td:first-child { color: var(--ink); }
+table.corrtable th { text-align: left; font-size: .78rem; color: var(--muted); padding: 6px 4px; }
+.cgroup { font-size: .98rem; margin: 18px 0 2px; display: flex; align-items: center; gap: 8px; }
+.cgroup .count { font-size: .74rem; background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 1px 8px; }
+.cnote { font-size: .86rem; margin: 0 0 6px; }
+table.corrtable td:nth-last-child(-n+2):not([colspan]) { min-width: 160px; }
+.hit { font-weight: 700; color: var(--ok); }
 .muted { color: var(--muted); }
 .flag { color: var(--warn); font-weight: 600; }
+/* Workspace: lake labels on the side, filters and chart in the main column */
+main { max-width: 1240px; }
+.workspace { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 860px) { .workspace { grid-template-columns: 1fr; } }
+.side-col { position: sticky; top: 16px; }
+@media (max-width: 860px) { .side-col { position: static; } }
+.lake-name { font-size: 1.05rem; font-weight: 700; margin: 0 0 8px; }
+.labels { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.labels li { border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px; font-size: .84rem; color: var(--ink); }
+.labels .k { display: block; font-size: .7rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--accent); margin-bottom: 1px; }
+.side-col h3 { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 14px 0 6px; }
+.pickers.three { grid-template-columns: 1.1fr 1.4fr 1.2fr; }
+@media (max-width: 640px) { .pickers.three { grid-template-columns: 1fr; } }
+.demo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; font-size: .88rem; }
+.demo-row button { padding: 5px 10px; font-size: .85rem; }
+.chart-block { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 12px; }
+.hypo { border-left: 4px solid var(--accent); }
+.hypo .q { font-size: 1.05rem; font-weight: 600; margin: 0 0 10px; }
+.ho-row { display: grid; grid-template-columns: 1.15fr 1fr; gap: 0 18px; padding: 10px 0; border-top: 1px solid var(--line); font-size: .94rem; }
+.ho-head { border-top: 0; padding-top: 0; }
+.ho-head h3 { margin: 0 0 2px; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--accent); }
+.ho-head span { font-size: .84rem; }
+.ho-n { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-size: .78rem; font-weight: 700; margin-right: 8px; }
+.ho-obs { border-left: 3px solid var(--line); padding-left: 12px; }
+.ho-k { font-size: .76rem; color: var(--muted); display: inline-block; min-width: 104px; }
+.ho-tag { display: none; }
+@media (max-width: 700px) {
+  .ho-row { grid-template-columns: 1fr; gap: 8px; }
+  .ho-head { display: none; }
+  .ho-tag { display: block; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--accent); margin-bottom: 2px; }
+}
+/* Tabs */
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 0 0 16px; overflow-x: auto; scrollbar-width: thin; }
+.tabs button { flex: none; background: transparent; color: var(--muted); border: 0; border-bottom: 3px solid transparent; border-radius: 0; padding: 10px 14px; font-weight: 600; font-size: .95rem; white-space: nowrap; }
+.tabs button:hover { color: var(--ink); }
+.tabs button[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); }
+.tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.keyres button { margin: 0 8px 6px 0; }
+.keylist .keyhead { font-size: 1.08rem; font-weight: 700; margin: 0 0 8px; }
+.keylist ul { margin: 0 0 14px; padding-left: 20px; display: grid; gap: 4px; }
+.keylist .k { display: inline-block; min-width: 150px; color: var(--muted); font-size: .88rem; }
+@media (max-width: 640px) { .keylist .k { display: block; min-width: 0; } }
+ol.steps { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+.row-between { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+table.trendtable td { width: auto !important; font-size: .88rem; white-space: nowrap; }
+table.trendtable td:first-child { white-space: normal; color: var(--ink); }
+table.trendtable tr.go { cursor: pointer; }
+table.trendtable tr.go:hover td { background: var(--accent-soft); }
+table.trendtable th { text-align: left; font-size: .8rem; color: var(--muted); padding: 6px 4px; }
+.pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: .78rem; font-weight: 600; }
+.pill.sig { background: var(--ok-soft); color: var(--ok); }
+.pill.non { background: var(--no-soft); color: var(--no); }
+.model-labels { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.linkrow { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+a.btnlink { display: inline-block; padding: 8px 14px; border-radius: 8px; background: var(--accent); color: var(--panel); text-decoration: none; font-weight: 600; font-size: .92rem; border: 1px solid var(--accent); }
+a.btnlink.secondary { background: transparent; color: var(--accent); }
+a { color: var(--accent); }
+/* Footer */
+footer.site { margin-top: 28px; padding: 20px 16px; }
+.foot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+.foot-grid h4 { margin: 0 0 6px; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ink); }
+.foot-grid p { margin: 0 0 6px; }
+.foot-bottom { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 10px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
 </style>
 </head>
 <body>
@@ -87,81 +168,172 @@ table.corrtable td:first-child { color: var(--ink); }
     <div class="brand-mark"><img src="assets/icon-mark-96.png" width="48" height="48" alt=""><span>LAKEPULSE</span></div>
   </div>
   <h1>Lake Trend Detective</h1>
-  <p class="lede">Pick a lake and a variable. See its long record, and find out whether it is really trending or just wiggling.</p>
+  <p class="lede">Is the lake really changing, or just wiggling? Long NASA records of one lake and its surroundings, put to a trend test.</p>
 
-  <section class="panel" id="keyPanel">
-    <h2>Key result, and what to keep in mind</h2>
-    <p id="keyResult" style="margin:0 0 10px"></p>
-    <ul class="notes" style="font-size:.92rem">
-      <li>The satellite's daytime pass has drifted earlier over the years, so daytime lake temperatures can shift for that reason alone; the night-time series is the safer one.</li>
-      <li>MODIS measures the water's top skin, not the water column.</li>
-      <li>Rain, greenness, haze, NO₂ and MODIS land cover cover a box around the catchment about twice the catchment's area, not the exact catchment.</li>
-      <li>Two land-cover maps disagree; MODIS land cover is not used for the analysis (its guide warns against reading change from it), and the 30 m model's 9-year record is too short to test a trend. <a href="landcover.html" style="color:var(--accent)">How the 30 m model was trained and tested →</a></li>
-      <li>Weather values come from a computer model, and every value is regional, not a reading at the lake. Links between variables are associations; one lake cannot establish cause.</li>
-    </ul>
-  </section>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" id="tab-results" aria-controls="panel-results" data-tab="results">Hypothesis &amp; key result</button>
+    <button role="tab" id="tab-method" aria-controls="panel-method" data-tab="method">Methodology</button>
+    <button role="tab" id="tab-explore" aria-controls="panel-explore" data-tab="explore">Visualise &amp; explore</button>
+    <button role="tab" id="tab-analysis" aria-controls="panel-analysis" data-tab="analysis">Detailed analysis</button>
+    <button role="tab" id="tab-models" aria-controls="panel-models" data-tab="models">Models &amp; training</button>
+  </nav>
 
-  <section class="panel">
-    <h2>Watch a demo first</h2>
-    <div class="demo-buttons" id="demoButtons"></div>
-    <div class="demo-box" id="demoBox" aria-live="polite">
-      <div class="step" id="demoStep"></div>
-      <p id="demoText" style="margin:4px 0 8px"></p>
-      <button class="secondary" id="demoNext">Next</button>
+  <!-- 1. Hypothesis and key result -->
+  <div class="tabpanel" role="tabpanel" id="panel-results" aria-labelledby="tab-results">
+    <section class="panel hypo" id="hypoPanel">
+      <h2>Hypothesis and observations</h2>
+      <p class="q">Is Lake Simcoe's surface water warming over the open-water season, and what moves with it?</p>
+      <div class="ho" id="hypoList" role="table" aria-label="Hypothesis and observations"></div>
+    </section>
+
+    <section class="panel keyres" id="keyPanel">
+      <h2>Key result</h2>
+      <div id="keyResult" class="keylist"></div>
+      <button data-goto="explore">See it on the chart →</button>
+      <button class="secondary" data-goto="analysis">Every variable's result →</button>
+    </section>
+
+    <section class="panel">
+      <h2>What to keep in mind</h2>
+      <ul class="notes" style="font-size:.92rem">
+        <li>The satellite's daytime pass has drifted earlier over the years, so daytime lake temperatures can shift for that reason alone; the night-time series is the safer one.</li>
+        <li>MODIS measures the water's top skin, not the water column.</li>
+        <li>Rain, greenness, haze, NO₂ and MODIS land cover cover a box around the catchment about twice the catchment's area, not the exact catchment.</li>
+        <li>Two land-cover maps disagree; MODIS land cover is not used for the analysis (its guide warns against reading change from it), and the 30 m model's 9-year record is too short to test a trend. <a href="#models" data-goto="models">About the 30 m model →</a></li>
+        <li>Weather values come from a computer model, and every value is regional, not a reading at the lake. Links between variables are associations; one lake cannot establish cause.</li>
+      </ul>
+    </section>
+  </div>
+
+  <!-- 2. Methodology -->
+  <div class="tabpanel" role="tabpanel" id="panel-method" aria-labelledby="tab-method" hidden>
+    <section class="panel">
+      <h2>How the detective works</h2>
+      <ol class="steps">
+        <li><b>Gather long records.</b> Monthly values for the lake and the land and air around it, from NASA satellites (MODIS, OMI, GPM) and NASA's MERRA-2 weather model. A series needs at least <span id="minSeasons"></span> years before we test it for a trend.</li>
+        <li><b>Remove the seasons.</b> Summer is always warmer than winter; that cycle is not a trend. Each year we average the open-water season (<span id="seasonMonths"></span>) into one number.</li>
+        <li><b>Measure the rate: Sen's slope.</b> The middle value of the slopes between every pair of years, so one odd year cannot pull it far. The 95% range shows how fast or slow the true trend could plausibly be.</li>
+        <li><b>Test it: Mann-Kendall.</b> Do later years beat earlier years more often than chance would allow? We call a trend significant when the p-value is below 0.05.</li>
+        <li><b>Compare with the sensor.</b> A change smaller than the instrument's stated accuracy is reported as not distinguishable from it.</li>
+        <li><b>Look for what moves together.</b> Correlations between variables, on the raw series and again with each one's straight-line trend removed, against expectations written before the results.</li>
+        <li><b>Cross-check satellite against model.</b> Compare the satellite's lake trend with the weather model's air trend, and test whether the satellite's pass time drifted.</li>
+      </ol>
+      <p class="muted" style="margin:10px 0 0">Practise first on the made-up Practice Lake: its built-in trend is known, so you can check that the method finds it.</p>
+    </section>
+    <section class="panel">
+      <h2>What do the variables mean?</h2>
+      <div class="gl-wrap"><table class="gl" id="glossary"></table></div>
+    </section>
+  </div>
+
+  <!-- 3. Visualise and explore -->
+  <div class="tabpanel" role="tabpanel" id="panel-explore" aria-labelledby="tab-explore" hidden>
+    <div id="practiceBanner" class="banner" hidden>Practice lake: these numbers are made up so you can practise. They are not real measurements.</div>
+
+    <div class="workspace">
+      <aside class="panel side-col" aria-label="About this lake">
+        <p class="lake-name" id="lakeName"></p>
+        <ul class="labels" id="lakeFacts"></ul>
+        <h3>This series</h3>
+        <ul class="labels" id="seriesLabels"></ul>
+      </aside>
+
+      <div class="main-col">
+        <section class="panel">
+          <div class="pickers three">
+            <div><label for="lakePick">1. Lake</label><select id="lakePick"></select></div>
+            <div><label for="varPick">2. Variable</label><select id="varPick"></select></div>
+            <div id="sourceRow"><label for="sourcePick">Data source</label><select id="sourcePick"></select></div>
+          </div>
+          <div class="demo-row"><span class="muted">Or watch a demo:</span><span class="demo-buttons" id="demoButtons"></span></div>
+          <div class="demo-box" id="demoBox" aria-live="polite">
+            <div class="step" id="demoStep"></div>
+            <p id="demoText" style="margin:4px 0 8px"></p>
+            <button class="secondary" id="demoNext">Next</button>
+          </div>
+          <div class="chart-block">
+            <h2 id="chartTitle">Record</h2>
+            <div class="chart-wrap"><svg id="chart" role="img" aria-label="Time series chart" width="100%" viewBox="0 0 900 340" preserveAspectRatio="xMidYMid meet"></svg></div>
+            <div class="legend" id="legend"></div>
+            <p class="definition" id="varDefinition"></p>
+            <ul class="notes" id="varNotes"></ul>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>3. The verdict</h2>
+          <div id="verdict" class="verdict"></div>
+          <table class="nums" id="nums"></table>
+        </section>
+      </div>
     </div>
-  </section>
+  </div>
 
-  <div id="practiceBanner" class="banner" hidden>Practice lake: these numbers are made up so you can practise. They are not real measurements.</div>
+  <!-- 4. Detailed analysis -->
+  <div class="tabpanel" role="tabpanel" id="panel-analysis" aria-labelledby="tab-analysis" hidden>
+    <section class="panel">
+      <div class="row-between">
+        <h2 style="margin:0">Every variable, one table</h2>
+        <div style="min-width:220px"><label for="anaLake" class="sr-only">Lake</label><select id="anaLake"></select></div>
+      </div>
+      <p class="muted" style="font-size:.9rem">The series used in the analysis for each variable. Select a row to open it on the chart.</p>
+      <div style="overflow-x:auto"><table class="nums trendtable" id="trendTable"></table></div>
+    </section>
 
-  <section class="panel">
-    <div class="pickers">
-      <div><label for="lakePick">1. Choose a lake</label><select id="lakePick"></select></div>
-      <div><label for="varPick">2. Choose a variable</label><select id="varPick"></select></div>
-    </div>
-    <div id="sourceRow" style="margin-top:12px" hidden><label for="sourcePick">Data source</label><select id="sourcePick"></select></div>
-    <ul class="facts" id="lakeFacts"></ul>
-  </section>
+    <section class="panel corr" id="corrPanel">
+      <h2>What moves together?</h2>
+      <div id="corrList"></div>
+      <p class="muted" id="causeCaveat"></p>
+    </section>
 
-  <section class="panel">
-    <div id="varBadges"></div>
-    <p class="definition" id="varDefinition"></p>
-    <ul class="notes" id="varNotes"></ul>
-  </section>
+    <section class="panel" id="driftPanel">
+      <h2>Cross-check: satellite vs. model</h2>
+      <p id="driftText"></p>
+    </section>
+  </div>
 
-  <section class="panel">
-    <h2 id="chartTitle">Record</h2>
-    <div class="chart-wrap"><svg id="chart" role="img" aria-label="Time series chart" width="100%" viewBox="0 0 900 340" preserveAspectRatio="xMidYMid meet"></svg></div>
-    <div class="legend" id="legend"></div>
-  </section>
+  <!-- 5. Models and training -->
+  <div class="tabpanel" role="tabpanel" id="panel-models" aria-labelledby="tab-models" hidden>
+    <section class="panel">
+      <h2>Why we trained a model</h2>
+      <p>To ask whether the land around the lake affects it, we need to know how much of the catchment is forest, cropland and built-up. The obvious source, MODIS land cover, maps the land in 500 m cells, and its user guide warns against reading change from it. Runoff enters the lake through a narrow strip along the shoreline and streams, far finer than 500 m.</p>
+      <p>So we fine-tuned <b>Prithvi-EO-2.0</b>, an Earth-observation foundation model from IBM, NASA and Jülich Supercomputing Centre, to draw a 30 m land-cover map from Sentinel-2 satellite imagery, and ran it on each summer from 2017 to 2025.</p>
+    </section>
 
-  <section class="panel">
-    <h2>3. The verdict</h2>
-    <div id="verdict" class="verdict"></div>
-    <table class="nums" id="nums"></table>
-  </section>
+    <section class="panel">
+      <h2>The model</h2>
+      <ul class="labels model-labels">
+        <li><span class="k">Name</span>land-cover-ca v2 (class-weighted)</li>
+        <li><span class="k">Base model</span>Prithvi-EO-2.0-300M (IBM, NASA and Jülich Supercomputing Centre; Apache-2.0)</li>
+        <li><span class="k">Input</span>Sentinel-2 L2A summer median composite, 30 m, six bands</li>
+        <li><span class="k">Output classes</span>Forest, cropland, built-up, water, wetland, other</li>
+        <li><span class="k">Taught from</span>2020 Land Cover of Canada map (Open Government Licence – Canada)</li>
+        <li><span class="k">Tested on</span>A watershed held out of training entirely (Holland River and the Cook's Bay shore), split by area, never by pixel</li>
+      </ul>
+      <div class="linkrow">
+        <a class="btnlink" href="https://huggingface.co/anjanid/land-cover-ca" target="_blank" rel="noopener">Model weights and card (Hugging Face) ↗</a>
+        <a class="btnlink secondary" href="https://huggingface.co/ibm-nasa-geospatial/Prithvi-EO-2.0-300M" target="_blank" rel="noopener">Base model: Prithvi-EO-2.0-300M ↗</a>
+        <a class="btnlink secondary" href="landcover.html">Training and test results →</a>
+      </div>
+    </section>
 
-  <section class="panel corr" id="corrPanel">
-    <h2>What moves together?</h2>
-    <div id="corrList"></div>
-    <p class="muted" id="causeCaveat"></p>
-  </section>
+    <section class="panel">
+      <h2>How its output is used, and its limits</h2>
+      <ul class="notes" style="font-size:.95rem">
+        <li>Its yearly forest, cropland and built-up shares appear under "The land around the lake" in the explorer.</li>
+        <li>They are model estimates, not measurements. The model learned to reproduce a published map, so its scores measure agreement with that map, not field-checked ground truth.</li>
+        <li>Nine years (2017–2025) is shorter than the <span class="minSeasons2"></span>-year minimum, so we do not test these shares for a trend.</li>
+        <li>MODIS land cover is shown for comparison only. The two maps disagree substantially even over the same area.</li>
+      </ul>
+    </section>
 
-  <section class="panel" id="driftPanel">
-    <h2>Cross-check: satellite vs. model</h2>
-    <p id="driftText"></p>
-  </section>
+    <section class="panel">
+      <h2>No other models are trained</h2>
+      <p class="muted" style="margin:0">The trend and correlation results use standard statistics (Sen's slope, Mann-Kendall, Pearson correlation), not machine-learning models. Weather values come from MERRA-2, NASA's reanalysis model; we read its output, we do not train it.</p>
+    </section>
+  </div>
 
-  <section class="panel">
-    <h2>What do the variables mean?</h2>
-    <dl class="glossary" id="glossary"></dl>
-  </section>
-
-  <section class="panel">
-    <h2>How the detective works</h2>
-    <p class="muted">Each year we average the open-water season (May to October) into one number. The trend rate is <b>Sen's slope</b>: the middle value of the slopes between every pair of years, so one odd year cannot pull it far. The <b>Mann-Kendall test</b> asks whether later years beat earlier years more often than chance would allow; we call a trend significant when its p-value is below 0.05. The 95% range shows how fast or slow the true trend could plausibly be.</p>
-  </section>
-
-  <footer class="panel" id="footer"></footer>
+  <footer class="panel site" id="footer"></footer>
 </main>
 
 <script src="site_data.js"></script>
@@ -193,7 +365,7 @@ table.corrtable td:first-child { color: var(--ink); }
   }
   function fillSources(lake, v, keep) {
     const list = D.series[lake][v];
-    $("sourceRow").hidden = list.length < 2;
+    $("sourcePick").disabled = list.length < 2;
     const used = (D.analysis_sources[lake] || {})[v];
     const role = s => list.length < 2 ? "" : (s.source === used ? " (used in the analysis)" : " (comparison only)");
     $("sourcePick").innerHTML = list.map((s, i) => `<option value="${i}">${esc(s.source)} — ${esc(s.tier)}${role(s)}</option>`).join("");
@@ -201,6 +373,34 @@ table.corrtable td:first-child { color: var(--ink); }
     if (k < 0) k = list.findIndex(s => s.source === used);
     $("sourcePick").value = String(k >= 0 ? k : 0);
   }
+
+  // Short side-label for each lake fact sentence; anything unrecognised is labelled "Note".
+  function factLabel(f) {
+    const map = [[/^Lake surface/i, "Lake surface"], [/catchment \d|^Model catchment/i, "Catchment"], [/^Lake temperature/i, "Temperature cells"],
+      [/^Catchment variables/i, "Area sampled"], [/does not exist/i, "About"], [/was built with/i, "Built-in answer"]];
+    const m = map.find(([re]) => re.test(f));
+    return m ? m[1] : "Note";
+  }
+
+  // ---- hypothesis: the expectations the owner wrote before results, with what the analysis found
+  (function hypothesis() {
+    const ex = D.expectations || {};
+    const items = D.correlations.filter(c => c.lake === "simcoe_on" && c.expectation && !/^No expectation/i.test(c.expectation));
+    const lbl = v => esc(D.variables[v] ? D.variables[v].label : v);
+    const rp = (r, p) => (r === null || r === undefined) ? "" : ` <span class="muted">(r = ${fmt(r, 2)}, p ${p !== null && p !== undefined && p < 0.001 ? "" : "= "}${fmtP(p)})</span>`;
+    const head = `<div class="ho-row ho-head" role="row">
+        <div role="columnheader"><h3>Hypothesis</h3><span class="muted">${ex.written_on ? `Written on ${esc(ex.written_on)}, before any results were computed.` : ""}</span></div>
+        <div role="columnheader"><h3>Observation</h3><span class="muted">What the analysis found for Lake Simcoe.</span></div></div>`;
+    $("hypoList").innerHTML = head + items.map((c, i) => {
+      const obs = c.status === "ok"
+        ? `<span class="ho-k">Raw series</span> <b>${esc(c.found_raw)}</b>${rp(c.r_raw, c.p_raw)}<br><span class="ho-k">Trends removed</span> <b>${esc(c.found_detrended ?? "n/a")}</b>${rp(c.r_detrended, c.p_detrended)}`
+        : `<span class="muted">Not tested: ${esc(c.status)}</span>`;
+      return `<div class="ho-row" role="row">
+        <div role="cell"><span class="ho-tag">Hypothesis</span><span class="ho-n">${i + 1}</span><b>${lbl(c.x)} → ${lbl(c.y)}.</b> ${esc(c.expectation)}</div>
+        <div role="cell" class="ho-obs"><span class="ho-tag">Observation</span>${obs}</div></div>`;
+    }).join("");
+    $("hypoPanel").hidden = !items.length;
+  })();
 
   // ---- chart (inline SVG)
   function drawChart(series, v) {
@@ -255,9 +455,20 @@ table.corrtable td:first-child { color: var(--ink); }
     const series = D.series[lake][v][Number($("sourcePick").value) || 0];
     const spec = D.variables[v], meta = D.lakes[lake];
     $("practiceBanner").hidden = meta.kind !== "practice";
-    $("lakeFacts").innerHTML = meta.facts.map(f => `<li>${esc(f)}</li>`).join("");
+    $("lakeName").textContent = meta.name;
+    const lab = (k, val) => `<li><span class="k">${esc(k)}</span>${val}</li>`;
+    const pt = meta.sample_point;
+    $("lakeFacts").innerHTML =
+      lab("Type", meta.kind === "practice" ? "Practice lake (made-up data)" : "Real lake") +
+      (pt ? lab("Location", `${fmt(Math.abs(pt[0]), 2)}° ${pt[0] >= 0 ? "N" : "S"}, ${fmt(Math.abs(pt[1]), 2)}° ${pt[1] >= 0 ? "E" : "W"}`) : "") +
+      meta.facts.map(f => lab(factLabel(f), esc(f))).join("");
     const practice = series.tier.startsWith("Synthetic");
-    $("varBadges").innerHTML = `<span class="badge ${practice ? "practice" : ""}">${esc(series.tier)}</span><span class="muted" style="font-size:.85rem">${esc(series.source)}</span>`;
+    const trS = series.trend;
+    $("seriesLabels").innerHTML =
+      lab("Data tier", `<span class="badge ${practice ? "practice" : ""}" style="margin:0">${esc(series.tier)}</span>`) +
+      lab("Source", esc(series.source)) +
+      (trS && trS.first_year ? lab("Years", `${trS.first_year}–${trS.last_year} (${trS.n_seasons} seasons)`) : "") +
+      lab("Unit", esc(spec.unit));
     $("varDefinition").textContent = spec.definition;
     $("varNotes").innerHTML = spec.notes.map(n => `<li>${esc(n)}</li>`).join("");
     $("chartTitle").textContent = `${spec.label} — ${meta.name}`;
@@ -281,6 +492,32 @@ table.corrtable td:first-child { color: var(--ink); }
       ] : [["Years available", String(tr.n_seasons)]];
       $("nums").innerHTML = rows.map(([k, val]) => `<tr><td>${k}</td><td>${val}</td></tr>`).join("");
     }
+  }
+
+  // ---- detailed analysis tab (its own lake picker)
+  function renderAnalysis() {
+    const lake = $("anaLake").value;
+    const used = D.analysis_sources[lake] || {};
+    const trows = [];
+    for (const [role, title] of ROLE_GROUPS) {
+      const vs = Object.keys(D.series[lake] || {}).filter(v => D.variables[v].role === role);
+      if (!vs.length) continue;
+      trows.push(`<tr><td colspan="6" style="padding-top:12px"><b>${esc(title)}</b></td></tr>`);
+      for (const v of vs) {
+        const list = D.series[lake][v];
+        const s = list.find(x => x.source === used[v]) || list[0];
+        const t = s.trend || {}, unit = esc(D.variables[v].unit);
+        const status = t.status === "ok"
+          ? `<span class="pill ${t.significant ? "sig" : "non"}">${t.significant ? "significant " + esc(t.direction) : "no significant trend"}</span>`
+          : `<span class="pill non">${esc({ too_short: "too short to test", excluded: "not used" }[t.status] || "not assessed")}</span>`;
+        trows.push(`<tr class="go" data-v="${v}" data-src="${esc(s.source)}" tabindex="0"><td>${esc(D.variables[v].label)}</td><td>${status}</td>
+          <td>${t.status === "ok" ? `${fmt(t.slope_per_decade, 3)} ${unit}` : "—"}</td>
+          <td>${t.status === "ok" ? `${fmt(t.ci_low_per_decade, 3)} to ${fmt(t.ci_high_per_decade, 3)}` : "—"}</td>
+          <td>${t.status === "ok" ? fmtP(t.mann_kendall_p) : "—"}</td>
+          <td>${t.first_year ? `${t.first_year}–${t.last_year} (${t.n_seasons})` : (t.n_seasons ? `${t.n_seasons} yrs` : "—")}</td></tr>`);
+      }
+    }
+    $("trendTable").innerHTML = `<tr><th>Variable</th><th>Result</th><th>Sen's slope per decade</th><th>95% range</th><th>Mann-Kendall p</th><th>Years</th></tr>` + trows.join("");
     const corr = D.correlations.filter(c => c.lake === lake);
     $("corrPanel").hidden = !corr.length;
     const lbl = v => esc(D.variables[v] ? D.variables[v].label : v);
@@ -294,13 +531,22 @@ table.corrtable td:first-child { color: var(--ink); }
         <p class="muted" style="margin:6px 0 0">${esc(D.spurious_trend_note)}</p>
         ${no2.status !== "ok" ? `<p class="muted" style="margin:4px 0 0">${esc(no2.text)}</p>` : ""}</div>`;
     }
-    const rows = corr.map(c => `<tr><td>${lbl(c.x)} vs ${lbl(c.y)}</td>
-      <td>${c.expectation ? esc(c.expectation) : '<span class="muted">none stated</span>'}</td>
-      <td>${c.status === "ok" ? `${esc(c.found_raw)}<br><span class="muted">trends removed: ${esc(c.found_detrended ?? "n/a")}</span>` : `<span class="muted">${esc(c.status)}</span>`}</td>
-      <td>${rCell(c.r_raw, c.p_raw)}</td></tr>`).join("");
-    html += `<div style="overflow-x:auto"><table class="nums corrtable"><tr><td><b>Pair</b></td><td><b>Expected</b></td><td><b>Found</b></td><td><b>Raw r</b></td></tr>${rows}</table></div>`;
+    // Three groups: expectation written before results; none written but a link found; none written and nothing found.
+    const stated = c => c.expectation && !/^No expectation/i.test(c.expectation);
+    const isLink = f => f && !/^none/i.test(f);
+    const foundSomething = c => c.status === "ok" && (isLink(c.found_raw) || isLink(c.found_detrended));
+    const foundCell = (f, r, p) => `<span class="${isLink(f) ? "hit" : "muted"}">${esc(f ?? "n/a")}</span><br>${rCell(r, p)}`;
+    const row = c => `<tr><td>${lbl(c.x)} vs ${lbl(c.y)}</td>
+      ${stated(c) ? `<td>${esc(c.expectation)}</td>` : ""}
+      ${c.status === "ok" ? `<td>${foundCell(c.found_raw, c.r_raw, c.p_raw)}</td><td>${foundCell(c.found_detrended, c.r_detrended, c.p_detrended)}</td>`
+        : `<td colspan="2"><span class="muted">Not tested: ${esc(c.status)}</span></td>`}</tr>`;
+    const group = (title, note, list, withExp) => list.length ? `<h3 class="cgroup">${title} <span class="count">${list.length}</span></h3><p class="muted cnote">${note}</p>
+      <div style="overflow-x:auto"><table class="nums corrtable"><tr><th>Pair</th>${withExp ? "<th>Expected</th>" : ""}<th>Raw series</th><th>Trends removed</th></tr>${list.map(row).join("")}</table></div>` : "";
+    const gA = corr.filter(stated), rest = corr.filter(c => !stated(c));
+    html += group("Expected before results", `Written on ${esc((D.expectations || {}).written_on || "n/a")}, before any of these numbers were computed. These are the tests of the hypothesis.`, gA, true);
+    html += group("Not stated, but a link was found", "No expectation was written for these pairs. A link found after looking is a lead to follow up, not a confirmed result.", rest.filter(foundSomething), false);
+    html += group("Not stated, no link found", "No expectation was written, and no significant link showed up (or there were too few shared years to test).", rest.filter(c => !foundSomething(c)), false);
     html += corr.filter(c => c.status === "ok").map(c => `<p>${esc(c.text)}</p>`).join("");
-    if (D.expectations && D.expectations.written_on) html += `<p class="muted" style="font-size:.85rem">Expectations were written on ${esc(D.expectations.written_on)}, before any of these numbers were computed.</p>`;
     $("corrList").innerHTML = html;
     $("causeCaveat").textContent = D.cause_caveat;
     const dr = D.drift[lake];
@@ -309,14 +555,83 @@ table.corrtable td:first-child { color: var(--ink); }
   }
 
   // ---- glossary and footer
-  $("glossary").innerHTML = Object.entries(D.variables).map(([id, v]) => `<dt>${esc(v.label)} <span class="badge">${esc(v.tier)}</span></dt><dd>${esc(v.definition)}</dd>`).join("");
+  // Which satellite (or model) each data product comes from, read off the product name.
+  const PLATFORMS = [
+    [/^Calculated/i, "Terra satellite (MODIS) minus the MERRA-2 model"],
+    [/^MODIS Terra/i, "Terra satellite, MODIS instrument"],
+    [/^MODIS MCD12Q1/i, "Terra and Aqua satellites, MODIS instrument"],
+    [/^MERRA-2/i, "MERRA-2, NASA's weather reanalysis model"],
+    [/^GPM IMERG/i, "GPM satellite constellation, adjusted with rain gauges"],
+    [/^OMI\/Aura/i, "Aura satellite, OMI instrument"],
+    [/Sentinel-2/i, "Sentinel-2 satellites (Copernicus), mapped by our land-cover-ca model"],
+  ];
+  const platformOf = src => (PLATFORMS.find(([re]) => re.test(src)) || [null, "n/a"])[1];
+  const productOf = src => src.replace(/\s*\((AppEEARS|GES DISC|LAADS DAAC)\)\s*$/, "").replace(/\s*\(fine-tuned.*$/, "");
+  const sourcesOf = id => {
+    const seen = new Map();
+    for (const lake of lakeIds) if (D.lakes[lake].kind !== "practice") for (const s of ((D.series[lake] || {})[id] || [])) seen.set(s.source, (D.analysis_sources[lake] || {})[id]);
+    return [...seen.entries()].map(([src, used]) => ({ src, role: seen.size > 1 ? (src === used ? "used" : "comparison only") : "" }));
+  };
+  const tierClass = t => /^Modeled/.test(t) ? "model" : /^Derived/.test(t) ? "derived" : "sat";
+  let gl = `<thead><tr><th>Variable</th><th>What it means</th><th>Type</th><th>Satellite or model</th><th>Data product</th></tr></thead><tbody>`;
+  for (const [role, title] of ROLE_GROUPS) {
+    const ids = Object.keys(D.variables).filter(id => D.variables[id].role === role);
+    if (!ids.length) continue;
+    gl += `<tr class="grp"><td colspan="5">${esc(title)}</td></tr>`;
+    for (const id of ids) {
+      const v = D.variables[id], srcs = sourcesOf(id);
+      const tag = r => r ? ` <span class="muted">(${r})</span>` : "";
+      gl += `<tr><td><b>${esc(v.label)}</b><br><span class="muted">${esc(v.unit)}</span></td><td>${esc(v.definition)}</td>
+        <td><span class="tier ${tierClass(v.tier)}">${esc(v.tier)}</span></td>
+        <td>${srcs.length ? srcs.map(s => esc(platformOf(s.src)) + tag(s.role)).join("<br>") : '<span class="muted">practice data only</span>'}</td>
+        <td class="prod">${srcs.map(s => esc(productOf(s.src))).join("<br>")}</td></tr>`;
+    }
+  }
+  $("glossary").innerHTML = gl + "</tbody>";
   const attr = Object.values(D.lakes).map(l => l.attribution).filter(Boolean);
-  $("footer").innerHTML = `<p style="margin:0 0 6px">Data: MODIS MOD11A2, MOD13A3 and MCD12Q1 Version 6.1 (NASA LP DAAC, via AppEEARS); MODIS MOD08_M3 Version 6.1 (NASA LAADS DAAC); MERRA-2 M2TMNXSLV, M2TMNXFLX, M2TMNXRAD and M2TMNXAER 5.12.4 (NASA GES DISC); GPM IMERG Final V07 monthly (NASA GES DISC); OMI/Aura OMNO2d Version 004 (NASA GES DISC).</p>` +
-    attr.map(a => `<p style="margin:0 0 6px">${esc(a)}</p>`).join("") +
-    `<p style="margin:0 0 6px">Land cover (comparison): land-cover-ca, a fine-tune of Prithvi-EO-2.0-300M (Apache-2.0) trained on the 2020 Land Cover of Canada (Open Government Licence – Canada) with Copernicus Sentinel-2 imagery.</p>` +
-    `<p style="margin:0 0 6px"><b>How AI was used:</b> Claude Code (Anthropic) wrote the code, data pipelines, tests, this page and its text under the author's direction. Codex (OpenAI) reviewed the main changes; the logo was designed by our team member under 18 using Codex. The author chose the scope, variables and every analysis decision and approved commits and pushes; reviews were done by an AI agent, not line by line by a person.</p>` +
-    `<p style="margin:0 0 6px">Use of NASA data does not imply NASA endorsement.</p>` +
-    `<p style="margin:0">A submission to the 2026 NASA Space Apps Challenge, "Be An Earth System Trend Detective!". Team: Anjani Duddukuru, with a team member under 18 (name withheld, as the Space Apps rules ask) who designed the logo, read the challenge rules and guidelines, and created the presentation template. © 2026 Anjani Duddukuru, Apache License 2.0. Results updated ${esc(D.generated)}.</p>`;
+  $("footer").innerHTML = `<div class="foot-grid">
+    <div><h4>Built for NASA Space Apps 2026</h4>
+      <p>A submission to the 2026 NASA Space Apps Challenge, "Be An Earth System Trend Detective!".</p>
+      <p>Team: Anjani Duddukuru, with a team member under 18 (name withheld, as the Space Apps rules ask) who designed the logo, read the challenge rules and guidelines, and created the presentation template.</p>
+      <p>Use of NASA data does not imply NASA endorsement.</p></div>
+    <div><h4>Data and attribution</h4>
+      <p>MODIS MOD11A2, MOD13A3 and MCD12Q1 Version 6.1 (NASA LP DAAC, via AppEEARS); MODIS MOD08_M3 Version 6.1 (NASA LAADS DAAC); MERRA-2 M2TMNXSLV, M2TMNXFLX, M2TMNXRAD and M2TMNXAER 5.12.4 (NASA GES DISC); GPM IMERG Final V07 monthly (NASA GES DISC); OMI/Aura OMNO2d Version 004 (NASA GES DISC).</p>
+      ${attr.map(a => `<p>${esc(a)}</p>`).join("")}
+      <p>Land cover: land-cover-ca, a fine-tune of Prithvi-EO-2.0-300M (IBM, NASA and Jülich Supercomputing Centre; Apache-2.0), trained on the 2020 Land Cover of Canada (Open Government Licence – Canada) with Copernicus Sentinel-2 imagery (contains modified Copernicus Sentinel data 2017–2025).</p></div>
+    <div><h4>Licence</h4>
+      <p>© 2026 Anjani Duddukuru. Code, page and derived tables under the <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noopener">Apache License 2.0</a>. Third-party data, models and software keep their own terms.</p>
+      <h4 style="margin-top:12px">How AI was used</h4>
+      <p>Claude Code (Anthropic) wrote the code, data pipelines, tests, this page and its text under the author's direction. Codex (OpenAI) reviewed the main changes; the logo was designed by our team member under 18 using Codex. The author chose the scope, variables and every analysis decision and approved commits and pushes; reviews were done by an AI agent, not line by line by a person.</p></div>
+  </div>
+  <div class="foot-bottom"><span>LakePulse · Lake Trend Detective</span><span>Results updated ${esc(D.generated)}</span></div>`;
+
+  // ---- methodology numbers, read from the data
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const sm = D.season_months || [];
+  $("seasonMonths").textContent = sm.length ? `${MONTHS[sm[0] - 1]} to ${MONTHS[sm[sm.length - 1] - 1]}` : "n/a";
+  $("minSeasons").textContent = D.min_seasons;
+  document.querySelectorAll(".minSeasons2").forEach(e => e.textContent = D.min_seasons);
+
+  // ---- tabs (the URL hash keeps the open tab, so links and reloads land on it)
+  const TABS = ["results", "method", "explore", "analysis", "models"];
+  function showTab(name, focus) {
+    if (!TABS.includes(name)) name = "results";
+    for (const t of TABS) {
+      const on = t === name;
+      $("tab-" + t).setAttribute("aria-selected", on); $("tab-" + t).tabIndex = on ? 0 : -1;
+      $("panel-" + t).hidden = !on;
+    }
+    if (location.hash !== "#" + name) history.replaceState(null, "", "#" + name);
+    if (focus) $("tab-" + name).focus();
+  }
+  document.querySelector(".tabs").addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b) showTab(b.dataset.tab); });
+  document.querySelector(".tabs").addEventListener("keydown", e => {
+    const k = TABS.indexOf(document.activeElement.dataset.tab); if (k < 0) return;
+    if (e.key === "ArrowRight") showTab(TABS[(k + 1) % TABS.length], true);
+    if (e.key === "ArrowLeft") showTab(TABS[(k + TABS.length - 1) % TABS.length], true);
+  });
+  document.addEventListener("click", e => { const a = e.target.closest("[data-goto]"); if (a) { e.preventDefault(); showTab(a.dataset.goto); window.scrollTo(0, 0); } });
+  window.addEventListener("hashchange", () => showTab(location.hash.slice(1)));
 
   // ---- key result (read from the analysis results, never typed in)
   (function keyResult() {
@@ -324,9 +639,15 @@ table.corrtable td:first-child { color: var(--ink); }
     const tr = s && s.trend;
     if (!tr || tr.status !== "ok") { $("keyResult").textContent = "Lake Simcoe results are not available in this build."; return; }
     const word = tr.slope_per_decade > 0 ? "rose" : "fell";
-    $("keyResult").innerHTML = `<b>Lake Simcoe's surface temperature at night ${word} by about ${fmt(Math.abs(tr.slope_per_decade), 2)} °C per decade</b> in the open-water season, ${tr.first_year}–${tr.last_year} (95% range ${fmt(tr.ci_low_per_decade, 2)} to ${fmt(tr.ci_high_per_decade, 2)}; Mann-Kendall p ${tr.mann_kendall_p < 0.001 ? "< 0.001" : "= " + fmtP(tr.mann_kendall_p)}). ` +
-      (tr.significant ? "That is a statistically significant trend" : "That is not statistically significant") +
-      (tr.accuracy_verdict === "larger than sensor accuracy" ? ", larger than the satellite's stated accuracy." : ".");
+    const acc = { "larger than sensor accuracy": "Larger than the satellite's stated accuracy", "not distinguishable from sensor accuracy": "Not distinguishable from the satellite's stated accuracy" }[tr.accuracy_verdict] || esc(tr.accuracy_verdict || "n/a");
+    $("keyResult").innerHTML = `<p class="keyhead">Lake Simcoe's surface temperature at night ${word} by about ${fmt(Math.abs(tr.slope_per_decade), 2)} °C per decade.</p><ul>
+      <li><span class="k">Season</span>Open-water season (May to October) average, night-time satellite pass</li>
+      <li><span class="k">Period</span>${tr.first_year}–${tr.last_year} (${tr.n_seasons} seasons)</li>
+      <li><span class="k">Rate (Sen's slope)</span>${fmt(tr.slope_per_decade, 2)} °C per decade</li>
+      <li><span class="k">95% range</span>${fmt(tr.ci_low_per_decade, 2)} to ${fmt(tr.ci_high_per_decade, 2)} °C per decade</li>
+      <li><span class="k">Mann-Kendall p</span>${tr.mann_kendall_p < 0.001 ? "< 0.001" : "= " + fmtP(tr.mann_kendall_p)}: ${tr.significant ? "a statistically significant trend" : "not statistically significant"}</li>
+      <li><span class="k">Total change</span>${fmt(tr.total_change, 2)} °C over the record</li>
+      <li><span class="k">Sensor check</span>${acc}</li></ul>`;
   })();
 
   // ---- events
@@ -377,6 +698,14 @@ table.corrtable td:first-child { color: var(--ink); }
 
   const first = lakeIds[0];
   fillVariables(first, "lake_skin_temp"); fillSources(first, $("varPick").value); render();
+
+  $("anaLake").innerHTML = $("lakePick").innerHTML; $("anaLake").value = first;
+  $("anaLake").addEventListener("change", renderAnalysis);
+  const openRow = tr => { select($("anaLake").value, tr.dataset.v, tr.dataset.src); showTab("explore"); window.scrollTo(0, 0); };
+  $("trendTable").addEventListener("click", e => { const tr = e.target.closest("tr.go"); if (tr) openRow(tr); });
+  $("trendTable").addEventListener("keydown", e => { const tr = e.target.closest("tr.go"); if (tr && e.key === "Enter") openRow(tr); });
+  renderAnalysis();
+  showTab(location.hash.slice(1));
 })();
 </script>
 </body>
