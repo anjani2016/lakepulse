@@ -124,3 +124,12 @@ ran in parallel without connection errors. Model tracking: MLflow experiment `la
 `land-cover-ca` versions 1-3.
 
 Alpha Centauri Ventures Inc. (Centauri Research)
+
+## Published weights
+
+The best model (v2 class-weighted, MLflow `land-cover-ca` version 2) is on Hugging Face as `anjanid/land-cover-ca`,
+uploaded by the owner on 2026-11-14 as a **private** repository (Hub commit `2f84595c`). Weights converted to
+safetensors with every tensor checked equal (`cr-geo-models/scripts/ml7_convert_safetensors.py`): 648,862,096 bytes,
+SHA-256 `9f2b3656a0fd5d97b0d763e8182793e36a069c0d54c39e7ed5d980d9fc857135`, which equals the Hub's LFS checksum; the
+seven small files downloaded back pass `shasum -a 256 -c`. Card and NOTICE: `landcover/hf/land-cover-ca/`.
+Licence Apache-2.0, following `burn-scar-ca` [verify: owner confirms before making the repository public].
