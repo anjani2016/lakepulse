@@ -5,24 +5,35 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lake Trend Detective</title>
 <meta name="description" content="Pick a lake and a variable, see its long record, and find out whether it is really trending.">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/icon-180.png">
 <style>
 :root {
   --bg: #f7f8f6; --panel: #ffffff; --ink: #1d2422; --muted: #5b6662; --line: #d9dfdc;
   --accent: #1f6f8b; --accent-soft: #e3f0f5; --trend: #c2410c; --dots: #1f6f8b; --month: #9fb4bd;
   --ok: #166534; --ok-soft: #dcfce7; --no: #6b7280; --no-soft: #f1f3f4; --warn: #92400e; --warn-soft: #fef3c7;
+  /* The wordmark logo is dark navy: shown on the light theme only. */
+  --brand-logo: block; --brand-mark: none;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #111615; --panel: #1a201f; --ink: #e6ebe9; --muted: #9aa6a2; --line: #2e3836;
     --accent: #6cc0dc; --accent-soft: #16323c; --trend: #fb923c; --dots: #6cc0dc; --month: #3f5862;
     --ok: #86efac; --ok-soft: #14301f; --no: #b0b7bd; --no-soft: #23292b; --warn: #fcd34d; --warn-soft: #3a2f10;
+    --brand-logo: none; --brand-mark: flex;
   }
 }
 :root[data-theme="dark"] {
   --bg: #111615; --panel: #1a201f; --ink: #e6ebe9; --muted: #9aa6a2; --line: #2e3836;
   --accent: #6cc0dc; --accent-soft: #16323c; --trend: #fb923c; --dots: #6cc0dc; --month: #3f5862;
   --ok: #86efac; --ok-soft: #14301f; --no: #b0b7bd; --no-soft: #23292b; --warn: #fcd34d; --warn-soft: #3a2f10;
+  --brand-logo: none; --brand-mark: flex;
 }
+.brand { margin: 0 0 12px; }
+.brand-logo { display: var(--brand-logo); height: 48px; width: auto; max-width: 100%; }
+.brand-mark { display: var(--brand-mark); align-items: center; gap: 10px; }
+.brand-mark img { width: 48px; height: 48px; }
+.brand-mark span { font-weight: 800; font-size: 1.5rem; letter-spacing: .06em; color: var(--ink); }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 main { max-width: 980px; margin: 0 auto; padding: 24px 16px 64px; }
@@ -71,6 +82,10 @@ table.corrtable td:first-child { color: var(--ink); }
 </head>
 <body>
 <main>
+  <div class="brand">
+    <img class="brand-logo" src="assets/logo-header.png" width="144" height="48" alt="LakePulse">
+    <div class="brand-mark"><img src="assets/icon-mark-96.png" width="48" height="48" alt=""><span>LAKEPULSE</span></div>
+  </div>
   <h1>Lake Trend Detective</h1>
   <p class="lede">Pick a lake and a variable. See its long record, and find out whether it is really trending or just wiggling.</p>
 
