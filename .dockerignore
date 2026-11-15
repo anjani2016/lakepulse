@@ -1,0 +1,5 @@
+# Build context: only the page and the server config are needed.
+*
+!web/
+!deploy/nginx.conf
+!deploy/security-headers.conf
