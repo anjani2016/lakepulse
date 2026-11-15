@@ -1,0 +1,46 @@
+{
+ "area": "LakePulse bounding box (study_regions.json simcoe_on.catchment_bbox) for MODIS and model_bbox",
+ "denominator": "% of land; water and unclassified excluded",
+ "by_variable": {
+  "forest_share": {
+   "years": 9,
+   "mean_difference_pts": 23.8,
+   "min": 22.045,
+   "max": 25.111,
+   "lcc2020_bbox": 34.735,
+   "modis_2020_bbox": 7.22
+  },
+  "cropland_share": {
+   "years": 9,
+   "mean_difference_pts": 15.03,
+   "min": 12.121,
+   "max": 18.0,
+   "lcc2020_bbox": 48.998,
+   "modis_2020_bbox": 35.02
+  },
+  "urban_share": {
+   "years": 9,
+   "mean_difference_pts": 11.4,
+   "min": 11.162,
+   "max": 11.749,
+   "lcc2020_bbox": 11.363,
+   "modis_2020_bbox": 2.96
+  }
+ },
+ "lcc2020_all_classes": {
+  "catchment": {
+   "forest": 33.361,
+   "cropland": 49.272,
+   "built_up": 11.511,
+   "wetland": 1.048,
+   "other": 4.808
+  },
+  "bbox": {
+   "forest": 34.735,
+   "cropland": 48.998,
+   "built_up": 11.363,
+   "wetland": 0.915,
+   "other": 3.988
+  }
+ }
+}

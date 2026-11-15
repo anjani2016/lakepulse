@@ -2,7 +2,8 @@
 
 Short report, 2026-11-14. A separate, discardable track of the LakePulse entry for the 2026 NASA Space Apps Challenge.
 Every number below comes from a script in `landcover/scripts/` or `landcover/colab/` run on 2026-11-14; the script is
-named next to each table. Result files are in `landcover/data/results/` (git-ignored, rebuilt by the scripts).
+named next to each table. The small final outputs needed to audit the report are retained in `landcover/evidence/`.
+Large intermediate rasters, maps, chips and logs remain git-ignored under `landcover/data/`.
 
 ## Why
 
@@ -14,7 +15,7 @@ MODIS land cover (500 m) already gives whole-catchment shares in LakePulse. This
 | Item | Source | Licence |
 |---|---|---|
 | Labels | 2020 Land Cover of Canada, 30 m (Canada Centre for Remote Sensing), merged to forest, cropland, built-up, water, wetland, other | Open Government Licence - Canada |
-| Imagery | Sentinel-2 L2A from Earth Search, summer (15 June - 15 September) median composites at 30 m, 6 bands, clouds/shadow/snow masked with the scene classification | Copernicus Sentinel data [verify: exact attribution wording] |
+| Imagery | Sentinel-2 L2A from Earth Search, summer (15 June - 15 September) median composites at 30 m, 6 bands, clouds/shadow/snow masked with the scene classification | Contains modified Copernicus Sentinel data 2017–2025 (training subset 2019–2021) |
 | Shoreline, streams | Ontario Hydro Network waterbody and watercourse (36,697 stream features fetched; "Stream" type kept: 2,914.1 km in the catchment) | Open Government Licence - Ontario |
 | Watershed units | Ontario Watershed Boundaries, quaternary | Open Government Licence - Ontario |
 | Base model | `ibm-nasa-geospatial/Prithvi-EO-2.0-300M` at revision `9eb1b11…` (not the BurnScars fine-tune) | Apache-2.0 |
@@ -111,7 +112,8 @@ The model must only see summer, cloud-masked composites: a single winter or clou
 **Large disagreement, reported, not tuned away.** The model stays close to the map it was trained on; MODIS is far
 lower on all three classes. Likely reasons, not tested here: MODIS's IGBP scheme puts mixed farm-and-woodlot land into
 "woody savanna" and "cropland/natural vegetation mosaic", which count as neither forest nor cropland, and 500 m pixels
-miss most built-up land [verify: MODIS class breakdown for the box]. The model runs about 3 points above its own labels
+can miss dispersed built-up land. These are possible explanations, not findings from this track. The model runs about
+3 points above its own labels
 on built-up land. MODIS's own guide warns against reading change from its yearly labels; the same caution applies here.
 
 ## Limits

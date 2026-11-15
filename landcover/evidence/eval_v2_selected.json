@@ -1,0 +1,178 @@
+{
+ "run": "ft-a100-v2cw",
+ "test_dir": "/content/work/chips/v2/test",
+ "chips": "chips_v2",
+ "weights": {
+  "epoch": 1,
+  "sha256": "c19104061a265a08f4965a34cc522a9413522af5a576f70a5b75d7a3b8bc22c2",
+  "attempt": 2,
+  "val/loss": 0.5915955901145935,
+  "val/Accuracy": 0.557307243347168,
+  "val/Boundary_mIoU": 0.3239158093929291,
+  "val/Class_Accuracy_forest": 0.8473064303398132,
+  "val/Class_Accuracy_cropland": 0.8993738889694214,
+  "val/Class_Accuracy_built_up": 0.684218168258667,
+  "val/Class_Accuracy_water": 0.7554826736450195,
+  "val/Class_Accuracy_wetland": 0.09445709735155106,
+  "val/Class_Accuracy_other": 0.06300530582666397,
+  "val/F1_Score": 0.5565803647041321,
+  "val/IoU_forest": 0.7811908721923828,
+  "val/IoU_cropland": 0.7953991293907166,
+  "val/IoU_built_up": 0.4122666120529175,
+  "val/IoU_water": 0.6870242953300476,
+  "val/IoU_wetland": 0.03764905408024788,
+  "val/IoU_other": 0.05563243106007576,
+  "val/Pixel_Accuracy": 0.8422592282295227,
+  "val/mIoU": 0.4615270793437958,
+  "val/mIoU_Micro": 0.7275024652481079
+ },
+ "test_block": {
+  "per_class_iou": {
+   "forest": 0.655,
+   "cropland": 0.801,
+   "built_up": 0.5727,
+   "water": 0.9044,
+   "wetland": 0.0846,
+   "other": 0.069
+  },
+  "mean_iou": 0.5145,
+  "pixel_accuracy": 0.8392,
+  "pixels": 474703,
+  "truth_pixels": {
+   "forest": 83371,
+   "cropland": 264898,
+   "built_up": 64247,
+   "water": 50911,
+   "wetland": 5618,
+   "other": 5658
+  }
+ },
+ "test_strip": {
+  "per_class_iou": {
+   "forest": 0.5959,
+   "cropland": 0.7408,
+   "built_up": 0.4204,
+   "water": 0.5138,
+   "wetland": 0.0991,
+   "other": 0.0542
+  },
+  "mean_iou": 0.404,
+  "pixel_accuracy": 0.7598,
+  "pixels": 44745,
+  "truth_pixels": {
+   "forest": 10311,
+   "cropland": 25185,
+   "built_up": 5220,
+   "water": 2038,
+   "wetland": 981,
+   "other": 1010
+  }
+ },
+ "probes": {
+  "all_water": {
+   "per_class_iou": {
+    "forest": 0.5764,
+    "cropland": 0.3871,
+    "built_up": 0.3567,
+    "water": 0.9956,
+    "wetland": 0.0,
+    "other": 0.0
+   },
+   "mean_iou": 0.386,
+   "pixel_accuracy": 0.9844,
+   "pixels": 50176,
+   "truth_pixels": {
+    "forest": 871,
+    "cropland": 426,
+    "built_up": 391,
+    "water": 48408,
+    "wetland": 4,
+    "other": 76
+   }
+  },
+  "cloudy": {
+   "per_class_iou": {
+    "forest": 0.0,
+    "cropland": 0.6315,
+    "built_up": 0.54,
+    "water": 0.0988,
+    "wetland": 0.0,
+    "other": 0.0
+   },
+   "mean_iou": 0.2117,
+   "pixel_accuracy": 0.6898,
+   "pixels": 50176,
+   "truth_pixels": {
+    "forest": 5451,
+    "cropland": 30525,
+    "built_up": 11985,
+    "water": 940,
+    "wetland": 388,
+    "other": 887
+   }
+  },
+  "edge": {
+   "per_class_iou": {
+    "forest": 0.5929,
+    "cropland": 0.8083,
+    "built_up": 0.2929,
+    "water": 0.2078,
+    "wetland": 0.0245,
+    "other": 0.0
+   },
+   "mean_iou": 0.3211,
+   "pixel_accuracy": 0.8242,
+   "pixels": 30215,
+   "truth_pixels": {
+    "forest": 6445,
+    "cropland": 21256,
+    "built_up": 1718,
+    "water": 548,
+    "wetland": 130,
+    "other": 118
+   }
+  },
+  "half_water": {
+   "per_class_iou": {
+    "forest": 0.3218,
+    "cropland": 0.7787,
+    "built_up": 0.7911,
+    "water": 0.9739,
+    "wetland": 0.0442,
+    "other": 0.0154
+   },
+   "mean_iou": 0.4875,
+   "pixel_accuracy": 0.9111,
+   "pixels": 50176,
+   "truth_pixels": {
+    "forest": 2501,
+    "cropland": 10621,
+    "built_up": 11960,
+    "water": 24409,
+    "wetland": 266,
+    "other": 419
+   }
+  },
+  "winter": {
+   "per_class_iou": {
+    "forest": 0.026,
+    "cropland": 0.0,
+    "built_up": 0.2527,
+    "water": 0.0025,
+    "wetland": 0.0008,
+    "other": 0.0083
+   },
+   "mean_iou": 0.0484,
+   "pixel_accuracy": 0.2398,
+   "pixels": 50176,
+   "truth_pixels": {
+    "forest": 5451,
+    "cropland": 30525,
+    "built_up": 11985,
+    "water": 940,
+    "wetland": 388,
+    "other": 887
+   }
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "grid": {
+  "crs": "EPSG:32617",
+  "x0": 551040.0,
+  "y0": 5019840.0,
+  "res": 30.0,
+  "width": 4928,
+  "height": 5824
+ },
+ "streams_in_catchment": 11202,
+ "stream_length_km": 2914.1,
+ "strip_km2": 189.5,
+ "catchment_km2": 3381.5,
+ "region_km2": 12529.4,
+ "test_block_km2": 541.3,
+ "test_block_shoreline_km": 43.2,
+ "splits": {
+  "train": {
+   "chips": 222,
+   "labelled_px": 10323713,
+   "strip_px": 81694,
+   "class_px": {
+    "forest": 4689499,
+    "cropland": 3056195,
+    "built_up": 804113,
+    "water": 1270470,
+    "wetland": 85986,
+    "other": 417450
+   }
+  },
+  "val": {
+   "chips": 10,
+   "labelled_px": 501760,
+   "strip_px": 23868,
+   "class_px": {
+    "forest": 187229,
+    "cropland": 256451,
+    "built_up": 36768,
+    "water": 9758,
+    "wetland": 2195,
+    "other": 9359
+   }
+  },
+  "test": {
+   "chips": 11,
+   "labelled_px": 474703,
+   "strip_px": 44745,
+   "class_px": {
+    "forest": 83371,
+    "cropland": 264898,
+    "built_up": 64247,
+    "water": 50911,
+    "wetland": 5618,
+    "other": 5658
+   }
+  },
+  "dropped": {
+   "chips": 329,
+   "why": {
+    "centre outside region": 288,
+    "gap next to test": 23,
+    "gap next to val": 18
+   }
+  }
+ }
+}

@@ -27,7 +27,7 @@ of the Lake Simcoe shoreline and its streams, where runoff enters the lake.
 | Shoreline | OHN Waterbody (already in `data/geo/simcoe_on.geojson`) | Open Government Licence - Ontario | |
 | Streams | OHN Watercourse, layer 26, features of type "Stream" | Open Government Licence - Ontario | |
 | Watershed units | Ontario Watershed Boundaries (already in `data/geo/simcoe_on_owb_units.geojson`) | Open Government Licence - Ontario | |
-| Imagery | Sentinel-2 L2A, Earth Search `sentinel-2-l2a` | Copernicus Sentinel data terms [verify exact wording] | Summer (06-15 to 09-15) median composite at 30 m, 6 bands, reflectance as in the fire work |
+| Imagery | Sentinel-2 L2A, Earth Search `sentinel-2-l2a` | Contains modified Copernicus Sentinel data 2017–2025 (training subset 2019–2021) | Summer (06-15 to 09-15) median composite at 30 m, 6 bands, reflectance as in the fire work |
 | Base model | `ibm-nasa-geospatial/Prithvi-EO-2.0-300M` @ `9eb1b11` | Apache-2.0 | Not the BurnScars fine-tune, not `burn-scar-ca` |
 
 Years: 2017-2025. Earth Search returned no summer 2016 items under 20% cloud over the Simcoe box.
@@ -96,8 +96,9 @@ experiment `lakepulse-land-cover` on the team server; metrics from Colab, weight
 - Tests: `cd landcover && .venv/bin/python -m pytest -q` (file `tests/lc_checks.py`, so LakePulse's bare `pytest`
   does not collect it).
 - Not run end to end: `colab/launch_train.sh` (sessions were started step by step with the same commands).
-- Open: 2025 haze (aerosol filter), wetland quality, `[verify]` items in `REPORT.md`, Colab runtimes end when the
-  laptop disconnects.
+- Historical issues resolved or documented in `REPORT.md`: the production composites use the AOT filter, wetland
+  quality remains a stated limitation, and the published artifact and attribution are recorded. The Colab runtimes
+  ended when the laptop disconnected; the selected weights are now frozen and no retraining is planned.
 
 ## Route
 

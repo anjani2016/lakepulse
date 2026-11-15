@@ -1,0 +1,187 @@
+{
+ "min_cover": 0.8,
+ "denominator": "land pixels with a prediction (water and 255 excluded)",
+ "source": "land-cover-ca v2 (fine-tuned Prithvi-EO-2.0-300M, run ft-a100-v2cw; Sentinel-2 L2A summer median)",
+ "coverage": {
+  "2017": {
+   "catchment": {
+    "area_px": 3757150,
+    "predicted_px": 3754018,
+    "land_px": 2902746,
+    "cover": 0.9992
+   },
+   "strip30m": {
+    "area_px": 210326,
+    "predicted_px": 210187,
+    "land_px": 193278,
+    "cover": 0.9993
+   },
+   "bbox": {
+    "area_px": 7733755,
+    "predicted_px": 7721623,
+    "land_px": 6623933,
+    "cover": 0.9984
+   }
+  },
+  "2018": {
+   "catchment": {
+    "area_px": 3757150,
+    "predicted_px": 3757150,
+    "land_px": 2915059,
+    "cover": 1.0
+   },
+   "strip30m": {
+    "area_px": 210326,
+    "predicted_px": 210326,
+    "land_px": 194856,
+    "cover": 1.0
+   },
+   "bbox": {
+    "area_px": 7733755,
+    "predicted_px": 7733755,
+    "land_px": 6663646,
+    "cover": 1.0
+   }
+  },
+  "2019": {
+   "catchment": {
+    "area_px": 3757150,
+    "predicted_px": 3752709,
+    "land_px": 2907864,
+    "cover": 0.9988
+   },
+   "strip30m": {
+    "area_px": 210326,
+    "predicted_px": 210134,
+    "land_px": 194240,
+    "cover": 0.9991
+   },
+   "bbox": {
+    "area_px": 7733755,
+    "predicted_px": 7726158,
+    "land_px": 6649425,
+    "cover": 0.999
+   }
+  },
+  "2020": {
+   "catchment": {
+    "area_px": 3757150,
+    "predicted_px": 3757150,
+    "land_px": 2913159,
+    "cover": 1.0
+   },
+   "strip30m": {
+    "area_px": 210326,
+    "predicted_px": 210326,
+    "land_px": 194470,
+    "cover": 1.0
+   },
+   "bbox": {
+    "area_px": 7733755,
+    "predicted_px": 7733755,
+    "land_px": 6657712,
+    "cover": 1.0
+   }
+  },
+  "2021": {
+   "catchment": {
+    "area_px": 3757150,
+    "predicted_px": 3757150,
+    "land_px": 2912509,
+    "cover": 1.0
+   },
+   "strip30m": {
+    "area_px": 210326,
+    "predicted_px": 210326,
+    "land_px": 194566,
+    "cover": 1.0
+   },
+   "bbox": {
+    "area_px": 7733755,
+    "predicted_px": 7733755,
+    "land_px": 6656759,
+    "cover": 1.0
+   }
+  },
+  "2022": {
+   "catchment": {
+    "area_px": 3757150,
+    "predicted_px": 3757150,
+    "land_px": 2913331,
+    "cover": 1.0
+   },
+   "strip30m": {
+    "area_px": 210326,
+    "predicted_px": 210326,
+    "land_px": 194574,
+    "cover": 1.0
+   },
+   "bbox": {
+    "area_px": 7733755,
+    "predicted_px": 7733755,
+    "land_px": 6658654,
+    "cover": 1.0
+   }
+  },
+  "2023": {
+   "catchment": {
+    "area_px": 3757150,
+    "predicted_px": 3757150,
+    "land_px": 2911249,
+    "cover": 1.0
+   },
+   "strip30m": {
+    "area_px": 210326,
+    "predicted_px": 210326,
+    "land_px": 194139,
+    "cover": 1.0
+   },
+   "bbox": {
+    "area_px": 7733755,
+    "predicted_px": 7733754,
+    "land_px": 6652907,
+    "cover": 1.0
+   }
+  },
+  "2024": {
+   "catchment": {
+    "area_px": 3757150,
+    "predicted_px": 3757150,
+    "land_px": 2908751,
+    "cover": 1.0
+   },
+   "strip30m": {
+    "area_px": 210326,
+    "predicted_px": 210326,
+    "land_px": 193641,
+    "cover": 1.0
+   },
+   "bbox": {
+    "area_px": 7733755,
+    "predicted_px": 7733755,
+    "land_px": 6650386,
+    "cover": 1.0
+   }
+  },
+  "2025": {
+   "catchment": {
+    "area_px": 3757150,
+    "predicted_px": 3729362,
+    "land_px": 2880035,
+    "cover": 0.9926
+   },
+   "strip30m": {
+    "area_px": 210326,
+    "predicted_px": 208483,
+    "land_px": 192463,
+    "cover": 0.9912
+   },
+   "bbox": {
+    "area_px": 7733755,
+    "predicted_px": 7669143,
+    "land_px": 6583434,
+    "cover": 0.9916
+   }
+  }
+ }
+}

@@ -40,7 +40,7 @@ labels:
   licence: Open Government Licence - Canada
   licence_url: https://open.canada.ca/en/open-government-licence-canada
   record: https://open.canada.ca/data/en/dataset/ee1580ab-a23d-4f86-a09b-79763677eb47
-  attribution: "Contains information licensed under the Open Government Licence - Canada. [verify: exact attribution line on the record]"
+  attribution: "Contains information licensed under the Open Government Licence - Canada."
   caveat: "The labels are a published map (stated overall accuracy 86.9% from 832 samples), not field-checked ground truth."
 
 hydro:

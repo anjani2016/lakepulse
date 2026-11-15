@@ -1,0 +1,43 @@
+{
+ "run": "ft-a100-v2cw",
+ "weights_epoch": 1,
+ "composites": "composites_aot",
+ "years": {
+  "2017": {
+   "valid_px": 14252011,
+   "seconds": 15
+  },
+  "2018": {
+   "valid_px": 14300159,
+   "seconds": 11
+  },
+  "2019": {
+   "valid_px": 14276757,
+   "seconds": 15
+  },
+  "2020": {
+   "valid_px": 14300160,
+   "seconds": 14
+  },
+  "2021": {
+   "valid_px": 14300160,
+   "seconds": 12
+  },
+  "2022": {
+   "valid_px": 14299938,
+   "seconds": 13
+  },
+  "2023": {
+   "valid_px": 14300159,
+   "seconds": 11
+  },
+  "2024": {
+   "valid_px": 14300159,
+   "seconds": 12
+  },
+  "2025": {
+   "valid_px": 14063618,
+   "seconds": 10
+  }
+ }
+}
