@@ -242,5 +242,5 @@ The review-2 fix is correct:
 ### Sign-off
 
 Owner, verbatim: "approved, commit it".
-Change commit: SHA pending (recorded in the next commit).
+Change commit: `cc71a8a` (Add air-quality variables: OMI NO2, MODIS and MERRA-2 aerosol optical depth).
 Not pushed; the owner confirms pushes.
