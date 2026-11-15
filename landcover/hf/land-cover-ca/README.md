@@ -79,9 +79,10 @@ dict with `strict=True` after converting tensors to float32.
 
 - Agreement is with a 2020 published map, not with the ground.
 - Trained and tested only around Lake Simcoe, southern Ontario. Scores elsewhere are unknown.
-- Hazy composites bias results: the 2025 summer composite (likely wildfire smoke) lowers forest and raises built-up.
+- Smoke and thick haze pass the cloud mask and bias results; the project's composites drop pixels whose L2A aerosol
+  optical thickness is above 0.4.
 - Against MODIS MCD12Q1 land cover for 2017 to 2025, this model's forest, cropland and urban shares are on average
-  23.42, 15.16 and 11.59 percentage points higher. It follows the 2020 federal map it learned from; MODIS is far below
+  23.80, 15.03 and 11.40 percentage points higher. It follows the 2020 federal map it learned from; MODIS is far below
   that map too.
 
 ## Files

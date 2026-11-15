@@ -90,6 +90,11 @@ imagery:
   max_cloud: 40                 # gate choice: scene-level eo:cloud_cover, percent; pixels are then masked by SCL
   max_scenes_per_tile: 12       # gate choice: lowest cloud first
   scl_asset: scl
+  aot_asset: aot
+  # Pixels whose aerosol optical thickness (L2A AOT layer, scale 0.001) is above max_aot are dropped before the median.
+  # Gate choice (owner 2026-11-14: "add it"): scene medians of the composites' scenes were mostly 0.08-0.14 in 2017-2025;
+  # the smoky 2025-08-03 scenes over the catchment were 0.82-1.14 (landcover/data/results/aot_survey.json).
+  max_aot: 0.4
   invalid_scl_classes: [0, 1, 3, 8, 9, 10, 11]   # as in the fire work
   model_bands:  # base model order, same as the fire work
     - {model: BLUE, asset: blue}

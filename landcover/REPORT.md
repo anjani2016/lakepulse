@@ -86,10 +86,17 @@ The model must only see summer, cloud-masked composites: a single winter or clou
   the same shares over that box are in `landcover/data/results/shares_all.csv` (`lcml_bbox_*`).
 - Kept in `landcover/` only, pending an owner decision: water, wetland and "other" shares, and every 30 m strip share
   (`lcml_strip30m_*`).
-- Catchment forest 29.2-31.4% and cropland 48.7-50.7% in 2017-2024. **2025 is an outlier** (forest 26.1%, built-up
-  17.3%): the 2025 composite is hazy (forest-pixel blue reflectance 0.087 against 0.024-0.031 in 2019, 2023, 2024),
-  likely wildfire smoke [verify: smoke dates over Simcoe, summer 2025], which the cloud mask does not remove. A fix would
-  drop high-aerosol pixels (Sentinel-2 L2A AOT layer) and rebuild the composites; not done.
+- Catchment forest 29.174-31.505% and cropland 48.663-50.886% in 2017-2025 (`build_shares.py`), from aerosol-filtered
+  composites (below).
+- **Smoke filter** (owner, 2026-11-14: "add it"). Before it, 2025 looked like forest loss (forest 26.1%, built-up 17.3%):
+  its composite's forest pixels had blue reflectance 0.087 against 0.024 in 2024. Not the year as a whole: 2021 and
+  2023 had as much aerosol and looked normal (`aot_survey.json`), and the new Sentinel-2C scenes were normal. The cause
+  was three smoky scenes over the catchment on 3 August 2025 (scene-median AOT 0.82-1.14), which pass the cloud mask; with
+  about two clear observations per pixel, one such scene pulls a pixel's median halfway to haze. Every year's composite
+  now drops pixels whose L2A aerosol optical thickness is above 0.4 (gate choice; ordinary scenes 0.08-0.14). After the
+  filter, 2025 forest blue is 0.027, 2025 forest share 29.445%, built-up 14.695%, and 99.26% of the catchment keeps a
+  clear view. Other years moved by under half a point. The model was trained on unfiltered composites; the filter only
+  removes rare smoky observations.
 
 ## Agreement with MODIS (same years, same box, same denominator)
 
@@ -97,9 +104,9 @@ The model must only see summer, cloud-masked composites: a single winter or clou
 
 | Variable | Mean | Range | 2020: MODIS / model / 2020 label map |
 |---|---|---|---|
-| forest_share | +23.42 | +18.98 to +25.11 | 7.22 / 31.587 / 34.735 |
-| cropland_share | +15.16 | +12.12 to +18.02 | 35.02 / 48.767 / 48.998 |
-| urban_share | +11.59 | +11.13 to +13.28 | 2.96 / 14.329 / 11.363 |
+| forest_share | +23.80 | +22.05 to +25.11 | 7.22 / 31.587 / 34.735 |
+| cropland_share | +15.03 | +12.12 to +18.00 | 35.02 / 48.767 / 48.998 |
+| urban_share | +11.40 | +11.16 to +11.75 | 2.96 / 14.329 / 11.363 |
 
 **Large disagreement, reported, not tuned away.** The model stays close to the map it was trained on; MODIS is far
 lower on all three classes. Likely reasons, not tested here: MODIS's IGBP scheme puts mixed farm-and-woodlot land into
@@ -118,8 +125,8 @@ on built-up land. MODIS's own guide warns against reading change from its yearly
 
 ## Compute used
 
-Google Colab, from `colab usage` before and after each session (`landcover/colab_ledger.md`): **20.40 units** of the
-200-unit cap (balance 594.03 → 573.63). L4 at 1.94 units/hour; two A100s together at 13.46 units/hour. Two sessions
+Google Colab, from `colab usage` before and after each session (`landcover/colab_ledger.md`): **20.60 units** of the
+200-unit cap (balance 594.03 → 573.43). L4 at 1.94 units/hour; two A100s together at 13.46 units/hour. Two sessions
 ran in parallel without connection errors. Model tracking: MLflow experiment `lakepulse-land-cover`; registered model
 `land-cover-ca` versions 1-3.
 

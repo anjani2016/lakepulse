@@ -35,6 +35,7 @@ def main() -> None:
     ap.add_argument("years", nargs="+", type=int)
     ap.add_argument("--workers", type=int, default=6)
     ap.add_argument("--v2", action="store_true")
+    ap.add_argument("--aot", action="store_true", help="drop pixels with AOT above config imagery.max_aot; writes to composites_aot")
     args = ap.parse_args()
     cfg = config.load()
     blk = geometry.blocks(cfg, geometry.load_units(cfg, wide=args.v2))
@@ -42,6 +43,9 @@ def main() -> None:
     region_mask = geometry.rasterize(blk["region"], grid)
     bbox = region_bbox_wgs84(grid)
     out = config.dirs(args.v2)["composites"]
+    max_aot = cfg["imagery"]["max_aot"] if args.aot else None
+    if args.aot:
+        out = out.with_name(out.name + "_aot")
     out.mkdir(parents=True, exist_ok=True)
     for year in args.years:
         t0 = time.time()
@@ -49,7 +53,7 @@ def main() -> None:
         items = composite.choose(found, cfg["imagery"]["max_scenes_per_tile"])
         print(f"{year}: {len(found)} items found, {len(items)} chosen", flush=True)
         comp, count, records = composite.median_composite(items, cfg, grid, workers=args.workers,
-                                                          log=lambda m: print(m, flush=True))
+                                                          log=lambda m: print(m, flush=True), max_aot=max_aot)
         prof = dict(driver="GTiff", height=grid.height, width=grid.width, crs=grid.crs, transform=grid.transform,
                     compress="deflate", tiled=True, blockxsize=256, blockysize=256)
         with rasterio.open(out / f"s2_summer_{year}.tif", "w", count=comp.shape[0], dtype="float32", nodata=np.nan, **prof) as dst:
@@ -59,7 +63,7 @@ def main() -> None:
         with rasterio.open(out / f"s2_summer_{year}_count.tif", "w", count=1, dtype="uint16", **prof) as dst:
             dst.write(count, 1)
         covered = np.isfinite(comp[0]) & region_mask
-        rec = {"year": year, "window": cfg["imagery"]["window"], "max_cloud": cfg["imagery"]["max_cloud"],
+        rec = {"year": year, "window": cfg["imagery"]["window"], "max_cloud": cfg["imagery"]["max_cloud"], "max_aot": max_aot,
                "items_found": len(found), "items_chosen": len(items), "items": records,
                "region_px": int(region_mask.sum()), "region_px_with_clear_obs": int(covered.sum()),
                "region_clear_fraction": round(float(covered.sum() / region_mask.sum()), 4),
