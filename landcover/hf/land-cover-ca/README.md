@@ -26,7 +26,7 @@ Its job is the land within 30 m of the Lake Simcoe shoreline and its streams, wh
 (stated overall accuracy 86.9%, 832 samples), not field-checked ground truth. Every score below measures agreement
 with that map.
 
-Made by Centauri Research (Alpha Centauri Ventures Inc.).
+Made by Anjani Duddukuru.
 
 ## Held-out test (split by area, never by pixel)
 
