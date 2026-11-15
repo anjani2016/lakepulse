@@ -1,7 +1,9 @@
 """Open-water season means, trend table, correlations and the orbit-drift cross-check."""
 from __future__ import annotations
 
+import json
 import math
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -140,29 +142,79 @@ def _strength(r: float) -> str:
     return "weak" if a < 0.3 else "moderate" if a < 0.6 else "strong"
 
 
-def correlations(seasonal: pd.DataFrame, response: str = "lake_skin_temp") -> pd.DataFrame:
+EXPECTATIONS_FILE = Path(__file__).resolve().parents[1] / "data" / "expectations.json"
+SPURIOUS_TREND_NOTE = (
+    "Two series that both drift up (or down) over the years will look correlated even when "
+    "nothing links them; removing each one's straight-line trend shows whether they still "
+    "move together from one year to the next."
+)
+
+
+def load_expectations(path: Path = EXPECTATIONS_FILE) -> dict:
+    return json.loads(path.read_text()) if path.exists() else {"pairs": []}
+
+
+def correlation_pairs(available: list[str], response: str = "lake_skin_temp", expectations: dict | None = None) -> list[dict]:
+    """One list of (x, y) pairs to test: the lake response against every driver and landscape
+    variable, plus the pairs written in data/expectations.json. A pair appears once; when it
+    is in both, the version carrying the written expectation is kept."""
+    expectations = expectations if expectations is not None else load_expectations()
+    pairs = {}
+    for d in available:
+        if V.get(d).role in ("driver", "landscape"):
+            pairs[frozenset((d, response))] = {"x": d, "y": response, "expected_sign": None, "expectation": None}
+    for p in expectations.get("pairs", []):
+        pairs[frozenset((p["x"], p["y"]))] = {"x": p["x"], "y": p["y"], "expected_sign": p.get("expected_sign"),
+                                              "expectation": p.get("expectation")}
+    return list(pairs.values())
+
+
+def _pair_text(xl: str, yl: str, c: stats.CorrelationResult) -> str:
+    sign = "higher" if c.r_raw > 0 else "lower"
+    sig = "statistically significant" if c.p_raw < 0.05 else "not statistically significant"
+    text = (f"In years when {xl} was higher, {yl} tended to be {sign}: a {_strength(c.r_raw)} association "
+            f"(r = {c.r_raw:.2f}, p {_p(c.p_raw)}, {sig}).")
+    if c.r_detrended is not None:
+        sig2 = "significant" if c.p_detrended < 0.05 else "not significant"
+        text += (f" After removing each series' own straight-line trend, r = {c.r_detrended:.2f} "
+                 f"(p {_p(c.p_detrended)}, {sig2}). This second number shows whether the two move "
+                 "together from year to year, not just in the same long-term direction.")
+    return text
+
+
+def _found_sign(r: float | None, p: float | None) -> str | None:
+    if r is None:
+        return None
+    if p is None or p >= 0.05:
+        return "none (not significant)"
+    return "positive" if r > 0 else "negative"
+
+
+def correlations(seasonal: pd.DataFrame, response: str = "lake_skin_temp", expectations: dict | None = None) -> pd.DataFrame:
+    """Every pair is reported, including pairs that cannot be computed yet (status says why)."""
+    expectations = expectations if expectations is not None else load_expectations()
     out = []
     for lake in sorted(seasonal["lake"].unique()):
         w = _wide(seasonal, lake)
-        if response not in w:
-            continue
-        drivers = [v for v in w.columns if V.get(v).role in ("driver", "landscape")]
-        for d in drivers:
-            c = stats.correlate(w.index.to_numpy(float), w[d].to_numpy(float), w[response].to_numpy(float))
-            dl, rl = V.get(d).label.lower(), V.get(response).label.lower()
+        for pair in correlation_pairs(list(w.columns), response, expectations):
+            x, y = pair["x"], pair["y"]
+            xl, yl = V.get(x).label.lower(), V.get(y).label.lower()
+            row = {"lake": lake, **pair, "expectation_written_on": expectations.get("written_on") if pair["expectation"] else None}
+            missing = [v for v in (x, y) if v not in w]
+            if missing:
+                out.append({**row, "status": "not computed: no data for " + ", ".join(missing), "n": 0,
+                            "r_raw": None, "p_raw": None, "r_detrended": None, "p_detrended": None,
+                            "found_raw": None, "found_detrended": None,
+                            "text": f"Not computed yet: no {', '.join(V.get(m).label.lower() for m in missing)} data."})
+                continue
+            c = stats.correlate(w.index.to_numpy(float), w[x].to_numpy(float), w[y].to_numpy(float))
             if c.r_raw is None:
-                text = f"Too few shared years ({c.n}) to compare {rl} with {dl}."
+                text, status = f"Too few shared years ({c.n}) to compare {yl} with {xl}.", "too few shared years"
             else:
-                sign = "higher" if c.r_raw > 0 else "lower"
-                sig = "statistically significant" if c.p_raw < 0.05 else "not statistically significant"
-                text = (f"In years when {dl} was higher, {rl} tended to be {sign}: a {_strength(c.r_raw)} association "
-                        f"(r = {c.r_raw:.2f}, p {_p(c.p_raw)}, {sig}).")
-                if c.r_detrended is not None:
-                    sig2 = "significant" if c.p_detrended < 0.05 else "not significant"
-                    text += (f" After removing each series' own straight-line trend, r = {c.r_detrended:.2f} "
-                             f"(p {_p(c.p_detrended)}, {sig2}). This second number shows whether the two move "
-                             "together from year to year, not just in the same long-term direction.")
-            out.append({"lake": lake, "response": response, "driver": d, **c.to_dict(), "text": text})
+                text, status = _pair_text(xl, yl, c), "ok"
+            out.append({**row, "status": status, **c.to_dict(),
+                        "found_raw": _found_sign(c.r_raw, c.p_raw),
+                        "found_detrended": _found_sign(c.r_detrended, c.p_detrended), "text": text})
     return pd.DataFrame(out)
 
 

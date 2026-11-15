@@ -42,6 +42,59 @@ Consequences:
   "Satellite-derived". Lake-minus-air is "Derived (satellite minus model)".
 - **MODIS measures skin temperature**, the top fraction of a millimetre, not the water column.
 
+## Air-quality variables (added 2026-11-14)
+
+Checked in NASA CMR on 2026-11-14 with: `collections.umm_json?short_name=…` (name, version,
+date range, provider), `granules.json?short_name=…&version=…&sort_key=±start_date` (first and
+latest granule, access links) and `variables.umm_json` for the collection's associated
+variables (name, units, dimensions).
+
+| Variable | Product (exact) | Variable in file | Grid | Units | Date range | Archive |
+|---|---|---|---|---|---|---|
+| NO2 tropospheric column | OMNO2d 004 (OMI/Aura, v5.0, Col 004), daily | `ColumnAmountNO2TropCloudScreened`, `Weight` | 0.25° × 0.25° (720 × 1440) | molec/cm² (stored as 10^15 molecules/cm²) | 2004-10-01 to 2026-11-12 (latest granule) | GES DISC |
+| Aerosol optical depth, model | M2TMNXAER 5.12.4 (MERRA-2 tavgM_2d_aer_Nx), monthly | `TOTEXTTAU` (total aerosol extinction AOT, 550 nm) | 0.5° × 0.625° (361 × 576) | 1 (unitless) | 1980-01 to 2026-09 | GES DISC |
+| Aerosol optical depth, satellite | MOD08_M3 6.1 (Terra MODIS), monthly | `AOD_550_Dark_Target_Deep_Blue_Combined_Mean_Mean` | 1° × 1° (180 × 360) | none | 2000-02-01 to 2026-10-01 | **LAADS DAAC** |
+
+Also seen: OMNO2d 003 (V3), 2004-10-01 to 2026-03-15; not used (004 is the newer release).
+
+Access:
+- OMNO2d and M2TMNXAER: Earthdata cloud OPeNDAP with the existing client (subset requests).
+- MOD08_M3: not on the GES DISC/cloud OPeNDAP route. Before approval, LAADS OPeNDAP
+  returned "403 Access Denied by OAuth2 Provider"; LAADS cloud HTTPS serves whole files only
+  (HDF4; one file measured 393,401,536 bytes; about 122.3 GB for 311 months). After the
+  owner approved the LAADS application in Earthdata Login (2026-11-14), LAADS OPeNDAP
+  (`ladsweb.modaps.eosdis.nasa.gov/opendap`) answered with 200 and accepts the same DAP4
+  subset request the existing client sends, so no new client was written; the CMR granule
+  lookup takes the OPeNDAP host as a parameter. One 1° cell centre lies in the catchment
+  box: 44.5°N, 79.5°W. Check value: June 2015 = 0.182 (raw 182 × 0.001).
+  Earthdata Login → Applications → Authorized Apps (owner's screenshot, 2026-11-14) lists
+  "LAADS Web" and "LAADS DAAC Cumulus (PROD)", alongside "AppEEARS" and "NASA GESDISC DATA
+  ARCHIVE". "LAADS Web" matches the OPeNDAP host (ladsweb.modaps.eosdis.nasa.gov); the
+  Cumulus cloud HTTPS route already answered before the approval. Which of the two LAADS
+  approvals the OPeNDAP route needs was not tested separately [verify: keep both approved].
+- MOD08_M3 screening: the product's own (MODIS Atmosphere L3 ATBD C6/C6.1, 2019-02-20, p. 24,
+  section 3.1: L2 QA flags aggregate and QA-weight the L3 statistics; file attributes
+  Statistic_Type "Simple_MND", Weighting "MinNumDays", QA set "Quality_Assurance_Land").
+  We drop fill (−9999) and values outside the valid range (0–5000 raw, 0–5 scaled).
+
+Screening and handling:
+- OMNO2d: the product's own screening applies (OMNO2 README v5.0, Dec 2024, p. 32, Table 4):
+  solar zenith < 85°, effective cloud fraction < 30% for the cloud-screened field,
+  XTrackQualityFlagsModified 0 or 255, ascending orbit, VCD summary flags not set. Fill
+  value −1.26765e30 dropped. Cells combined with the `Weight` field (p. 33, eq. 5).
+  A day counts when at least half the box's cells have data; a month counts with at least
+  **10 valid days**; otherwise the month is missing. Both thresholds are **project policy,
+  not NASA requirements** (the README sets neither). Proposed by the author; review 1
+  (2026-11-14) recommends accepting them; owner's standing instruction: "go ahead with your
+  recommendatons". Valid-day counts per
+  month are in `data/qc/simcoe_on_no2_valid_days.csv`. Winter gaps are not filled.
+- M2TMNXAER: model output, no screening; cos(latitude)-weighted mean of cells in the box.
+- Accuracy: none filled. OMNO2 README p. 36 says its uncertainty fields "should not be used
+  for data quality assessments"; the MERRA-2 README (TOTEXTTAU listed p. 27) gives no
+  accuracy figure. MOD08_M3: [verify: accuracy statement once the product is reachable].
+
+Correlation pairs and the expectations written before results are in `data/expectations.json`.
+
 ## Accuracy figures used
 
 - MODIS LST: 1 K (= 1 °C for differences). MOD11 User Guide V6.1, p. 21, QC table:

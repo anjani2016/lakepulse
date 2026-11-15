@@ -1,0 +1,19 @@
+land-cover-ca v2
+Copyright 2026 Alpha Centauri Ventures Inc. (Centauri Research)
+
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This model is a modified version of Prithvi-EO-2.0-300M
+(https://huggingface.co/ibm-nasa-geospatial/Prithvi-EO-2.0-300M,
+revision 9eb1b1102806593963daa333bcc491b1c6f8562f), licensed under the Apache License, Version 2.0.
+Modification: all weights were fine-tuned, with a new decoder, for six land-cover classes (described in README.md).
+
+Training labels: 2020 Land Cover of Canada (Canada Centre for Remote Sensing).
+Contains information licensed under the Open Government Licence – Canada
+(https://open.canada.ca/en/open-government-licence-canada).
+
+Watershed units, shoreline and streams: Ontario Watershed Boundaries and Ontario Hydro Network.
+Contains information licensed under the Open Government Licence – Ontario.
+
+Training imagery: Sentinel-2 Level-2A.
+Contains modified Copernicus Sentinel data 2019–2021.

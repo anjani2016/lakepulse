@@ -118,6 +118,8 @@ def main() -> None:
         "season_months": list(analysis.SEASON_MONTHS),
         "min_seasons": __import__("lakepulse.stats", fromlist=["MIN_POINTS"]).MIN_POINTS,
         "cause_caveat": analysis.CAUSE_CAVEAT,
+        "spurious_trend_note": analysis.SPURIOUS_TREND_NOTE,
+        "expectations": {k: v for k, v in analysis.load_expectations().items() if k != "pairs"},
         "lakes": lakes_meta(),
         "variables": {k: {"label": v.label, "unit": v.unit, "tier": v.tier, "source": v.source, "scope": v.scope,
                           "frequency": v.frequency, "definition": v.definition, "notes": list(v.notes),
@@ -133,6 +135,8 @@ def main() -> None:
     print(f"season means: {len(seasonal)} | trend series: {len(trends)} ({n_sig} significant) | "
           f"correlations: {len(corr)} | wrote web/site_data.js ({len(js):,} bytes)")
     print(trends[["lake", "variable", "n_seasons", "slope_per_decade", "mann_kendall_p", "significant", "accuracy_verdict"]].to_string(index=False))
+    print("\ncorrelation pairs (all tested, including those that show nothing):")
+    print(corr[["lake", "x", "y", "status", "n", "r_raw", "p_raw", "r_detrended", "p_detrended", "expected_sign", "found_raw", "found_detrended"]].to_string(index=False))
 
 
 if __name__ == "__main__":

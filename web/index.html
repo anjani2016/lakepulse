@@ -5,24 +5,35 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lake Trend Detective</title>
 <meta name="description" content="Pick a lake and a variable, see its long record, and find out whether it is really trending.">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/icon-180.png">
 <style>
 :root {
   --bg: #f7f8f6; --panel: #ffffff; --ink: #1d2422; --muted: #5b6662; --line: #d9dfdc;
   --accent: #1f6f8b; --accent-soft: #e3f0f5; --trend: #c2410c; --dots: #1f6f8b; --month: #9fb4bd;
   --ok: #166534; --ok-soft: #dcfce7; --no: #6b7280; --no-soft: #f1f3f4; --warn: #92400e; --warn-soft: #fef3c7;
+  /* The wordmark logo is dark navy: shown on the light theme only. */
+  --brand-logo: block; --brand-mark: none;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #111615; --panel: #1a201f; --ink: #e6ebe9; --muted: #9aa6a2; --line: #2e3836;
     --accent: #6cc0dc; --accent-soft: #16323c; --trend: #fb923c; --dots: #6cc0dc; --month: #3f5862;
     --ok: #86efac; --ok-soft: #14301f; --no: #b0b7bd; --no-soft: #23292b; --warn: #fcd34d; --warn-soft: #3a2f10;
+    --brand-logo: none; --brand-mark: flex;
   }
 }
 :root[data-theme="dark"] {
   --bg: #111615; --panel: #1a201f; --ink: #e6ebe9; --muted: #9aa6a2; --line: #2e3836;
   --accent: #6cc0dc; --accent-soft: #16323c; --trend: #fb923c; --dots: #6cc0dc; --month: #3f5862;
   --ok: #86efac; --ok-soft: #14301f; --no: #b0b7bd; --no-soft: #23292b; --warn: #fcd34d; --warn-soft: #3a2f10;
+  --brand-logo: none; --brand-mark: flex;
 }
+.brand { margin: 0 0 12px; }
+.brand-logo { display: var(--brand-logo); height: 48px; width: auto; max-width: 100%; }
+.brand-mark { display: var(--brand-mark); align-items: center; gap: 10px; }
+.brand-mark img { width: 48px; height: 48px; }
+.brand-mark span { font-weight: 800; font-size: 1.5rem; letter-spacing: .06em; color: var(--ink); }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 main { max-width: 980px; margin: 0 auto; padding: 24px 16px 64px; }
@@ -61,12 +72,20 @@ button.secondary { background: transparent; color: var(--accent); }
 dl.glossary dt { font-weight: 600; margin-top: 10px; }
 dl.glossary dd { margin: 2px 0 0; color: var(--muted); }
 footer { color: var(--muted); font-size: .82rem; }
+.pairbox { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; }
+.pairbox .side { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 6px; }
+table.corrtable td { width: auto !important; font-size: .86rem; }
+table.corrtable td:first-child { color: var(--ink); }
 .muted { color: var(--muted); }
 .flag { color: var(--warn); font-weight: 600; }
 </style>
 </head>
 <body>
 <main>
+  <div class="brand">
+    <img class="brand-logo" src="assets/logo-header.png" width="144" height="48" alt="LakePulse">
+    <div class="brand-mark"><img src="assets/icon-mark-96.png" width="48" height="48" alt=""><span>LAKEPULSE</span></div>
+  </div>
   <h1>Lake Trend Detective</h1>
   <p class="lede">Pick a lake and a variable. See its long record, and find out whether it is really trending or just wiggling.</p>
 
@@ -110,7 +129,7 @@ footer { color: var(--muted); font-size: .82rem; }
   </section>
 
   <section class="panel corr" id="corrPanel">
-    <h2>What moves with lake temperature?</h2>
+    <h2>What moves together?</h2>
     <div id="corrList"></div>
     <p class="muted" id="causeCaveat"></p>
   </section>
@@ -139,7 +158,7 @@ footer { color: var(--muted); font-size: .82rem; }
   const D = window.SITE_DATA;
   if (!D) { document.querySelector("main").innerHTML = "<p>Data file site_data.js is missing. Run scripts/run_analysis.py.</p>"; return; }
   const $ = id => document.getElementById(id);
-  const ROLE_GROUPS = [["lake", "The lake"], ["driver", "Weather and water drivers"], ["landscape", "The land around the lake"], ["diagnostic", "Checks"]];
+  const ROLE_GROUPS = [["lake", "The lake"], ["driver", "Weather and water drivers"], ["air", "Air quality"], ["landscape", "The land around the lake"], ["diagnostic", "Checks"]];
   const fmt = (x, d = 2) => (x === null || x === undefined || Number.isNaN(x)) ? "n/a" : Number(x).toFixed(d);
   const fmtP = p => p === null || p === undefined ? "n/a" : (p < 0.001 ? "< 0.001" : p.toFixed(3));
   const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -248,7 +267,25 @@ footer { color: var(--muted); font-size: .82rem; }
     }
     const corr = D.correlations.filter(c => c.lake === lake);
     $("corrPanel").hidden = !corr.length;
-    $("corrList").innerHTML = corr.map(c => `<p>${esc(c.text)}</p>`).join("");
+    const lbl = v => esc(D.variables[v] ? D.variables[v].label : v);
+    const rCell = (r, p) => r === null || r === undefined ? "—" : `r = ${fmt(r, 2)}<br><span class="muted">p ${p !== null && p !== undefined && p < 0.001 ? "" : "= "}${fmtP(p)}</span>`;
+    const no2 = corr.find(c => c.x === "no2_trop_column" && c.y === "lake_skin_temp");
+    let html = "";
+    if (no2) {
+      html += `<div class="pairbox"><strong>${lbl(no2.x)} and ${lbl(no2.y)}</strong>
+        <div class="side"><div><span class="muted">Raw series</span><br>${rCell(no2.r_raw, no2.p_raw)}</div>
+        <div><span class="muted">Trends removed</span><br>${rCell(no2.r_detrended, no2.p_detrended)}</div></div>
+        <p class="muted" style="margin:6px 0 0">${esc(D.spurious_trend_note)}</p>
+        ${no2.status !== "ok" ? `<p class="muted" style="margin:4px 0 0">${esc(no2.text)}</p>` : ""}</div>`;
+    }
+    const rows = corr.map(c => `<tr><td>${lbl(c.x)} vs ${lbl(c.y)}</td>
+      <td>${c.expectation ? esc(c.expectation) : '<span class="muted">none stated</span>'}</td>
+      <td>${c.status === "ok" ? `${esc(c.found_raw)}<br><span class="muted">trends removed: ${esc(c.found_detrended ?? "n/a")}</span>` : `<span class="muted">${esc(c.status)}</span>`}</td>
+      <td>${rCell(c.r_raw, c.p_raw)}</td></tr>`).join("");
+    html += `<div style="overflow-x:auto"><table class="nums corrtable"><tr><td><b>Pair</b></td><td><b>Expected</b></td><td><b>Found</b></td><td><b>Raw r</b></td></tr>${rows}</table></div>`;
+    html += corr.filter(c => c.status === "ok").map(c => `<p>${esc(c.text)}</p>`).join("");
+    if (D.expectations && D.expectations.written_on) html += `<p class="muted" style="font-size:.85rem">Expectations were written on ${esc(D.expectations.written_on)}, before any of these numbers were computed.</p>`;
+    $("corrList").innerHTML = html;
     $("causeCaveat").textContent = D.cause_caveat;
     const dr = D.drift[lake];
     $("driftPanel").hidden = !dr || dr.status !== "ok";
@@ -258,7 +295,7 @@ footer { color: var(--muted); font-size: .82rem; }
   // ---- glossary and footer
   $("glossary").innerHTML = Object.entries(D.variables).map(([id, v]) => `<dt>${esc(v.label)} <span class="badge">${esc(v.tier)}</span></dt><dd>${esc(v.definition)}</dd>`).join("");
   const attr = Object.values(D.lakes).map(l => l.attribution).filter(Boolean);
-  $("footer").innerHTML = `<p style="margin:0 0 6px">Data: MODIS MOD11A2, MOD13A3 and MCD12Q1 Version 6.1 (NASA LP DAAC, via AppEEARS); MERRA-2 M2TMNXSLV, M2TMNXFLX and M2TMNXRAD (NASA GES DISC); GPM IMERG Final V07 monthly (NASA GES DISC).</p>` +
+  $("footer").innerHTML = `<p style="margin:0 0 6px">Data: MODIS MOD11A2, MOD13A3 and MCD12Q1 Version 6.1 (NASA LP DAAC, via AppEEARS); MODIS MOD08_M3 Version 6.1 (NASA LAADS DAAC); MERRA-2 M2TMNXSLV, M2TMNXFLX, M2TMNXRAD and M2TMNXAER 5.12.4 (NASA GES DISC); GPM IMERG Final V07 monthly (NASA GES DISC); OMI/Aura OMNO2d Version 004 (NASA GES DISC).</p>` +
     attr.map(a => `<p style="margin:0 0 6px">${esc(a)}</p>`).join("") +
     `<p style="margin:0">A submission to the 2026 NASA Space Apps Challenge, "Be An Earth System Trend Detective!". Results updated ${esc(D.generated)}.</p>`;
 

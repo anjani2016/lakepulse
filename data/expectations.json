@@ -1,0 +1,43 @@
+{
+  "written_on": "2026-11-14",
+  "written_before_results": true,
+  "rule": "Expectations were written by the owner before any of these correlations were computed. Do not edit an expectation after seeing a result; add a dated note instead.",
+  "pairs": [
+    {
+      "x": "aod_satellite",
+      "y": "solar_radiation",
+      "expected_sign": "negative",
+      "expectation": "Negative: more haze, less sunlight reaching the ground."
+    },
+    {
+      "x": "aod_model",
+      "y": "solar_radiation",
+      "expected_sign": "negative",
+      "expectation": "Negative: more haze, less sunlight reaching the ground."
+    },
+    {
+      "x": "solar_radiation",
+      "y": "lake_skin_temp",
+      "expected_sign": "positive",
+      "expectation": "Positive: more sunlight, warmer lake surface."
+    },
+    {
+      "x": "aod_satellite",
+      "y": "lake_skin_temp",
+      "expected_sign": "weak negative",
+      "expectation": "Weak negative, acting through sunlight."
+    },
+    {
+      "x": "no2_trop_column",
+      "y": "lake_skin_temp",
+      "expected_sign": "none",
+      "expectation": "No physical link. May look strong on the raw series; should fall toward zero once both trends are removed."
+    },
+    {
+      "x": "aod_satellite",
+      "y": "aod_model",
+      "expected_sign": null,
+      "expectation": "No expectation was stated before results."
+    }
+  ]
+}

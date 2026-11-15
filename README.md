@@ -61,15 +61,17 @@ python3 -m http.server 8765 --directory web      # open http://127.0.0.1:8765
 
 There is no `~/.netrc` there. Set `EARTHDATA_USERNAME` and `EARTHDATA_PASSWORD` as
 secrets in the cloud environment's settings; the scripts read them and never print them.
-The Earthdata account needs the "NASA GESDISC DATA ARCHIVE" application approved.
+The Earthdata account needs the "NASA GESDISC DATA ARCHIVE", "LAADS Web" and "LAADS DAAC
+Cumulus (PROD)" applications approved.
 AppEEARS task IDs are in `data/appeears_tasks.json`, so a cloud session can pick up the
 queued requests with `scripts/fetch_appeears.py`.
 
 ## Data and attribution
 
-MODIS MOD11A2, MOD13A3 and MCD12Q1 Version 6.1 (NASA LP DAAC, via AppEEARS); MERRA-2
-M2TMNXSLV, M2TMNXFLX and M2TMNXRAD (NASA GES DISC); GPM IMERG Final V07 monthly (NASA GES
-DISC). Lake outlines and watershed units: contains information licensed under the Open
+MODIS MOD11A2, MOD13A3 and MCD12Q1 Version 6.1 (NASA LP DAAC, via AppEEARS); MODIS MOD08_M3
+Version 6.1 (NASA LAADS DAAC); MERRA-2 M2TMNXSLV, M2TMNXFLX, M2TMNXRAD and M2TMNXAER 5.12.4
+(NASA GES DISC); GPM IMERG Final V07 monthly (NASA GES DISC); OMI/Aura OMNO2d Version 004
+(NASA GES DISC). Lake outlines and watershed units: contains information licensed under the Open
 Government Licence – Ontario.
 
 ## Licence

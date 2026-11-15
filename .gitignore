@@ -10,3 +10,6 @@ __pycache__/
 z_notes+summaries/
 # Raw downloads (large; rebuilt by the fetch scripts)
 data/raw/
+
+# Land-cover track: downloads, geometry, chips (rebuilt by landcover/scripts)
+landcover/data/
