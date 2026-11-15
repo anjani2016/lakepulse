@@ -30,7 +30,15 @@ MIN_VALID_FRACTION = 0.10
 
 
 def _open(path: Path) -> xr.Dataset:
-    return xr.open_dataset(path, mask_and_scale=True, decode_times=True)
+    ds = xr.open_dataset(path, mask_and_scale=True, decode_times=True)
+    # AppEEARS labels time with calendar "julian" and units "seconds since 2000-01-01".
+    # From that epoch the Julian and Gregorian calendars give the same dates until 2100,
+    # so the cftime dates are copied field by field (checked 2026-11-14: first MOD11A2
+    # composite 2000-02-18 = granule A2000049).
+    t = ds["time"].values
+    if len(t) and not np.issubdtype(np.asarray(t).dtype, np.datetime64):
+        ds = ds.assign_coords(time=pd.to_datetime([f"{x.year:04d}-{x.month:02d}-{x.day:02d}" for x in t]))
+    return ds
 
 
 def _find(files, product: str) -> Path:
@@ -48,8 +56,8 @@ def _qc_ok(qc: xr.DataArray) -> xr.DataArray:
 
 
 def _cell_mask(ds: xr.Dataset, centres_xy: list[list[float]], tol_m: float = 5.0) -> xr.DataArray:
-    # AppEEARS native-projection netCDF names its grid axes xdim/ydim [verify: on first bundle];
-    # fall back to x/y.
+    # AppEEARS native-projection netCDF names its grid axes xdim/ydim (checked on the
+    # 2026-11-14 bundles); x/y kept as a fallback.
     xname = "xdim" if "xdim" in ds.dims else "x"
     yname = "ydim" if "ydim" in ds.dims else "y"
     xs, ys = ds[xname].values, ds[yname].values
@@ -63,7 +71,13 @@ def _cell_mask(ds: xr.Dataset, centres_xy: list[list[float]], tol_m: float = 5.0
 
 
 def lake_lst_rows(nc_files, lake_id: str, clean_centres_xy: list[list[float]]) -> tuple[pd.DataFrame, dict]:
-    ds = _open(_find(nc_files, "MOD11A2"))
+    path = _find(nc_files, "MOD11A2")
+    ds = _open(path)
+    # AppEEARS declares _FillValue = 0 on QC_Day / QC_Night, but in MOD11 a QC of 0 means
+    # "produced, good quality, LST error <= 1K". Masking would blank the best pixels (seen
+    # 2026-11-14: 826,481 of 1,115,165 valid daytime LST pixels had QC 0). Read QC raw.
+    raw = xr.open_dataset(path, mask_and_scale=False, decode_times=False)
+    qc = {v: ds[v].copy(data=raw[v].values) for v in ("QC_Day", "QC_Night")}  # same grid, unmasked values
     mask = _cell_mask(ds, clean_centres_xy)
     n_cells = int(mask.sum())
     if n_cells == 0:
@@ -74,7 +88,7 @@ def lake_lst_rows(nc_files, lake_id: str, clean_centres_xy: list[list[float]]) -
         lst = ds[lst_var]
         if float(lst.max(skipna=True)) > 1000:  # scale factor not applied by the file
             lst = lst * 0.02
-        ok = _qc_ok(ds[qc_var]) & mask & lst.notnull()
+        ok = _qc_ok(qc[qc_var]) & mask & lst.notnull()
         frac = ok.sum(dim=[d for d in ok.dims if d != "time"]) / n_cells
         comp_mean = lst.where(ok).mean(dim=[d for d in lst.dims if d != "time"]) - 273.15
         comp = comp_mean.where(frac >= MIN_VALID_FRACTION).to_series().dropna()
@@ -85,7 +99,7 @@ def lake_lst_rows(nc_files, lake_id: str, clean_centres_xy: list[list[float]]) -
     vt = ds["Day_view_time"]
     if float(vt.max(skipna=True)) > 30:
         vt = vt * 0.1
-    vt_c = vt.where(mask & _qc_ok(ds["QC_Day"])).mean(dim=[d for d in vt.dims if d != "time"]).to_series().dropna()
+    vt_c = vt.where(mask & _qc_ok(qc["QC_Day"]) & ds["LST_Day_1km"].notnull()).mean(dim=[d for d in vt.dims if d != "time"]).to_series().dropna()
     vt_c.index = pd.to_datetime(vt_c.index)
     view = vt_c.groupby(vt_c.index.to_period("M")).mean()
 

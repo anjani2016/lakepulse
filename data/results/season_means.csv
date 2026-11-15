@@ -259,6 +259,212 @@ simcoe_on,air_temp_2m,MERRA-2 M2TMNXSLV 5.12.4 (GES DISC),Modeled (Simulation),�
 simcoe_on,air_temp_2m,MERRA-2 M2TMNXSLV 5.12.4 (GES DISC),Modeled (Simulation),°C,2023,17.346533333333333,6.0
 simcoe_on,air_temp_2m,MERRA-2 M2TMNXSLV 5.12.4 (GES DISC),Modeled (Simulation),°C,2024,18.164550000000002,6.0
 simcoe_on,air_temp_2m,MERRA-2 M2TMNXSLV 5.12.4 (GES DISC),Modeled (Simulation),°C,2025,17.683716666666665,6.0
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2001,16.33,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2002,21.05,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2003,28.89,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2004,28.1,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2005,27.5,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2006,25.94,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2007,29.89,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2008,31.27,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2009,31.13,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2010,28.56,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2011,26.95,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2012,28.61,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2013,32.01,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2014,32.96,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2015,31.64,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2016,31.64,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2017,31.33,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2018,34.64,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2019,36.56,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2020,35.02,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2021,32.29,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2022,33.45,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2023,33.77,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2024,33.48,
+simcoe_on,cropland_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2025,34.05,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2001,7.5,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2002,7.76,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2003,5.93,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2004,6.37,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2005,6.01,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2006,5.94,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2007,5.82,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2008,5.8,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2009,6.79,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2010,7.22,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2011,7.47,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2012,7.56,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2013,7.36,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2014,7.39,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2015,7.49,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2016,7.5,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2017,7.64,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2018,7.62,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2019,6.9,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2020,7.22,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2021,7.68,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2022,8.42,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2023,8.86,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2024,10.21,
+simcoe_on,forest_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2025,9.24,
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2000,0.16133333333333333,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2001,0.45233333333333325,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2002,0.6873333333333335,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2003,0.34,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2004,0.541,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2005,-0.9826666666666668,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2006,0.06566666666666669,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2007,-0.1373333333333334,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2008,0.19800000000000006,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2009,0.46900000000000003,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2010,0.11383333333333338,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2011,-0.2153333333333333,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2012,-0.2821666666666667,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2013,-0.2098333333333334,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2014,-0.5413333333333333,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2015,-0.7261666666666665,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2016,-0.5458333333333333,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2017,-0.5046666666666667,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2018,-0.6718333333333334,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2019,-0.6371666666666665,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2020,-0.36633333333333334,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2021,-1.3071666666666666,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2022,-0.5986666666666666,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2023,-0.6261666666666666,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2024,-1.066,6.0
+simcoe_on,lake_minus_air,Calculated: MOD11A2 lake skin temperature minus MERRA-2 T2M,Derived (satellite minus model),°C,2025,-0.9031666666666668,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2000,15.187,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2001,15.635833333333332,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2002,15.960166666666666,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2003,15.062166666666668,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2004,15.568666666666665,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2005,16.582666666666665,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2006,16.056166666666666,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2007,16.645833333333332,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2008,15.348666666666666,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2009,15.125166666666667,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2010,16.7865,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2011,16.317333333333334,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2012,17.1505,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2013,16.400666666666666,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2014,15.398166666666667,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2015,16.177833333333332,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2016,17.358,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2017,16.160666666666668,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2018,16.904,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2019,15.399833333333333,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2020,16.745,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2021,16.765833333333333,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2022,16.531666666666666,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2023,16.720166666666668,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2024,17.098499999999998,6.0
+simcoe_on,lake_skin_temp,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2025,16.7805,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2000,15.4935,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2001,15.908333333333333,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2002,16.436,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2003,15.334999999999999,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2004,15.979666666666667,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2005,16.986833333333333,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2006,16.537666666666667,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2007,17.044333333333334,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2008,15.687666666666667,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2009,15.491,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2010,17.049333333333333,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2011,16.815166666666666,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2012,17.429166666666667,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2013,16.894166666666667,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2014,15.646166666666668,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2015,16.404333333333334,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2016,17.636,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2017,16.52933333333333,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2018,17.085166666666666,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2019,15.604999999999999,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2020,17.057666666666666,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2021,17.062,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2022,16.8615,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2023,16.87783333333333,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2024,17.271833333333333,6.0
+simcoe_on,lake_skin_temp_day,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2025,16.753,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2000,14.881,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2001,15.363666666666667,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2002,15.484666666666667,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2003,14.789833333333334,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2004,15.157499999999999,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2005,16.17833333333333,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2006,15.575166666666666,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2007,16.247666666666667,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2008,15.009333333333332,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2009,14.759666666666668,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2010,16.524,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2011,15.820166666666665,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2012,16.871333333333332,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2013,15.906666666666666,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2014,15.150166666666669,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2015,15.951333333333332,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2016,17.079833333333333,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2017,15.791833333333335,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2018,16.723,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2019,15.194833333333335,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2020,16.432000000000002,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2021,16.469833333333334,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2022,16.201666666666668,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2023,16.56266666666667,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2024,16.925,6.0
+simcoe_on,lake_skin_temp_night,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,°C,2025,16.80816666666667,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2000,11.327333333333334,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2001,11.215166666666667,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2002,11.116999999999999,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2003,11.1045,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2004,11.116999999999999,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2005,11.044166666666667,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2006,11.049999999999999,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2007,11.054,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2008,11.098833333333333,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2009,11.222499999999998,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2010,11.039666666666667,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2011,11.174,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2012,11.095333333333334,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2013,11.176499999999999,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2014,11.157333333333334,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2015,11.034833333333333,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2016,11.138166666666665,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2017,11.129333333333333,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2018,11.105166666666667,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2019,11.0595,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2020,11.027166666666666,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2021,10.993833333333335,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2022,10.86,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2023,10.634,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2024,10.262833333333333,6.0
+simcoe_on,modis_day_view_time,MODIS Terra MOD11A2.061 (AppEEARS),Satellite-derived,hours,2025,9.813333333333334,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2000,0.6963333333333334,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2001,0.6796833333333333,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2002,0.6795,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2003,0.6805,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2004,0.6910166666666667,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2005,0.6666166666666666,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2006,0.6896333333333334,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2007,0.6673,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2008,0.6943,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2009,0.6800666666666667,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2010,0.6937833333333333,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2011,0.6999666666666666,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2012,0.6793,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2013,0.6936,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2014,0.6892166666666667,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2015,0.6882833333333332,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2016,0.67125,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2017,0.6993999999999999,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2018,0.6950500000000001,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2019,0.6663666666666667,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2020,0.6673333333333332,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2021,0.7009,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2022,0.68425,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2023,0.6920333333333333,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2024,0.6985333333333333,6.0
+simcoe_on,ndvi,MODIS Terra MOD13A3.061 NDVI (AppEEARS),Satellite-derived,index (−0.2 to 1),2025,0.6676166666666666,6.0
 simcoe_on,precipitation,GPM IMERG Final GPM_3IMERGM V07 (GES DISC),Satellite-derived,mm/month,2000,102.2,6.0
 simcoe_on,precipitation,GPM IMERG Final GPM_3IMERGM V07 (GES DISC),Satellite-derived,mm/month,2001,83.97666666666667,6.0
 simcoe_on,precipitation,GPM IMERG Final GPM_3IMERGM V07 (GES DISC),Satellite-derived,mm/month,2002,76.00166666666667,6.0
@@ -362,6 +568,31 @@ simcoe_on,surface_pressure,MERRA-2 M2TMNXSLV 5.12.4 (GES DISC),Modeled (Simulati
 simcoe_on,surface_pressure,MERRA-2 M2TMNXSLV 5.12.4 (GES DISC),Modeled (Simulation),kPa,2023,98.57361666666667,6.0
 simcoe_on,surface_pressure,MERRA-2 M2TMNXSLV 5.12.4 (GES DISC),Modeled (Simulation),kPa,2024,98.67341666666665,6.0
 simcoe_on,surface_pressure,MERRA-2 M2TMNXSLV 5.12.4 (GES DISC),Modeled (Simulation),kPa,2025,98.78500000000001,6.0
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2001,2.61,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2002,2.63,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2003,2.63,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2004,2.64,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2005,2.64,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2006,2.68,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2007,2.68,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2008,2.68,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2009,2.68,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2010,2.71,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2011,2.73,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2012,2.76,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2013,2.76,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2014,2.78,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2015,2.83,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2016,2.88,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2017,2.92,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2018,2.94,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2019,2.95,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2020,2.96,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2021,3.0,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2022,3.01,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2023,3.01,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2024,3.07,
+simcoe_on,urban_share,MODIS MCD12Q1.061 land cover (AppEEARS),Satellite-derived,%,2025,3.07,
 simcoe_on,wind_speed,MERRA-2 M2TMNXFLX 5.12.4 (GES DISC),Modeled (Simulation),m/s,2000,5.0667,6.0
 simcoe_on,wind_speed,MERRA-2 M2TMNXFLX 5.12.4 (GES DISC),Modeled (Simulation),m/s,2001,5.28755,6.0
 simcoe_on,wind_speed,MERRA-2 M2TMNXFLX 5.12.4 (GES DISC),Modeled (Simulation),m/s,2002,5.150966666666666,6.0

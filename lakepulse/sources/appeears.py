@@ -69,21 +69,33 @@ class Client:
         self._token: str | None = None
         self.s = requests.Session()
 
-    def __enter__(self) -> "Client":
+    def _login(self) -> None:
         user, pwd = credentials()
-        r = self.s.post(f"{API}/login", auth=(user, pwd), headers={"Content-Length": "0"}, timeout=TIMEOUT)
+        r = requests.post(f"{API}/login", auth=(user, pwd), headers={"Content-Length": "0"}, timeout=TIMEOUT)
         if r.status_code != 200:
             raise RuntimeError(f"AppEEARS login failed with HTTP {r.status_code}")
         self._token = r.json()["token"]
         self.s.headers["Authorization"] = f"Bearer {self._token}"
+
+    def __enter__(self) -> "Client":
+        self._login()
         return self
 
+    def _get(self, url: str, **kw) -> requests.Response:
+        """GET that logs in again once if the token was invalidated (AppEEARS ends a
+        user's token when any client for that user logs out)."""
+        r = self.s.get(url, timeout=TIMEOUT, **kw)
+        if r.status_code in (401, 403):
+            self._login()
+            r = self.s.get(url, timeout=TIMEOUT, **kw)
+        return r
+
     def __exit__(self, *exc) -> None:
-        try:
-            self.s.post(f"{API}/logout", timeout=TIMEOUT)
-        finally:
-            self._token = None
-            self.s.headers.pop("Authorization", None)
+        # No /logout call: it would end the token for every other running client of
+        # the same user (seen 2026-11-14: a quick status check killed a running wait).
+        # Tokens expire on their own.
+        self._token = None
+        self.s.headers.pop("Authorization", None)
 
     def submit(self, task: dict) -> dict:
         r = self.s.post(f"{API}/task", json=task, timeout=TIMEOUT)
@@ -92,12 +104,12 @@ class Client:
         return r.json()
 
     def status(self, task_id: str) -> dict:
-        r = self.s.get(f"{API}/task/{task_id}", timeout=TIMEOUT)
+        r = self._get(f"{API}/task/{task_id}")
         r.raise_for_status()
         return r.json()
 
     def download_bundle(self, task_id: str, out_dir: Path, suffixes=(".nc", ".json", ".csv", ".xml", ".txt")) -> list[Path]:
-        r = self.s.get(f"{API}/bundle/{task_id}", timeout=TIMEOUT)
+        r = self._get(f"{API}/bundle/{task_id}")
         r.raise_for_status()
         out_dir.mkdir(parents=True, exist_ok=True)
         saved = []
