@@ -130,7 +130,7 @@ Google Colab, from `colab usage` before and after each session (`landcover/colab
 ran in parallel without connection errors. Model tracking: MLflow experiment `lakepulse-land-cover`; registered model
 `land-cover-ca` versions 1-3.
 
-Alpha Centauri Ventures Inc. (Centauri Research)
+Anjani Duddukuru
 
 ## Published weights
 

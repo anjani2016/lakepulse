@@ -101,9 +101,9 @@ Per-class IoU (test block): {json.dumps(ev['test_block']['per_class_iou'])}
 ## Attribution
 - Labels: Contains information licensed under the Open Government Licence - Canada (2020 Land Cover of Canada).
 - Streams, shoreline, watershed units: Contains information licensed under the Open Government Licence - Ontario.
-- Imagery: Contains modified Copernicus Sentinel data [verify: year range and exact wording].
+- Imagery: Contains modified Copernicus Sentinel data 2019–2021.
 
-Alpha Centauri Ventures Inc. (Centauri Research)
+Anjani Duddukuru
 """
     (out / "README.md").write_text(readme)
 
