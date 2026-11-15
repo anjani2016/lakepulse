@@ -214,8 +214,11 @@ def main() -> None:
                                          "note": "weights only; optimizer, learning-rate schedule and epoch count start fresh"}
         save()
         logger = None
-        if CREDS.exists():  # MLflow reads /root/.mlflow/credentials itself; this script never opens it
-            logger = MLFlowLogger(experiment_name=cfg["colab"]["mlflow_experiment"], tracking_uri=cfg["colab"]["tracking_uri"],
+        tracking_uri = os.environ.get("MLFLOW_TRACKING_URI") or cfg["colab"].get("tracking_uri")
+        if CREDS.exists() and not tracking_uri:
+            print("MLFLOW_TRACKING_URI is not set: MLflow logging is off for this run.", flush=True)
+        if CREDS.exists() and tracking_uri:  # MLflow reads /root/.mlflow/credentials itself; this script never opens it
+            logger = MLFlowLogger(experiment_name=cfg["colab"]["mlflow_experiment"], tracking_uri=tracking_uri,
                                   run_name=args.run_name, tags={"model": f"{cfg['model']['name']}-{cfg['model']['version']}",
                                   "base_model_revision": bm["revision"], "gpu": gpu, "resumed": str(resuming)})
         best_cb = BestWeightsToDrive()

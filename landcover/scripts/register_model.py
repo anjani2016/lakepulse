@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import shutil
 import sys
 from pathlib import Path
@@ -106,7 +107,10 @@ Alpha Centauri Ventures Inc. (Centauri Research)
 """
     (out / "README.md").write_text(readme)
 
-    mlflow.set_tracking_uri(cfg["colab"]["tracking_uri"])
+    tracking_uri = os.environ.get("MLFLOW_TRACKING_URI") or cfg["colab"].get("tracking_uri")
+    if not tracking_uri:
+        raise SystemExit("Set MLFLOW_TRACKING_URI to the MLflow server address (it is not stored in config.yaml).")
+    mlflow.set_tracking_uri(tracking_uri)
     client = MlflowClient()
     exp = client.get_experiment_by_name(cfg["colab"]["mlflow_experiment"])
     runs = client.search_runs([exp.experiment_id], filter_string=f"tags.mlflow.runName = '{args.run_name}'")

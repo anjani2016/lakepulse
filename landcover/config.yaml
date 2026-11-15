@@ -114,7 +114,7 @@ colab:
   unit_cap: 200       # owner 2026-11-14: "200 units"
   drive_root: lakepulse-landcover   # folder in My Drive
   mlflow_experiment: lakepulse-land-cover   # experiment 3; owner 2026-11-14 on this name: "i would not mind the name"
-  tracking_uri: https://mlflow.centauri-research.com
+  tracking_uri: null   # server address comes from the MLFLOW_TRACKING_URI environment variable; not stored in the repo
 
 v2:  # owner 2026-11-14: "Years and wider area"; "use a powerful gpu than the one being used"
   # Extra training-only watershed units: the 22 Ontario Watershed Boundaries (OWB Quaternary 2000, LIO LIO_Open04 layer 1,
