@@ -146,3 +146,5 @@ weights `a3f7cf8c…`), both equal to the Hub's LFS checksums; the 14 small file
 Made public by the owner on 2026-11-14 (owner: "made it public, check it"). Checked without a login: the API answers
 200 with `private: false` at Hub commit `c30beab0` (19 files, licence tag apache-2.0); the card page, the ablations
 README and a ranged download of the main weights answer 200, 200 and 206.
+Card updated for the smoke filter at Hub commit `c2811073`; its public `README.md` and `SHA256SUMS` are identical to the
+staged copies (checked without a login).
