@@ -1,0 +1,12 @@
+# Land-cover track, Mac side (staging, baselines, shares). Colab side: terratorch==1.2.14 on Colab's own image.
+numpy>=1.26,<3
+rasterio>=1.4,<2
+shapely>=2.1,<3
+pyproj>=3.6,<4
+pyyaml>=6,<7
+requests>=2.31,<3
+scikit-learn>=1.5,<2
+# scipy 1.15.3 wheels fail to load on this macOS (dlopen __thread_bss error); 1.14.x works. Same pin as LakePulse.
+scipy>=1.11,<1.15
+matplotlib>=3.8,<4
+pytest>=8,<10

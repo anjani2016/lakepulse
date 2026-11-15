@@ -1,0 +1,121 @@
+# Land-cover track (land-cover-ca). Plan: landcover/PLAN.md
+# Values marked "gate choice" were chosen for this track and are not from a source; change them here, not in code.
+
+model:
+  name: land-cover-ca
+  version: v1
+  base_model:
+    id: ibm-nasa-geospatial/Prithvi-EO-2.0-300M     # the bare base model, NOT the BurnScars fine-tune
+    revision: 9eb1b1102806593963daa333bcc491b1c6f8562f  # Hugging Face API sha read 2026-11-14
+    checkpoint_file: Prithvi_EO_V2_300M.pt
+    licence: apache-2.0
+  never_write: [burn-scar-ca]   # registry names this track must not touch
+
+classes:  # merged class set; index = model output
+  names: [forest, cropland, built_up, water, wetland, other]
+  ignore_index: -1
+  # 2020 Land Cover of Canada pixel value -> merged class name (ClassIndex_v2.pdf, read 2026-11-14)
+  from_lcc2020:
+    1: forest      # Temperate or sub-polar needleleaf forest
+    2: forest      # Sub-polar taiga needleleaf forest
+    5: forest      # Temperate or sub-polar broadleaf deciduous forest
+    6: forest      # Mixed forest
+    8: other       # Temperate or sub-polar shrubland
+    10: other      # Temperate or sub-polar grassland
+    11: other      # Sub-polar or polar shrubland-lichen-moss
+    12: other      # Sub-polar or polar grassland-lichen-moss
+    13: other      # Sub-polar or polar barren-lichen-moss
+    14: wetland    # Wetland
+    15: cropland   # Cropland
+    16: other      # Barren land
+    17: built_up   # Urban and built-up
+    18: water      # Water
+    19: other      # Snow and ice
+  # any other value (0 = no data) -> ignore
+
+labels:
+  url: https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/land/landcover/landcover-2020-classification.tif
+  bytes: 2107707760          # Content-Length read with curl -sI on 2026-11-14
+  year: 2020                 # record coverage 2019-01-01 to 2021-01-01
+  licence: Open Government Licence - Canada
+  licence_url: https://open.canada.ca/en/open-government-licence-canada
+  record: https://open.canada.ca/data/en/dataset/ee1580ab-a23d-4f86-a09b-79763677eb47
+  attribution: "Contains information licensed under the Open Government Licence - Canada. [verify: exact attribution line on the record]"
+  caveat: "The labels are a published map (stated overall accuracy 86.9% from 832 samples), not field-checked ground truth."
+
+hydro:
+  service: https://ws.lioservices.lrc.gov.on.ca/arcgis2/rest/services/LIO_OPEN_DATA/LIO_Open01/MapServer
+  layers: {watercourse: 26, waterbody: 25}
+  stream_types: [Stream]   # gate choice: OHN WATERCOURSE_TYPE kept for the strip; "Virtual Flow"/"Virtual Connector" run through lakes
+  licence: Open Government Licence - Ontario
+  attribution: "Contains information licensed under the Open Government Licence - Ontario."
+
+region:
+  units_file: ../data/geo/simcoe_on_owb_units.geojson   # Ontario Watershed Boundaries, quaternary units
+  units_crs: EPSG:5070                                  # from the file's own "crs" member
+  unit_name_field: WATERSHED_NAME
+  catchment_units:   # Lake Simcoe catchment (LakePulse study_regions.json)
+    - Talbot River - Trent-Severn Waterway
+    - Lake Simcoe
+    - Holland River
+    - Black River
+    - Pefferlaw River
+    - Beaver River
+  ring_units:        # gate choice (owner 2026-11-14 chose "wider ring"): the 7 neighbouring units in the same file
+    - Matchedash Bay
+    - Sparrow Lake - Severn River
+    - Lake St. John - Black River
+    - Head River
+    - Innisfil Creek
+    - Willow Creek
+    - Bear Creek - Nottawasaga River
+  lake_outline: ../data/geo/simcoe_on.geojson
+  strip_m: 30                 # owner 2026-11-14: "30 m (1 pixel)", each side of shoreline and streams
+  crs: EPSG:32617             # UTM 17N; the Sentinel-2 tiles over Simcoe are 17TNJ/NK/PJ/PK
+
+split:
+  # Test block = test_units plus the part of the "Lake Simcoe" unit within test_reach_m of them. Reason: the "Lake Simcoe"
+  # unit holds 272.6 of the 275.7 km of shoreline, Holland River only 1.2 km (shapely run, 2026-11-14), so Holland River
+  # alone would hold out almost no shoreline.
+  test_units: [Holland River]   # gate choice: Cook's Bay side; farmland, marsh, towns
+  test_shore_unit: Lake Simcoe
+  test_reach_m: 10000           # gate choice
+  val_units: [Pefferlaw River]  # gate choice: east side, away from the test block. Innisfil Creek kept only 4 chips after the gap.
+  gap_chips: 1                  # non-test chips within this many chip widths of the test units are dropped
+
+imagery:
+  stac_url: https://earth-search.aws.element84.com/v1
+  collection: sentinel-2-l2a
+  window: ["06-15", "09-15"]    # gate choice: summer
+  max_cloud: 40                 # gate choice: scene-level eo:cloud_cover, percent; pixels are then masked by SCL
+  max_scenes_per_tile: 12       # gate choice: lowest cloud first
+  scl_asset: scl
+  invalid_scl_classes: [0, 1, 3, 8, 9, 10, 11]   # as in the fire work
+  model_bands:  # base model order, same as the fire work
+    - {model: BLUE, asset: blue}
+    - {model: GREEN, asset: green}
+    - {model: RED, asset: red}
+    - {model: NIR_NARROW, asset: nir08}
+    - {model: SWIR_1, asset: swir16}
+    - {model: SWIR_2, asset: swir22}
+  years: [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]  # no Earth Search summer scenes under 20% cloud for 2016 (query 2026-11-14)
+
+chips:
+  chip_px: 224        # Prithvi-EO-2.0 pre-training size
+  res_m: 30
+  min_valid_fraction: 0.5
+
+colab:
+  unit_cap: 200       # owner 2026-11-14: "200 units"
+  drive_root: lakepulse-landcover   # folder in My Drive
+  mlflow_experiment: lakepulse-land-cover   # experiment 3; owner 2026-11-14 on this name: "i would not mind the name"
+  tracking_uri: https://mlflow.centauri-research.com
+
+v2:  # owner 2026-11-14: "Years and wider area"; "use a powerful gpu than the one being used"
+  # Extra training-only watershed units: the 22 Ontario Watershed Boundaries (OWB Quaternary 2000, LIO LIO_Open04 layer 1,
+  # Open Government Licence - Ontario) lying mostly within 15 km of the 13-unit region (query 2026-11-14).
+  extra_units_file: data/owb/owb_ring2_15km.geojson   # relative to landcover/
+  extra_units_crs: EPSG:4326
+  train_years: [2019, 2020, 2021]   # the 2020 label map was made from 2019-2021 imagery (record coverage 2019-01-01 to 2021-01-01)
+  test_year: 2020                   # test chips stay 2020-only so v1 and v2 are scored on the same pixels
+  gpu: A100                         # H100 if A100 is refused
