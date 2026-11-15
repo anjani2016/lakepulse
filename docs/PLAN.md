@@ -37,7 +37,8 @@ Consequences:
   whole files took over 10 minutes for one month; a subset request takes about a second.
   Access needs the "NASA GESDISC DATA ARCHIVE" application approved in the Earthdata
   profile, and a bearer token (fetched in memory from the same credentials).
-  [verify: run one Giovanni area-averaged time series for T2M over the Simcoe box and compare.]
+  Not done yet (planned): one Giovanni area-averaged T2M time series over the Simcoe box,
+  compared with ours. Stated as a limit in README.md.
 - **Tiers**: MERRA-2 rows are "Modeled (Simulation)". MODIS and IMERG rows are
   "Satellite-derived". Lake-minus-air is "Derived (satellite minus model)".
 - **MODIS measures skin temperature**, the top fraction of a millimetre, not the water column.
@@ -71,7 +72,7 @@ Access:
   "LAADS Web" and "LAADS DAAC Cumulus (PROD)", alongside "AppEEARS" and "NASA GESDISC DATA
   ARCHIVE". "LAADS Web" matches the OPeNDAP host (ladsweb.modaps.eosdis.nasa.gov); the
   Cumulus cloud HTTPS route already answered before the approval. Which of the two LAADS
-  approvals the OPeNDAP route needs was not tested separately [verify: keep both approved].
+  approvals the OPeNDAP route needs was not tested separately; keep both approved.
 - MOD08_M3 screening: the product's own (MODIS Atmosphere L3 ATBD C6/C6.1, 2019-02-20, p. 24,
   section 3.1: L2 QA flags aggregate and QA-weight the L3 statistics; file attributes
   Statistic_Type "Simple_MND", Weighting "MinNumDays", QA set "Quality_Assurance_Land").
@@ -91,9 +92,49 @@ Screening and handling:
 - M2TMNXAER: model output, no screening; cos(latitude)-weighted mean of cells in the box.
 - Accuracy: none filled. OMNO2 README p. 36 says its uncertainty fields "should not be used
   for data quality assessments"; the MERRA-2 README (TOTEXTTAU listed p. 27) gives no
-  accuracy figure. MOD08_M3: [verify: accuracy statement once the product is reachable].
+  accuracy figure. MOD08_M3: no figure found in the MODIS Atmosphere L3 ATBD read
+  (2019-02-20); the Level-2 aerosol ATBD was not read. Accuracy left empty for all three.
 
 Correlation pairs and the expectations written before results are in `data/expectations.json`.
+
+## Land cover: which source the analysis uses (decided 2026-11-14)
+
+Owner, verbatim: "we use the guideline and our own assessment and exclude it for analysis";
+"go ahead, but we choose one and say why?"; on showing both sources flagged: "ok".
+
+- **The disagreement, same area.** Bounding box (6,961.6 km²), share of land excluding
+  water, 2020: MODIS MCD12Q1 forest 7.22%, cropland 35.02%, urban 2.96%; land-cover-ca v2
+  31.587%, 48.767%, 14.329%. Over 2017–2025 in the box the model is 22.0–25.1 points above
+  MODIS on forest, 12.1–18.0 on cropland, 11.2–11.7 on urban. Source:
+  `landcover/data/results/modis_agreement.csv` / `.json` (land-cover track,
+  `landcover/scripts/modis_agreement.py`; git-ignored, rebuilt by that script).
+- **Area difference (corrected after review A1).** The MODIS series in the table covers the
+  bounding box; the land-cover-ca rows in `data/external/land_cover_ca.csv` (used by the
+  analysis) cover the six watershed units (3,382.6 km², `data/geo/study_regions.json`),
+  2020: 29.738%, 49.553%, 14.368%. The first version of this record said "same box" and
+  compared the box with the units; that was wrong. The choice of source stands: the gap is
+  as large in the same box.
+- **Why (checked, not assumed).** MODIS 2020 class breakdown in the box, from the MCD12Q1
+  file: woody savanna 16.9%, cropland/natural-vegetation mosaic 16.3%, savanna 15.2%
+  (48.4% together, counted as neither forest nor cropland); mixed forest 4.1%, deciduous
+  broadleaf 3.2%, urban 3.0%. MCD12 User Guide V6.1 Table 3 (p. 9): forest needs > 60% tree
+  cover, woody savanna 30–60%, urban ≥ 30% impervious, mosaic 40–60% cultivation, all within
+  a 500 m pixel. Simcoe's mixed farm, woodlot and small-town landscape falls between classes.
+- **What the analysis uses.** land-cover-ca (30 m) for land-cover levels, selected by tier
+  "Modeled (Machine learning)" (`V.ANALYSIS_TIER`); more than one such source stops the
+  analysis. Its record is 9 years (2017–2025), under the 10-season rule, so it gets no trend
+  verdict and its correlations report "too few shared years".
+- **MODIS land cover** is excluded from trend verdicts and correlations
+  (`V.EXCLUDED_FROM_ANALYSIS`): its user guide (p. 3) warns against reading change from its
+  yearly labels, and the class check above agrees. It stays on the page as "comparison
+  only". MODIS NDVI (MOD13A3) is not affected.
+- **What land-cover-ca is.** Prithvi-EO-2.0-300M (Apache-2.0; model card: "jointly developed
+  by IBM, NASA, and Jülich Supercomputing Centre", pretrained on NASA HLS V2, 4.2M samples)
+  fine-tuned by this project's land-cover track on Sentinel-2 summer composites against the
+  2020 Land Cover of Canada map (86.9% accurate by its own assessment, per
+  `landcover/REPORT.md`). Prithvi alone does not label land cover.
+- Effect: significant trend series fell from 14 to 11 (the three MODIS land-cover trends).
+  The table is now built without `--skip-external` (7,396 rows).
 
 ## Accuracy figures used
 
@@ -103,7 +144,8 @@ Correlation pairs and the expectations written before results are in `data/expec
   the documented flag, not that aim.
 - MERRA-2, IMERG, NDVI: no single accuracy figure was found in the documentation read,
   so the "not distinguishable from sensor accuracy" test is not applied to them.
-  [verify: GES DISC MERRA-2 and IMERG documentation for a usable figure.]
+  MERRA-2 README read: no usable figure. IMERG documentation not read. Accuracy left empty;
+  the sensor-accuracy test is not applied to these variables.
 - MCD12Q1 land cover: the User Guide V6.1 (p. 3) warns against using the product to
   detect land-cover change, because label uncertainty in any one year is too high.
   The page carries this warning on every land-cover share.
@@ -112,7 +154,9 @@ Correlation pairs and the expectations written before results are in `data/expec
 
 - Lake Simcoe sample point 44.42139, -79.42556; surface 722 km² (OHN outline 722.4 km²);
   model catchment 2,990 km² from the lake twin's catchment areas file, which records it
-  as a stored lake record with no registry source. [verify: source for 2,990 km²]
+  as a stored lake record with no registry source. No source is on record; the figure is
+  shown on the page only as the lake twin's value, labelled that way, and is not used in any
+  calculation.
 - Water pixels: `scripts/prepare_geometry.py` keeps MODIS 1 km cells lying wholly inside
   the outline after a 500 m shore margin: **502 cells** (642 with no margin).
 - Catchment box: around the six watershed units the lake twin assigns to Simcoe

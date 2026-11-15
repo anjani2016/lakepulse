@@ -1,0 +1,39 @@
+LakePulse — Lake Trend Detective
+Copyright 2026 Anjani Duddukuru
+
+Licensed under the Apache License, Version 2.0 (see LICENSE). This licence covers the
+original code, documentation, page and derived tables in this repository. Third-party data,
+models and software keep their own terms, listed below and in README.md ("References").
+
+Data (NASA, via LP DAAC/AppEEARS, GES DISC and LAADS DAAC). Per NASA Earthdata "Data Use
+Guidance", data from NASA-led missions without a marked restriction are licensed CC0, NASA
+asks to be acknowledged as the source and users are strongly urged to cite the data (DOIs
+in README.md). Use of these data does not imply NASA endorsement.
+- MODIS/Terra MOD11A2 v061, MOD13A3 v061, MOD08_M3 v061; MODIS Terra+Aqua MCD12Q1 v061.
+- MERRA-2 M2TMNXSLV, M2TMNXFLX, M2TMNXRAD, M2TMNXAER (v5.12.4).
+- GPM IMERG Final Precipitation L3 1 month V07 (GPM_3IMERGM).
+- OMI/Aura OMNO2d (Collection 004).
+
+Data (Ontario): lake outlines (Ontario Hydro Network — Waterbody) and watershed units
+(Ontario Watershed Boundaries). Contains information licensed under the Open Government
+Licence – Ontario.
+
+Land-cover track (landcover/, data/external/land_cover_ca.csv):
+- Base model Prithvi-EO-2.0-300M (ibm-nasa-geospatial on Hugging Face), Apache-2.0.
+- Training labels: 2020 Land Cover of Canada, Open Government Licence – Canada.
+- Imagery: Copernicus Sentinel-2 L2A data via Earth Search; see landcover/REPORT.md for the
+  attribution wording.
+- Shoreline, streams and watershed units: Open Government Licence – Ontario.
+
+Software used (not redistributed here): NumPy, pandas, SciPy, h5py, h5netcdf, Shapely
+(BSD licences); requests, xarray (Apache-2.0); pyproj, netCDF4, pytest (MIT); nginx
+(BSD-2-Clause) in the deployment image.
+
+Software redistributed here: d3 v7.9.0 (web/vendor/d3-7.9.0.min.js, unmodified, ISC licence,
+Copyright 2010-2023 Mike Bostock), used by the land-cover page (web/landcover.html).
+
+Land-cover page data (data/landcover_dashboard/): fixed copies of the files attached to the
+land-cover-ca dashboard; see its manifest.json for the source and SHA-256 of each file.
+
+Logo and icons in web/assets/: designed for this project by its team member under 18
+(name withheld, as the Space Apps rules ask), generated with OpenAI Codex.

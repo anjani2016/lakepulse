@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Land-Cover Model Runs</title>
+<meta name="description" content="How the land-cover-ca model was trained and tested, and how its land-cover shares for Lake Simcoe compare with MODIS.">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/icon-180.png">
+<style>
+:root {
+  --bg: #f7f8f6; --panel: #ffffff; --ink: #1d2422; --muted: #5b6662; --line: #d9dfdc; --accent: #1f6f8b;
+  --brand-logo: block; --brand-mark: none;
+  --lc-c0: #1f6f8b; --lc-c1: #c2410c; --lc-c2: #6b7f2a; --lc-c3: #7c3aed; --lc-c4: #8a6d3b; --lc-c5: #475569;
+  --ok-ink: #166534; --warn-ink: #b45309; --ref: #94a3b8;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111615; --panel: #1a201f; --ink: #e6ebe9; --muted: #9aa6a2; --line: #2e3836; --accent: #6cc0dc;
+    --brand-logo: none; --brand-mark: flex;
+    --lc-c0: #6cc0dc; --lc-c1: #fb923c; --lc-c2: #a3be5c; --lc-c3: #c4b5fd; --lc-c4: #d6b47a; --lc-c5: #94a3b8;
+    --ok-ink: #86efac; --warn-ink: #fcd34d; --ref: #64748b;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111615; --panel: #1a201f; --ink: #e6ebe9; --muted: #9aa6a2; --line: #2e3836; --accent: #6cc0dc;
+  --brand-logo: none; --brand-mark: flex;
+  --lc-c0: #6cc0dc; --lc-c1: #fb923c; --lc-c2: #a3be5c; --lc-c3: #c4b5fd; --lc-c4: #d6b47a; --lc-c5: #94a3b8;
+  --ok-ink: #86efac; --warn-ink: #fcd34d; --ref: #64748b;
+}
+.lc-page {
+  --font-anthropic-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-anthropic-serif: Georgia, "Times New Roman", serif;
+  --color-fg: var(--ink); --color-fg-muted: var(--muted); --color-panel: var(--panel);
+  --color-border-line: var(--line); --color-ok: var(--ok-ink); --color-warn: var(--warn-ink);
+  --cds-gap-xl: 28px; --cds-gap-md: 14px; --cds-gap-sm: 8px; --cds-gap-xs: 4px;
+  --cds-pad-lg: 16px; --cds-pad-md: 12px; --cds-pad-sm: 8px; --cds-pad-xs: 4px;
+  --cds-font-size-title: 1.75rem; --cds-font-size-heading: 1.15rem; --cds-font-size-body: 1.02rem; --cds-font-size-caption: .86rem;
+  --cds-font-weight-medium: 600; --cds-radius: 10px;
+  --cds-text-secondary: var(--muted); --cds-chart-axis: var(--line); --cds-chart-grid: var(--line); --cds-chart-reference: var(--ref);
+  --cds-surface-popover: var(--panel); --cds-border: var(--line); --cds-shadow-popover: 0 4px 14px rgba(0,0,0,.15);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main.lc-page { max-width: 1100px; margin: 0 auto; padding: 24px 16px 64px; display: grid; gap: 24px; }
+.lc-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.brand-logo { display: var(--brand-logo); height: 40px; width: auto; }
+.brand-mark { display: var(--brand-mark); align-items: center; gap: 10px; font-weight: 800; letter-spacing: .06em; }
+.brand-mark img { width: 40px; height: 40px; }
+.lc-back { color: var(--accent); text-decoration: none; font-weight: 600; }
+.lc-back:hover { text-decoration: underline; }
+.lc-page a { color: var(--accent); }
+.lc-page .dash-select { padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font: inherit; }
+.lc-intro { border-left: 4px solid var(--accent); padding: 8px 12px; background: var(--panel); border-radius: 0 8px 8px 0; font-size: .92rem; color: var(--muted); margin: 0; }
+.lc-sources, .lc-foot { color: var(--muted); font-size: .86rem; }
+.lc-sources table { border-collapse: collapse; width: 100%; }
+.lc-sources td, .lc-sources th { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.lc-sources code { font-size: .85em; }
+.lc-tablewrap { overflow-x: auto; }
+/* Grid items default to min-width:auto, so a wide table would widen the whole page on a
+   phone; let them shrink so wide tables scroll inside their own box instead. */
+main.lc-page > *, .lc > *, .lc section > * { min-width: 0; }
+/* Dashboard styles, unchanged */
+  .lc { display: grid; gap: var(--cds-gap-xl); font-family: var(--font-anthropic-sans); color: var(--color-fg); max-width: 1100px; }
+  .lc h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
+  .lc h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; text-wrap: balance; }
+  .lc p { margin: 0; line-height: 1.55; max-width: 72ch; }
+  .lc .muted { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+  .lc .lead { font-size: var(--cds-font-size-body); }
+  .lc .num { font-variant-numeric: tabular-nums; }
+  .lc section { display: grid; gap: var(--cds-gap-md); }
+  .lc .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--cds-gap-md); }
+  .lc .tile { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: grid; gap: var(--cds-gap-xs); align-content: start; }
+  .lc .tile .big { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: 2.2rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .lc .tile .delta { font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+  .lc .good { color: var(--color-ok); }
+  .lc .row { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: center; }
+  .lc .chart { position: relative; min-height: 260px; min-width: 0; }
+  .lc .chart svg { display: block; width: 100%; }
+  .lc .chart text { fill: var(--cds-text-secondary); font-size: var(--cds-font-size-caption); font-family: var(--font-anthropic-sans); }
+  .lc .chart .tick line, .lc .chart .domain { stroke: var(--cds-chart-axis); }
+  .lc .chart .grid line { stroke: var(--cds-chart-grid); }
+  .lc .tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); box-shadow: var(--cds-shadow-popover); border-radius: var(--cds-radius); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); color: var(--color-fg); white-space: nowrap; font-variant-numeric: tabular-nums; z-index: 2; }
+  .lc .tablewrap { overflow-x: auto; }
+  .lc table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: var(--cds-font-size-caption); }
+  .lc th, .lc td { text-align: right; padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+  .lc th:first-child, .lc td:first-child { text-align: left; }
+  .lc th { color: var(--color-fg-muted); font-weight: var(--cds-font-weight-medium); }
+  .lc tr.best td { font-weight: var(--cds-font-weight-medium); }
+  .lc .legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .lc .key { display: inline-flex; align-items: center; gap: 6px; }
+  .lc .swatch { width: 12px; height: 3px; border-radius: 2px; display: inline-block; }
+  .lc .note { border-left: 3px solid var(--color-warn); padding-left: var(--cds-pad-sm); }
+  .lc details { border-top: 1px solid var(--color-border-line); padding-top: var(--cds-pad-md); }
+  .lc details summary { cursor: pointer; font-weight: var(--cds-font-weight-medium); }
+  .lc details ul { margin: var(--cds-gap-sm) 0 0; padding-left: 1.2em; display: grid; gap: var(--cds-gap-xs); line-height: 1.5; max-width: 80ch; }
+  .lc code { font-size: 0.92em; }
+  [data-dash-source-state=refreshing] { opacity: .5; }
+</style>
+</head>
+<body>
+<main class="lc-page">
+  <div class="lc-top">
+    <div>
+      <img class="brand-logo" src="assets/logo-header.png" width="120" height="40" alt="LakePulse">
+      <div class="brand-mark"><img src="assets/icon-mark-96.png" width="40" height="40" alt=""><span>LAKEPULSE</span></div>
+    </div>
+    <a class="lc-back" href="./">← Back to Lake Trend Detective</a>
+  </div>
+  <p class="lc-intro">This page shows how the 30 m land-cover-ca model behind the land-cover numbers on the main page was trained and tested. Lake Trend Detective uses this model for how much of the catchment is forest, cropland and built-up; MODIS land cover is shown for comparison only. The data below are fixed copies of the model track's result files (see "Sources").</p>
+<div class="lc" data-read lang="en">
+  <header id="top" style="display:grid;gap:var(--cds-gap-sm)">
+    <h1>Land cover around Lake Simcoe, from a fine-tuned Prithvi-EO-2.0 model</h1>
+    <p class="lead">On land the model never saw in training, the class-weighted v2 model scores a mean IoU of
+      <b class="num" data-draw="num" data-fmt="4" data-source="test_scores" data-field="mean_iou" data-where="model=Fine-tune%20v2%2C%20class-weighted&amp;area=Whole%20test%20block">—</b>,
+      against <b class="num" data-draw="num" data-fmt="4" data-source="test_scores" data-field="mean_iou" data-where="model=Gradient%20boosting&amp;area=Whole%20test%20block">—</b>
+      for a per-pixel gradient-boosting classifier on the same bands, and
+      <b class="num" data-draw="num" data-fmt="4" data-source="test_scores" data-field="mean_iou" data-where="model=Fine-tune%20v2%2C%20class-weighted&amp;area=30%20m%20strip">—</b>
+      against <b class="num" data-draw="num" data-fmt="4" data-source="test_scores" data-field="mean_iou" data-where="model=Gradient%20boosting&amp;area=30%20m%20strip">—</b>
+      in the 30 m strip along the shoreline and streams, where runoff enters the lake.</p>
+    <p class="muted">LakePulse, 2026 NASA Space Apps Challenge. Labels are the 2020 Land Cover of Canada, a published map, not field-checked ground truth: scores measure agreement with that map.</p>
+    <p class="muted">Model weights and model card: <a href="https://huggingface.co/anjanid/land-cover-ca" target="_blank" rel="noopener">huggingface.co/anjanid/land-cover-ca</a></p>
+  </header>
+
+  <section id="summary" class="tiles">
+    <div class="tile">
+      <span class="muted">Test mean IoU, whole held-out block</span>
+      <span class="big" data-draw="num" data-fmt="4" data-source="test_scores" data-field="mean_iou" data-where="model=Fine-tune%20v2%2C%20class-weighted&amp;area=Whole%20test%20block">—</span>
+      <span class="delta good"><span data-draw="num" data-fmt="signed4" data-source="lead" data-field="difference" data-where="area=Whole%20test%20block">—</span> vs gradient boosting</span>
+    </div>
+    <div class="tile">
+      <span class="muted">Test mean IoU, 30 m shoreline and stream strip</span>
+      <span class="big" data-draw="num" data-fmt="4" data-source="test_scores" data-field="mean_iou" data-where="model=Fine-tune%20v2%2C%20class-weighted&amp;area=30%20m%20strip">—</span>
+      <span class="delta good"><span data-draw="num" data-fmt="signed4" data-source="lead" data-field="difference" data-where="area=30%20m%20strip">—</span> vs gradient boosting</span>
+    </div>
+    <div class="tile">
+      <span class="muted">Water IoU, whole held-out block</span>
+      <span class="big" data-draw="num" data-fmt="4" data-source="test_scores" data-field="water" data-where="model=Fine-tune%20v2%2C%20class-weighted&amp;area=Whole%20test%20block">—</span>
+      <span class="delta">Wetland IoU only <span data-draw="num" data-fmt="4" data-source="test_scores" data-field="wetland" data-where="model=Fine-tune%20v2%2C%20class-weighted&amp;area=Whole%20test%20block">—</span>: the weakest class</span>
+    </div>
+    <div class="tile">
+      <span class="muted">Google Colab compute used</span>
+      <span class="big"><span data-draw="num" data-fmt="2" data-source="units_total">—</span> units</span>
+      <span class="delta">of a 200-unit cap, L4 and A100 GPUs</span>
+    </div>
+  </section>
+
+  <section id="scores">
+    <h2>Every model on the same 11 held-out test chips</h2>
+    <p class="muted">Mean IoU over six classes (forest, cropland, built-up, water, wetland, other). The test block is the Holland River watershed and the Lake Simcoe shore within 10 km of it; chips near it were kept out of training.</p>
+    <div class="legend">
+      <span class="key"><span class="swatch" data-draw="swatch0"></span>Whole test block</span>
+      <span class="key"><span class="swatch" data-draw="swatch1"></span>30 m strip</span>
+    </div>
+    <div class="chart" style="min-height:300px" data-draw="scorechart" data-source="test_scores" id="score-chart"></div>
+  </section>
+
+  <section id="classes">
+    <div class="row" style="justify-content:space-between">
+      <h2>IoU by class</h2>
+      <select class="dash-select" id="class-area" aria-label="Area">
+        <option value="Whole test block">Whole test block</option>
+        <option value="30 m strip">30 m strip</option>
+      </select>
+    </div>
+    <div class="tablewrap">
+      <table id="class-table" data-source="test_scores" data-row-key="model,area">
+        <thead><tr>
+          <th data-field="model">Model</th><th data-field="mean_iou">Mean IoU</th><th data-field="forest">Forest</th><th data-field="cropland">Cropland</th>
+          <th data-field="built_up">Built-up</th><th data-field="water">Water</th><th data-field="wetland">Wetland</th><th data-field="other">Other</th><th data-field="pixel_accuracy">Pixel accuracy</th>
+        </tr></thead>
+        <tbody data-draw="classtable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="training">
+    <div class="row" style="justify-content:space-between">
+      <h2>Training curves</h2>
+      <select class="dash-select" id="curve-metric" aria-label="Metric">
+        <option value="val_mean_iou">Validation mean IoU</option>
+        <option value="val_wetland_iou">Validation wetland IoU</option>
+        <option value="val_loss">Validation loss</option>
+        <option value="train_loss">Training loss</option>
+      </select>
+    </div>
+    <p class="muted">Validation is the Pefferlaw River watershed. Both v2 runs were trained in two attempts: Colab ended the first runtimes, and training resumed from each run's best weights (epoch 19), shown by the dashed line. The class-weighted run's loss counts rare classes more, so its loss is not comparable with the others'.</p>
+    <div class="legend" data-draw="curvelegend"></div>
+    <div class="chart" data-draw="curves" data-source="epochs" id="curve-chart"></div>
+  </section>
+
+  <section id="probes">
+    <h2>Adversarial probes</h2>
+    <p class="muted">One chip each, outside the training area. Mean IoU per model. The model is built for cloud-masked summer composites; a single cloudy or winter scene breaks it.</p>
+    <div class="tablewrap">
+      <table id="probe-table">
+        <thead><tr><th>Probe</th><th>Fine-tune v1</th><th>Fine-tune v2</th><th>Fine-tune v2, class-weighted</th></tr></thead>
+        <tbody data-draw="probetable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="shares">
+    <div class="row" style="justify-content:space-between">
+      <h2>Yearly land-cover shares, 2017 to 2025</h2>
+      <select class="dash-select" id="share-area" aria-label="Area">
+        <option value="Catchment">Lake Simcoe catchment</option>
+        <option value="30 m strip">30 m shoreline and stream strip</option>
+        <option value="MODIS box">MODIS bounding box</option>
+      </select>
+    </div>
+    <p class="muted">From the class-weighted v2 model, one summer median composite per year (clouds, shadow, snow and smoke masked). Percent of land pixels (water excluded). Sentinel-2 has no usable summer 2016 scenes here.</p>
+    <p class="note muted">Smoke filter: three smoky Sentinel-2 scenes over the catchment on 3 August 2025 passed the cloud mask and made 2025 look like forest loss. Every year's composite now drops pixels whose aerosol optical thickness is above 0.4; 2025 keeps a clear view of 99.3% of the catchment.</p>
+    <div class="legend" data-draw="sharelegend"></div>
+    <div class="chart" data-draw="shareschart" data-source="shares" id="share-chart"></div>
+  </section>
+
+  <section id="modis">
+    <div class="row" style="justify-content:space-between">
+      <h2>Agreement with MODIS land cover</h2>
+      <select class="dash-select" id="modis-var" aria-label="Class">
+        <option value="forest_share">Forest</option>
+        <option value="cropland_share">Cropland</option>
+        <option value="urban_share">Urban / built-up</option>
+      </select>
+    </div>
+    <p>Same years, same bounding box, same denominator (percent of land). On average the model is
+      <b class="num" data-draw="num" data-fmt="signed2" data-source="modis_gap" data-field="mean_difference" data-where="variable=forest_share">—</b> points above MODIS for forest,
+      <b class="num" data-draw="num" data-fmt="signed2" data-source="modis_gap" data-field="mean_difference" data-where="variable=cropland_share">—</b> for cropland and
+      <b class="num" data-draw="num" data-fmt="signed2" data-source="modis_gap" data-field="mean_difference" data-where="variable=urban_share">—</b> for urban.
+      The model stays close to the 2020 federal map it learned from; MODIS is far below that map too, so the gap comes mostly from how the two products define classes (MODIS puts much mixed farm and woodlot land in savanna and mosaic classes) and its 500 m pixels. It is reported here, not tuned away.</p>
+    <div class="legend" data-draw="modislegend"></div>
+    <div class="chart" data-draw="modischart" data-source="modis" id="modis-chart"></div>
+  </section>
+
+  <section id="compute">
+    <h2>Compute, session by session</h2>
+    <div class="tablewrap">
+      <table id="compute-table" data-source="compute" data-row-key="session">
+        <thead><tr><th data-field="session">Session</th><th data-field="gpu">GPU</th><th data-field="units">Colab units</th></tr></thead>
+        <tbody data-draw="computetable"></tbody>
+      </table>
+    </div>
+    <p class="muted">Read from Google Colab's own balance before and after each session.</p>
+  </section>
+
+  <details id="notes">
+    <summary>How it was built</summary>
+    <ul>
+      <li><b>Model:</b> Prithvi-EO-2.0-300M (model card: jointly developed by IBM, NASA and Jülich Supercomputing Centre; Apache-2.0) fine-tuned for six land-cover classes with TerraTorch. Registered in MLflow as <code>land-cover-ca</code>: version 1 (v1), 2 (v2 class-weighted, best) and 3 (v2). Runs are in the MLflow experiment <code>lakepulse-land-cover</code>. The best model's weights, card and checksums are on Hugging Face: <a href="https://huggingface.co/anjanid/land-cover-ca" target="_blank" rel="noopener">anjanid/land-cover-ca</a>.</li>
+      <li><b>Imagery:</b> Sentinel-2 L2A (Earth Search), summer median composites at 30 m, six bands, clouds, shadow and snow masked. Contains modified Copernicus Sentinel data 2017 to 2025.</li>
+      <li><b>Labels:</b> 2020 Land Cover of Canada, 30 m, merged to six classes. Contains information licensed under the Open Government Licence - Canada.</li>
+      <li><b>Split by area, never by pixel:</b> held-out test block (Holland River and the Cook's Bay shore, 541.3 km², 43.2 km of shoreline), validation in the Pefferlaw River watershed, training on the rest of the 13 watersheds around the lake plus 22 neighbouring ones. Chips within 6.72 km of a test chip were dropped.</li>
+      <li><b>v2 training data:</b> 636 chips from the 2019, 2020 and 2021 summers against the 2020 labels. v1 used 86 chips from 2020 only and did not beat gradient boosting.</li>
+      <li><b>Strip:</b> land and water within 30 m of the Lake Simcoe shoreline or an Ontario Hydro Network stream (2,914 km of streams). Contains information licensed under the Open Government Licence - Ontario.</li>
+      <li><b>IoU</b> (intersection over union): for one class, the pixels both maps call that class divided by the pixels either map does. 1 is perfect agreement.</li>
+    </ul>
+  </details>
+</div>
+
+  <section class="lc-sources" id="sources">
+    <h2 style="color:var(--ink);font-size:1.15rem;margin:0 0 8px">Sources</h2>
+    <p id="lcSourceNote" style="margin:0 0 8px"></p>
+    <div class="lc-tablewrap"><table><thead><tr><th>Data</th><th>What it is</th><th>Updated</th><th>SHA-256</th></tr></thead><tbody id="lcSourceRows"></tbody></table></div>
+  </section>
+  <footer class="lc-foot">
+    <p style="margin:0 0 6px"><b>How AI was used:</b> the original dashboard was made by Claude (Anthropic) from the land-cover track's result files, as its data sources record; Claude Code adapted it to this static page under the author's direction. See the project README for the full statement.</p>
+    <p style="margin:0">A submission to the 2026 NASA Space Apps Challenge. Team: Anjani Duddukuru, with a team member under 18 (name withheld, as the Space Apps rules ask). © 2026 Anjani Duddukuru, Apache License 2.0. Use of NASA data does not imply NASA endorsement.</p>
+  </footer>
+</main>
+<script src="vendor/d3-7.9.0.min.js"></script>
+<script src="landcover-data.js"></script>
+<script src="landcover-runtime.js"></script>
+<script>
+  // Shared helpers. Values in the CSVs are text; convert before comparing or adding.
+  window.lcModels = ['Fine-tune v2, class-weighted', 'Fine-tune v2', 'Gradient boosting', 'Fine-tune v1', 'Always forest'];
+  window.lcRuns = ['Fine-tune v1', 'Fine-tune v2', 'Fine-tune v2, class-weighted'];
+  window.lcFmt = function (v, f) {
+    const x = +v;
+    if (v == null || v === '' || Number.isNaN(x)) return '—';
+    if (f === 'signed4') return (x > 0 ? '+' : '') + x.toFixed(4);
+    if (f === 'signed2') return (x > 0 ? '+' : '') + x.toFixed(2);
+    if (f === '4') return x.toFixed(4);
+    if (f === '3') return x.toFixed(3);
+    if (f === '2') return x.toFixed(2);
+    if (f === '1') return x.toFixed(1);
+    return String(v);
+  };
+  window.lcEnc = (s) => encodeURIComponent(String(s));
+  window.lcPick = function (el) {
+    const d = dash.data(el.dataset.source);
+    if (d.status !== 'ok') return null;
+    let rows = d.data;
+    if (!Array.isArray(rows)) return rows;
+    if (el.dataset.where) {
+      const conds = el.dataset.where.split('&').map((p) => p.split('=').map(decodeURIComponent));
+      rows = rows.filter((r) => conds.every(([k, v]) => String(r[k]) === v));
+    }
+    return rows.length ? rows[0][el.dataset.field] : null;
+  };
+  window.lcTip = function (box) {
+    let t = box.querySelector('.tip');
+    if (!t) { t = document.createElement('div'); t.className = 'tip'; t.hidden = true; box.appendChild(t); }
+    return t;
+  };
+  window.lcState = { classArea: 'Whole test block', metric: 'val_mean_iou', shareArea: 'Catchment', modisVar: 'forest_share' };
+
+  dash.calc('lead', {
+    title: 'Best fine-tune minus gradient boosting',
+    description: 'Mean IoU of the class-weighted v2 model minus the gradient-boosting baseline, per area.',
+    inputs: ['test_scores'],
+    fn: (test_scores) => ['Whole test block', '30 m strip'].map((area) => {
+      const get = (m) => +test_scores.find((r) => r.model === m && r.area === area).mean_iou;
+      const best = get('Fine-tune v2, class-weighted'), gbm = get('Gradient boosting');
+      return { area, best, gradient_boosting: gbm, difference: Math.round((best - gbm) * 10000) / 10000 };
+    }),
+  });
+  dash.calc('units_total', {
+    title: 'Total Colab units',
+    description: 'Sum of the Colab units used by every session.',
+    inputs: ['compute'],
+    fn: (compute) => Math.round(compute.reduce((s, r) => s + +r.units, 0) * 100) / 100,
+  });
+  dash.calc('modis_gap', {
+    title: 'Model minus MODIS, mean over years',
+    description: 'Mean of (model share minus MODIS share) over 2017-2025 in the MODIS bounding box, percentage points.',
+    inputs: ['modis'],
+    fn: (modis) => ['forest_share', 'cropland_share', 'urban_share'].map((variable) => {
+      const rows = modis.filter((r) => r.variable === variable);
+      const mean = rows.reduce((s, r) => s + (+r.model - +r.modis), 0) / rows.length;
+      return { variable, years: rows.length, mean_difference: Math.round(mean * 100) / 100 };
+    }),
+  });
+
+  document.querySelectorAll('#class-area').forEach((s) => s.addEventListener('change', () => { lcState.classArea = s.value; dash.draw('classtable'); }));
+  document.querySelectorAll('#curve-metric').forEach((s) => s.addEventListener('change', () => { lcState.metric = s.value; dash.draw('curves'); }));
+  document.querySelectorAll('#share-area').forEach((s) => s.addEventListener('change', () => { lcState.shareArea = s.value; dash.draw('shareschart'); }));
+  document.querySelectorAll('#modis-var').forEach((s) => s.addEventListener('change', () => { lcState.modisVar = s.value; dash.draw('modischart'); }));
+</script><script>
+  dash.draw('num', (el) => { el.textContent = lcFmt(lcPick(el), el.dataset.fmt); });
+  dash.draw('swatch0', (el) => { el.style.background = dash.colors[0]; });
+  dash.draw('swatch1', (el) => { el.style.background = dash.colors[1]; });
+
+  function lcLegend(el, items) {
+    el.replaceChildren(...items.map(([name, color, dashed]) => {
+      const k = document.createElement('span'); k.className = 'key';
+      const s = document.createElement('span'); s.className = 'swatch';
+      s.style.background = dashed ? 'transparent' : color;
+      if (dashed) s.style.borderTop = '2px dashed ' + color;
+      const t = document.createElement('span'); t.textContent = name;
+      k.append(s, t); return k;
+    }));
+  }
+  window.lcLegend = lcLegend;
+
+  function lcEmpty(el, d) {
+    el.replaceChildren();
+    if (d.status === 'error') { const p = document.createElement('p'); p.className = 'muted'; p.textContent = 'Failed to load'; el.appendChild(p); }
+    else el.textContent = '—';
+  }
+  window.lcEmpty = lcEmpty;
+
+  // Grouped horizontal bars: each model, whole block and strip.
+  dash.draw('scorechart', (el) => {
+    const d = dash.data('test_scores');
+    if (d.status !== 'ok') return lcEmpty(el, d);
+    const rows = d.data, W = el.clientWidth || 600, rowH = 46, H = lcModels.length * rowH + 28;
+    el.replaceChildren();
+    const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img')
+      .attr('aria-label', 'Test mean IoU for each model, whole test block and 30 m strip');
+    const lab = svg.append('g');
+    // Names split after a comma onto two lines, so the longest fits a narrow pane.
+    const names = lab.selectAll('text').data(lcModels).join('text').attr('text-anchor', 'end').style('fill', 'var(--color-fg)');
+    names.each(function (m, i) {
+      const parts = m.split(', ');
+      const t = d3.select(this);
+      parts.forEach((p, k) => t.append('tspan').attr('dy', k === 0 ? (parts.length > 1 ? -6 : 0) : 13).text(p + (k < parts.length - 1 ? ',' : '')));
+      t.attr('y', i * rowH + rowH / 2 + 4);
+    });
+    const widest = d3.max(lab.selectAll('tspan').nodes(), (n) => n.getComputedTextLength()) || 0;
+    const left = Math.min(widest + 12, W * 0.5);
+    names.attr('x', left - 10).selectAll('tspan').attr('x', left - 10);
+    const x = d3.scaleLinear().domain([0, 0.6]).range([left, W - 52]);
+    svg.append('g').attr('class', 'grid').attr('transform', `translate(0,${H - 22})`)
+      .call(d3.axisBottom(x).ticks(W < 500 ? 3 : 6).tickSize(-(H - 26)).tickFormat(d3.format('.1f'))).call((g) => g.select('.domain').remove());
+    const areas = ['Whole test block', '30 m strip'];
+    lcModels.forEach((m, i) => areas.forEach((a, j) => {
+      const r = rows.find((q) => q.model === m && q.area === a); if (!r) return;
+      const y = i * rowH + 6 + j * 17, v = +r.mean_iou;
+      svg.append('rect').attr('x', x(0)).attr('y', y).attr('height', 14).attr('width', Math.max(1, x(v) - x(0))).attr('rx', 2)
+        .style('fill', dash.colors[j]).style('opacity', m === 'Always forest' ? 0.6 : 1);
+      svg.append('text').attr('x', x(v) + 5).attr('y', y + 11).text(v.toFixed(4)).style('fill', 'var(--color-fg)');
+    }));
+  });
+
+  dash.draw('classtable', (tb) => {
+    const d = dash.data('test_scores');
+    if (d.status !== 'ok') { tb.replaceChildren(); return; }
+    const area = lcState.classArea;
+    const cols = ['mean_iou', 'forest', 'cropland', 'built_up', 'water', 'wetland', 'other', 'pixel_accuracy'];
+    tb.replaceChildren(...lcModels.map((m) => {
+      const r = d.data.find((q) => q.model === m && q.area === area);
+      const tr = document.createElement('tr');
+      tr.dataset.key = lcEnc(m) + ',' + lcEnc(area);
+      if (m === lcModels[0]) tr.className = 'best';
+      const c0 = document.createElement('td'); c0.textContent = m; tr.appendChild(c0);
+      cols.forEach((c) => { const td = document.createElement('td'); td.textContent = r ? (+r[c]).toFixed(4) : '—'; tr.appendChild(td); });
+      return tr;
+    }));
+  });
+
+  dash.draw('curvelegend', (el) => lcLegend(el, lcRuns.map((m, i) => [m, dash.colors[i]])));
+
+  dash.draw('curves', {
+    mount: (el) => ({}),
+    update: (el) => {
+      const d = dash.data('epochs');
+      if (d.status !== 'ok') return lcEmpty(el, d);
+      const metric = lcState.metric;
+      const rows = d.data.map((r) => ({ model: r.model, attempt: +r.attempt, epoch: +r.epoch, v: r[metric] === '' ? NaN : +r[metric] })).filter((r) => !Number.isNaN(r.v));
+      const W = el.clientWidth || 600, H = 280, m = { t: 12, r: 16, b: 30, l: 52 };
+      el.replaceChildren();
+      const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img')
+        .attr('aria-label', 'Training curves by epoch for the three fine-tuned models');
+      const x = d3.scaleLinear().domain([0, d3.max(rows, (r) => r.epoch)]).range([m.l, W - m.r]);
+      const y = d3.scaleLinear().domain(d3.extent(rows, (r) => r.v)).nice().range([H - m.b, m.t]);
+      svg.append('g').attr('class', 'grid').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W - m.l - m.r))).call((g) => g.select('.domain').remove());
+      svg.append('g').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(W < 500 ? 4 : 8));
+      svg.append('text').attr('x', W - m.r).attr('y', H - 2).attr('text-anchor', 'end').text('epoch');
+      svg.append('line').attr('x1', x(20)).attr('x2', x(20)).attr('y1', m.t).attr('y2', H - m.b)
+        .style('stroke', 'var(--cds-chart-reference)').style('stroke-dasharray', '4 4');
+      svg.append('text').attr('x', x(20) + 4).attr('y', m.t + 10).text('v2 resumed');
+      const line = d3.line().x((r) => x(r.epoch)).y((r) => y(r.v));
+      lcRuns.forEach((name, i) => {
+        [1, 2].forEach((a) => {
+          const seg = rows.filter((r) => r.model === name && r.attempt === a);
+          if (seg.length) svg.append('path').datum(seg).attr('d', line).style('fill', 'none').style('stroke', dash.colors[i]).style('stroke-width', 2);
+        });
+      });
+      const tip = lcTip(el), dot = svg.append('circle').attr('r', 4).style('fill', 'var(--color-fg)').style('display', 'none');
+      svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', W - m.l - m.r).attr('height', H - m.t - m.b).style('fill', 'transparent')
+        .on('pointermove', (ev) => {
+          const [px, py] = d3.pointer(ev);
+          let best = null, bd = Infinity;
+          rows.forEach((r) => { const dd = Math.hypot(x(r.epoch) - px, y(r.v) - py); if (dd < bd) { bd = dd; best = r; } });
+          if (!best) return;
+          dot.style('display', null).attr('cx', x(best.epoch)).attr('cy', y(best.v));
+          tip.hidden = false; tip.textContent = `${best.model}, epoch ${best.epoch} (attempt ${best.attempt}): ${best.v.toFixed(4)}`;
+          const bx = x(best.epoch) / W * el.clientWidth;
+          tip.style.left = Math.min(Math.max(0, bx - 90), el.clientWidth - 230) + 'px'; tip.style.top = (y(best.v) / H * el.clientHeight - 40) + 'px';
+        })
+        .on('pointerleave', () => { tip.hidden = true; dot.style('display', 'none'); });
+    },
+  });
+
+  dash.draw('probetable', (tb) => {
+    const d = dash.data('probes');
+    if (d.status !== 'ok') { tb.replaceChildren(); return; }
+    const probes = [...new Set(d.data.map((r) => r.probe))];
+    tb.replaceChildren(...probes.map((p) => {
+      const tr = document.createElement('tr');
+      const c0 = document.createElement('td'); c0.textContent = p; tr.appendChild(c0);
+      lcRuns.forEach((m) => {
+        const r = d.data.find((q) => q.model === m && q.probe === p);
+        const td = document.createElement('td');
+        td.dataset.source = 'probes'; td.dataset.field = 'mean_iou'; td.dataset.where = 'model=' + lcEnc(m) + '&probe=' + lcEnc(p);
+        td.textContent = r ? (+r.mean_iou).toFixed(4) : '—'; tr.appendChild(td);
+      });
+      return tr;
+    }));
+  });
+
+  const lcClasses = [['forest', 'Forest'], ['cropland', 'Cropland'], ['built_up', 'Built-up'], ['wetland', 'Wetland'], ['other', 'Other']];
+  window.lcClasses = lcClasses;
+  dash.draw('sharelegend', (el) => lcLegend(el, lcClasses.map(([, n], i) => [n, dash.colors[i]])));
+
+  function lcLines(el, series, opts) {
+    const W = el.clientWidth || 600, H = 280, m = { t: 12, r: 16, b: 30, l: 44 };
+    el.replaceChildren();
+    const all = series.flatMap((s) => s.points);
+    const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', opts.label);
+    const x = d3.scaleLinear().domain(d3.extent(all, (p) => p.year)).range([m.l, W - m.r]);
+    const y = d3.scaleLinear().domain([0, d3.max(all, (p) => p.v) * 1.08]).nice().range([H - m.b, m.t]);
+    if (opts.band) {
+      svg.append('rect').attr('x', x(opts.band - 0.5)).attr('width', x(opts.band) - x(opts.band - 0.5) + m.r).attr('y', m.t).attr('height', H - m.t - m.b)
+        .style('fill', 'var(--color-warn)').style('opacity', 0.12);
+      svg.append('text').attr('x', x(opts.band) - 4).attr('y', m.t + 10).attr('text-anchor', 'end').text('hazy');
+    }
+    svg.append('g').attr('class', 'grid').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W - m.l - m.r)).tickFormat((v) => v + '%')).call((g) => g.select('.domain').remove());
+    svg.append('g').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(W < 500 ? 4 : 9).tickFormat(d3.format('d')));
+    const line = d3.line().x((p) => x(p.year)).y((p) => y(p.v));
+    series.forEach((s) => {
+      svg.append('path').datum(s.points).attr('d', line).style('fill', 'none').style('stroke', s.color).style('stroke-width', 2).style('stroke-dasharray', s.dashed ? '5 4' : null);
+      svg.selectAll(null).data(s.points).join('circle').attr('cx', (p) => x(p.year)).attr('cy', (p) => y(p.v)).attr('r', 2.5).style('fill', s.color);
+    });
+    const tip = lcTip(el);
+    svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', W - m.l - m.r).attr('height', H - m.t - m.b).style('fill', 'transparent')
+      .on('pointermove', (ev) => {
+        const [px] = d3.pointer(ev); const yr = Math.round(x.invert(px));
+        const parts = series.map((s) => { const p = s.points.find((q) => q.year === yr); return p ? `${s.name} ${p.v.toFixed(2)}%` : null; }).filter(Boolean);
+        if (!parts.length) return;
+        tip.hidden = false; tip.textContent = `${yr}: ` + parts.join(' · ');
+        const bx = x(yr) / W * el.clientWidth;
+        tip.style.left = Math.min(Math.max(0, bx - 120), Math.max(0, el.clientWidth - 330)) + 'px'; tip.style.top = '0px';
+      })
+      .on('pointerleave', () => { tip.hidden = true; });
+  }
+  window.lcLines = lcLines;
+
+  dash.draw('shareschart', (el) => {
+    const d = dash.data('shares');
+    if (d.status !== 'ok') return lcEmpty(el, d);
+    const area = lcState.shareArea;
+    const series = lcClasses.map(([c, n], i) => ({ name: n, color: dash.colors[i],
+      points: d.data.filter((r) => r.area === area && r.class === c).map((r) => ({ year: +r.year, v: +r.share_pct })).sort((a, b) => a.year - b.year) }));
+    lcLines(el, series, { label: 'Yearly land-cover shares, percent of land, ' + area });
+  });
+
+  dash.draw('modislegend', (el) => lcLegend(el, [['Model (v2 class-weighted)', dash.colors[0]], ['MODIS MCD12Q1', dash.colors[1]], ['2020 Land Cover of Canada (training labels)', dash.colors[2], true]]));
+
+  dash.draw('modischart', (el) => {
+    const d = dash.data('modis');
+    if (d.status !== 'ok') return lcEmpty(el, d);
+    const rows = d.data.filter((r) => r.variable === lcState.modisVar).map((r) => ({ year: +r.year, model: +r.model, modis: +r.modis, lab: +r.label_map_2020 })).sort((a, b) => a.year - b.year);
+    lcLines(el, [
+      { name: 'Model', color: dash.colors[0], points: rows.map((r) => ({ year: r.year, v: r.model })) },
+      { name: 'MODIS', color: dash.colors[1], points: rows.map((r) => ({ year: r.year, v: r.modis })) },
+      { name: '2020 map', color: dash.colors[2], dashed: true, points: rows.map((r) => ({ year: r.year, v: r.lab })) },
+    ], { label: 'Model, MODIS and the 2020 label map, percent of land, by year' });
+  });
+
+  dash.draw('computetable', (tb) => {
+    const d = dash.data('compute');
+    if (d.status !== 'ok') { tb.replaceChildren(); return; }
+    tb.replaceChildren(...d.data.map((r) => {
+      const tr = document.createElement('tr');
+      [r.session, r.gpu, (+r.units).toFixed(2)].forEach((v) => { const td = document.createElement('td'); td.textContent = v; tr.appendChild(td); });
+      return tr;
+    }));
+  });
+</script>
+<script>
+  (function () {
+    var D = window.LC_DATA;
+    document.getElementById("lcSourceNote").textContent = "Copied unchanged on " + D.copied_on + " from the land-cover-ca dashboard's attached files; the build script checks each file's SHA-256 before publishing. Scores are agreement with the 2020 Land Cover of Canada map, not field-checked ground truth.";
+    var tb = document.getElementById("lcSourceRows");
+    D.sources.forEach(function (s) {
+      var tr = document.createElement("tr");
+      [s.title, s.description || "", (s.updated && s.updated.at ? s.updated.at.slice(0, 10) : ""), s.sha256.slice(0, 16) + "…"].forEach(function (v, i) {
+        var td = document.createElement("td");
+        if (i === 3) { var c = document.createElement("code"); c.textContent = v; td.appendChild(c); } else td.textContent = v;
+        tr.appendChild(td);
+      });
+      tb.appendChild(tr);
+    });
+    window.lcRunAllDraws();
+  })();
+</script>
+</body>
+</html>

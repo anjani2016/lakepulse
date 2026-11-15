@@ -1,0 +1,80 @@
+{
+  "source_artifact": "https://claude.ai/artifact/LG1FJPwnTRxAFLU47k9UWs",
+  "source_title": "LakePulse land-cover model runs",
+  "copied_on": "2026-11-15",
+  "note": "Files copied unchanged from the dashboard's attached CSVs (fixed data). scripts/build_landcover_page.py checks these checksums before building web/landcover-data.js.",
+  "datasets": [
+    {
+      "id": "test_scores",
+      "file": "test_scores.csv",
+      "title": "Held-out test scores by model",
+      "description": "Mean IoU, pixel accuracy and per-class IoU on the 11 held-out test chips, whole block and 30 m strip, from eval_vm.py and baselines.py --v2.",
+      "updated": {
+        "at": "2026-11-15T02:00:38Z",
+        "by": "Claude, from the land-cover track's result files (landcover/scripts and landcover/colab, run 2026-11-14)"
+      },
+      "asset": "/_blob/16fcd15af664fe01b3cd29e59ea21129",
+      "sha256": "37aca35fc5287268881b7ae01761a61c6b9d842b8e92d4a2ffe3cd1d1f22e839"
+    },
+    {
+      "id": "epochs",
+      "file": "epochs.csv",
+      "title": "Training curves by epoch",
+      "description": "Per-epoch losses and validation scores of the three fine-tunes, both attempts, from each run's summary.json (the values logged to MLflow).",
+      "updated": {
+        "at": "2026-11-15T02:00:38Z",
+        "by": "Claude, from the land-cover track's result files (landcover/scripts and landcover/colab, run 2026-11-14)"
+      },
+      "asset": "/_blob/f61ce977401aca2b8d749430bedec108",
+      "sha256": "d9b50625c26f307014b7a431adf95fc8517902fe2e20ad87a75f53109a5a8d4b"
+    },
+    {
+      "id": "probes",
+      "file": "probes.csv",
+      "title": "Adversarial probe scores",
+      "description": "Mean IoU and pixel accuracy of each fine-tune on five probe chips, from eval_vm.py.",
+      "updated": {
+        "at": "2026-11-15T02:00:38Z",
+        "by": "Claude, from the land-cover track's result files (landcover/scripts and landcover/colab, run 2026-11-14)"
+      },
+      "asset": "/_blob/cc47252138c7d23cc816e69655ecf0ac",
+      "sha256": "463fb7f6c1183fe94b7ec1c0e3dd53c2da3af556f4ac71fdb6f505971aa165f9"
+    },
+    {
+      "id": "shares",
+      "file": "shares.csv",
+      "title": "Yearly land-cover shares",
+      "description": "Percent of land per class and year from the class-weighted v2 model, on aerosol-filtered summer composites (AOT above 0.4 dropped), for the catchment, the 30 m strip and the MODIS box, from build_shares.py.",
+      "updated": {
+        "at": "2026-11-15T03:12:52Z",
+        "by": "Claude, from the land-cover track's result files (aerosol-filtered composites, 2026-11-14)"
+      },
+      "asset": "/_blob/e65619c41e4ed835fa6028c1b220810e",
+      "sha256": "c4a82730cfd457a80cd8a0414042c36f21d3b574c6ccc7d335247a7e2e4acbe2"
+    },
+    {
+      "id": "modis",
+      "file": "modis.csv",
+      "title": "Model vs MODIS by year",
+      "description": "Forest, cropland and urban shares in the MODIS bounding box: model (aerosol-filtered composites), MODIS MCD12Q1 and the 2020 label map, from modis_agreement.py.",
+      "updated": {
+        "at": "2026-11-15T03:12:52Z",
+        "by": "Claude, from the land-cover track's result files (aerosol-filtered composites, 2026-11-14)"
+      },
+      "asset": "/_blob/e7788a622edac40ed8e5b5e29df704b1",
+      "sha256": "c8b9e2d4d9b59bb3f2021ab30c4dab35d8ca0bf937654db9a2c11fb7c28a92f4"
+    },
+    {
+      "id": "compute",
+      "file": "compute.csv",
+      "title": "Colab units per session",
+      "description": "Google Colab units used per session, from the balance read before and after (landcover/colab_ledger.md).",
+      "updated": {
+        "at": "2026-11-15T03:12:52Z",
+        "by": "Claude, from the land-cover track's result files (aerosol-filtered composites, 2026-11-14)"
+      },
+      "asset": "/_blob/fd896c29127177040c5742fdc660ec4e",
+      "sha256": "d4c0de6868d014c07ad59cff4d345060764555a2898c2bc644bf5a6de5b521ff"
+    }
+  ]
+}

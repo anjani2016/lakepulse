@@ -1,0 +1,8 @@
+session,gpu,date,units
+Two-session test,2 x L4,2026-11-14,0.33
+Smoke tests + v1 training,L4,2026-11-14,1.41
+v1 yearly maps test,L4,2026-11-14,0.12
+"v2 training, attempt 1",2 x A100,2026-11-14,9.09
+"v2 training, attempt 2",2 x A100,2026-11-14,9.29
+Scoring + v2 yearly maps,L4,2026-11-14,0.16
+"Yearly maps, aerosol-filtered",L4,2026-11-14,0.20

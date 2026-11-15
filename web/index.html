@@ -89,6 +89,18 @@ table.corrtable td:first-child { color: var(--ink); }
   <h1>Lake Trend Detective</h1>
   <p class="lede">Pick a lake and a variable. See its long record, and find out whether it is really trending or just wiggling.</p>
 
+  <section class="panel" id="keyPanel">
+    <h2>Key result, and what to keep in mind</h2>
+    <p id="keyResult" style="margin:0 0 10px"></p>
+    <ul class="notes" style="font-size:.92rem">
+      <li>The satellite's daytime pass has drifted earlier over the years, so daytime lake temperatures can shift for that reason alone; the night-time series is the safer one.</li>
+      <li>MODIS measures the water's top skin, not the water column.</li>
+      <li>Rain, greenness, haze, NO₂ and MODIS land cover cover a box around the catchment about twice the catchment's area, not the exact catchment.</li>
+      <li>Two land-cover maps disagree; MODIS land cover is not used for the analysis (its guide warns against reading change from it), and the 30 m model's 9-year record is too short to test a trend. <a href="landcover.html" style="color:var(--accent)">How the 30 m model was trained and tested →</a></li>
+      <li>Weather values come from a computer model, and every value is regional, not a reading at the lake. Links between variables are associations; one lake cannot establish cause.</li>
+    </ul>
+  </section>
+
   <section class="panel">
     <h2>Watch a demo first</h2>
     <div class="demo-buttons" id="demoButtons"></div>
@@ -182,8 +194,11 @@ table.corrtable td:first-child { color: var(--ink); }
   function fillSources(lake, v, keep) {
     const list = D.series[lake][v];
     $("sourceRow").hidden = list.length < 2;
-    $("sourcePick").innerHTML = list.map((s, i) => `<option value="${i}">${esc(s.source)} — ${esc(s.tier)}</option>`).join("");
-    const k = list.findIndex(s => s.source === keep);
+    const used = (D.analysis_sources[lake] || {})[v];
+    const role = s => list.length < 2 ? "" : (s.source === used ? " (used in the analysis)" : " (comparison only)");
+    $("sourcePick").innerHTML = list.map((s, i) => `<option value="${i}">${esc(s.source)} — ${esc(s.tier)}${role(s)}</option>`).join("");
+    let k = list.findIndex(s => s.source === keep);
+    if (k < 0) k = list.findIndex(s => s.source === used);
     $("sourcePick").value = String(k >= 0 ? k : 0);
   }
 
@@ -252,7 +267,8 @@ table.corrtable td:first-child { color: var(--ink); }
     if (!tr) { box.className = "verdict non"; box.textContent = "No trend result for this series."; $("nums").innerHTML = ""; }
     else {
       box.className = "verdict " + (tr.significant ? "sig" : "non");
-      box.innerHTML = `<strong>${tr.status !== "ok" ? "Not enough data yet" : tr.significant ? "Significant trend" : "No significant trend"}</strong>${esc(tr.verdict)}`;
+      const head = { ok: tr.significant ? "Significant trend" : "No significant trend", too_short: "Too short to test a trend", excluded: "Not used in the analysis" }[tr.status] || "Not assessed";
+      box.innerHTML = `<strong>${head}</strong>${esc(tr.verdict)}`;
       const unit = esc(spec.unit);
       const rows = tr.status === "ok" ? [
         ["Direction", esc(tr.direction)],
@@ -297,7 +313,21 @@ table.corrtable td:first-child { color: var(--ink); }
   const attr = Object.values(D.lakes).map(l => l.attribution).filter(Boolean);
   $("footer").innerHTML = `<p style="margin:0 0 6px">Data: MODIS MOD11A2, MOD13A3 and MCD12Q1 Version 6.1 (NASA LP DAAC, via AppEEARS); MODIS MOD08_M3 Version 6.1 (NASA LAADS DAAC); MERRA-2 M2TMNXSLV, M2TMNXFLX, M2TMNXRAD and M2TMNXAER 5.12.4 (NASA GES DISC); GPM IMERG Final V07 monthly (NASA GES DISC); OMI/Aura OMNO2d Version 004 (NASA GES DISC).</p>` +
     attr.map(a => `<p style="margin:0 0 6px">${esc(a)}</p>`).join("") +
-    `<p style="margin:0">A submission to the 2026 NASA Space Apps Challenge, "Be An Earth System Trend Detective!". Results updated ${esc(D.generated)}.</p>`;
+    `<p style="margin:0 0 6px">Land cover (comparison): land-cover-ca, a fine-tune of Prithvi-EO-2.0-300M (Apache-2.0) trained on the 2020 Land Cover of Canada (Open Government Licence – Canada) with Copernicus Sentinel-2 imagery.</p>` +
+    `<p style="margin:0 0 6px"><b>How AI was used:</b> Claude Code (Anthropic) wrote the code, data pipelines, tests, this page and its text under the author's direction. Codex (OpenAI) reviewed the main changes; the logo was designed by our team member under 18 using Codex. The author chose the scope, variables and every analysis decision and approved commits and pushes; reviews were done by an AI agent, not line by line by a person.</p>` +
+    `<p style="margin:0 0 6px">Use of NASA data does not imply NASA endorsement.</p>` +
+    `<p style="margin:0">A submission to the 2026 NASA Space Apps Challenge, "Be An Earth System Trend Detective!". Team: Anjani Duddukuru, with a team member under 18 (name withheld, as the Space Apps rules ask) who designed the logo, read the challenge rules and guidelines, and created the presentation template. © 2026 Anjani Duddukuru, Apache License 2.0. Results updated ${esc(D.generated)}.</p>`;
+
+  // ---- key result (read from the analysis results, never typed in)
+  (function keyResult() {
+    const s = ((D.series.simcoe_on || {}).lake_skin_temp_night || [])[0];
+    const tr = s && s.trend;
+    if (!tr || tr.status !== "ok") { $("keyResult").textContent = "Lake Simcoe results are not available in this build."; return; }
+    const word = tr.slope_per_decade > 0 ? "rose" : "fell";
+    $("keyResult").innerHTML = `<b>Lake Simcoe's surface temperature at night ${word} by about ${fmt(Math.abs(tr.slope_per_decade), 2)} °C per decade</b> in the open-water season, ${tr.first_year}–${tr.last_year} (95% range ${fmt(tr.ci_low_per_decade, 2)} to ${fmt(tr.ci_high_per_decade, 2)}; Mann-Kendall p ${tr.mann_kendall_p < 0.001 ? "< 0.001" : "= " + fmtP(tr.mann_kendall_p)}). ` +
+      (tr.significant ? "That is a statistically significant trend" : "That is not statistically significant") +
+      (tr.accuracy_verdict === "larger than sensor accuracy" ? ", larger than the satellite's stated accuracy." : ".");
+  })();
 
   // ---- events
   $("lakePick").addEventListener("change", () => { fillVariables($("lakePick").value, $("varPick").value); fillSources($("lakePick").value, $("varPick").value); render(); });

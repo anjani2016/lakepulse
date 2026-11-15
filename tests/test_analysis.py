@@ -107,3 +107,64 @@ def test_lake_minus_air_is_lake_minus_air():
     )
     d = analysis.add_lake_minus_air(t)
     assert set(d["value"]) == {1.5} and set(d["tier"]) == {V.TIER_DERIVED}
+
+
+# ---------------------------------------------------------------- land-cover source choice
+def _yearly(var, years, values, source=None, tier=None):
+    return schema.rows("simcoe_on", var, [f"{y}-01-01" for y in years], values, source=source, tier=tier)
+
+
+def test_modis_land_cover_is_excluded_with_reason_and_no_statistics():
+    t = _yearly("cropland_share", range(2001, 2026), [30 + 0.4 * i for i in range(25)])  # steady rise
+    tr = analysis.trend_table(analysis.season_means(t)).iloc[0]
+    assert tr["status"] == "excluded" and not tr["significant"]
+    assert pd.isna(tr["slope_per_decade"]) and pd.isna(tr["mann_kendall_p"])
+    assert "user guide" in tr["verdict"] and "p. 3" in tr["verdict"] and "comparison only" in tr["verdict"]
+
+
+def test_land_cover_analysis_uses_model_tier_and_reports_short_record():
+    modis = _yearly("forest_share", range(2001, 2026), [7.0] * 25)
+    model = _yearly("forest_share", range(2017, 2026), [30.0 + 0.1 * i for i in range(9)],
+                    source="land-cover-ca vX (test)", tier=V.TIER_ML)
+    lake = _monthly("lake_skin_temp", lambda y, m: 15 + 0.05 * (y - 2000), years=range(2000, 2026))
+    s = analysis.season_means(schema.combine(modis, model, lake))
+    assert analysis.analysis_sources(s, "simcoe_on")["forest_share"] == "land-cover-ca vX (test)"
+    tr = analysis.trend_table(s).set_index("source")
+    assert tr.loc["land-cover-ca vX (test)", "status"] == "too_short"   # 9 years < 10
+    assert tr.loc[V.SOURCE_MCD12, "status"] == "excluded"
+    c = analysis.correlations(s)
+    row = c[(c.x == "forest_share") & (c.y == "lake_skin_temp")].iloc[0]
+    assert row["status"] == "too few shared years" and row["n"] == 9
+
+
+def test_two_model_sources_for_one_variable_stop_the_analysis():
+    a = _yearly("urban_share", range(2017, 2026), [14.0] * 9, source="model A", tier=V.TIER_ML)
+    b = _yearly("urban_share", range(2017, 2026), [15.0] * 9, source="model B", tier=V.TIER_ML)
+    s = analysis.season_means(schema.combine(a, b))
+    with pytest.raises(analysis.AnalysisSourceError, match="more than one"):
+        analysis.analysis_sources(s, "simcoe_on")
+
+
+def test_land_cover_notes_state_reason_and_choice():
+    notes = " ".join(V.get("cropland_share").notes)
+    for phrase in ("Two sources disagree", "Table 3, p. 9", "What we use", "Neither source is used for trends", "p. 3"):
+        assert phrase in notes
+
+
+def test_any_non_chosen_land_cover_source_gets_no_statistics():
+    """Review A2 probe: a third, 'Satellite-derived' forest source with a clear trend."""
+    modis = _yearly("forest_share", range(2001, 2026), [7.0] * 25)
+    model = _yearly("forest_share", range(2017, 2026), [30.0] * 9, source="land-cover-ca vX (test)", tier=V.TIER_ML)
+    third = _yearly("forest_share", range(2001, 2026), [10 + 0.5 * i for i in range(25)],
+                    source="Some other satellite map (test)", tier=V.TIER_SATELLITE)
+    s = analysis.season_means(schema.combine(modis, model, third))
+    assert analysis.analysis_sources(s, "simcoe_on")["forest_share"] == "land-cover-ca vX (test)"
+    tr = analysis.trend_table(s).set_index("source")
+    other = tr.loc["Some other satellite map (test)"]
+    assert other["status"] == "excluded" and not other["significant"]
+    assert pd.isna(other["slope_per_decade"]) and pd.isna(other["mann_kendall_p"])
+    assert "comparison only" in other["verdict"]
+    assert tr.loc[V.SOURCE_MCD12, "status"] == "excluded"
+    assert tr.loc["land-cover-ca vX (test)", "status"] == "too_short"
+    c = analysis.correlations(s)
+    assert "Some other satellite map (test)" not in " ".join(c["text"].astype(str))
