@@ -133,3 +133,6 @@ safetensors with every tensor checked equal (`cr-geo-models/scripts/ml7_convert_
 SHA-256 `9f2b3656a0fd5d97b0d763e8182793e36a069c0d54c39e7ed5d980d9fc857135`, which equals the Hub's LFS checksum; the
 seven small files downloaded back pass `shasum -a 256 -c`. Card and NOTICE: `landcover/hf/land-cover-ca/`.
 Licence Apache-2.0, following `burn-scar-ca`; owner, 2026-11-14: "confirmed".
+Owner, 2026-11-14: "add v1 and v2 plain to hugging face too". Both added under `ablations/` (Hub commit `c30beab0`),
+labelled for comparison only; weights converted with every tensor equal (v1 SHA-256 `0979ae2c…`, v2 without class
+weights `a3f7cf8c…`), both equal to the Hub's LFS checksums; the 14 small files pass `shasum -a 256 -c`.

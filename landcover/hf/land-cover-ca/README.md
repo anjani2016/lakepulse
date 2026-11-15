@@ -94,6 +94,19 @@ dict with `strict=True` after converting tensors to float32.
 | `config.yaml` | The track's full configuration (data sources, classes, split) |
 | `eval.json` | Test and probe scores of this model |
 | `NOTICE`, `LICENSE`, `SHA256SUMS` | Attribution, licence, checksums |
+| `ablations/` | The two comparison models from the table above, for checking the comparison only |
 
-Earlier versions (v1, v2 without class weights) are registered in the project's MLflow model registry as
-`land-cover-ca` versions 1 and 3; this model is version 2.
+## Ablations (for comparison, not for use)
+
+`ablations/` holds the two other models in the test table, so the comparison can be rerun:
+
+- `ablations/v1/`: 2020 imagery only, 13 watershed units, 86 training chips, no class weights. Did not beat gradient
+  boosting (0.4724 vs 0.4689 on v1's own baseline data; 0.4724 vs 0.4794 here). Normalised with its own
+  `norm_stats.json`, which differs from this model's.
+- `ablations/v2_no_class_weights/`: the same data as this model, without class weights. Wetland IoU 0.0114 against
+  this model's 0.0846: the class weights account for most of the wetland gain.
+
+Each folder has its weights, `terratorch_config.yaml`, `norm_stats.json` and `eval.json`. Load each with its own
+config: this model's state dict holds one more tensor (its loss weights) than the two ablations.
+In the project's MLflow registry these are `land-cover-ca` versions 1 (v1), 2 (this model) and 3 (v2 without class
+weights).
