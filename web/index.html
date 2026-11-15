@@ -52,6 +52,8 @@ ul.facts { margin: 10px 0 0; padding-left: 20px; color: var(--muted); font-size:
 .notes { color: var(--muted); font-size: .88rem; margin: 0; padding-left: 18px; }
 .banner { background: var(--warn-soft); color: var(--warn); border-radius: 10px; padding: 10px 12px; font-weight: 600; margin-bottom: 16px; }
 .chart-wrap { width: 100%; overflow: hidden; }
+.zoom-block { margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--line); }
+svg text.trend-label { fill: var(--trend); font-weight: 700; }
 svg text { fill: var(--muted); font-size: 13px; }
 @media (max-width: 640px) { svg text { font-size: 22px; } }
 .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: .85rem; color: var(--muted); margin-top: 6px; }
@@ -255,6 +257,11 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
             <h2 id="chartTitle">Record</h2>
             <div class="chart-wrap"><svg id="chart" role="img" aria-label="Time series chart" width="100%" viewBox="0 0 900 340" preserveAspectRatio="xMidYMid meet"></svg></div>
             <div class="legend" id="legend"></div>
+            <div id="zoomWrap" class="zoom-block" hidden>
+              <h3 style="margin:0 0 2px">Zoomed in: open-water season averages and trend</h3>
+              <p class="muted" id="zoomNote" style="margin:0 0 6px;font-size:.9rem"></p>
+              <div class="chart-wrap"><svg id="chartZoom" role="img" aria-label="Season averages and trend line, zoomed in" width="100%" viewBox="0 0 900 400" preserveAspectRatio="xMidYMid meet"></svg></div>
+            </div>
             <p class="definition" id="varDefinition"></p>
             <ul class="notes" id="varNotes"></ul>
           </div>
@@ -403,48 +410,75 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
   })();
 
   // ---- chart (inline SVG)
-  function drawChart(series, v) {
-    const svg = $("chart"), W = 900, H = 340, L = 58, R = 16, T = 16, B = 36;
-    const spec = D.variables[v];
-    const pts = series.points.map(([d, y]) => { const [Y, M] = d.split("-").map(Number); return [Y + (M - 1) / 12 + (spec.frequency === "monthly" ? 1 / 24 : 0), y]; });
-    const season = series.season.map(([yr, y]) => [yr + (spec.frequency === "monthly" ? 0.625 : 0), y]);
-    const tr = series.trend;
-    const xs = pts.map(p => p[0]).concat(season.map(p => p[0]));
-    const ys = pts.map(p => p[1]).concat(season.map(p => p[1]));
+  // Round tick spacing (1, 2, 2.5 or 5 × a power of ten) so the axis reads 15.0, 15.5, 16.0 rather than 16.2, 25.7.
+  function niceTicks(lo, hi, target) {
+    const raw = (hi - lo) / target || 1, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= raw);
+    const a = Math.floor(lo / step) * step, b = Math.ceil(hi / step) * step;
+    const ticks = []; for (let v = a; v <= b + step / 2; v += step) ticks.push(+v.toFixed(10));
+    return { a, b, ticks, dec: Math.max(0, -Math.floor(Math.log10(step) + 1e-9)) + (step / mag === 2.5 ? 1 : 0) };
+  }
+  // Draws one panel. line = monthly points (may be empty); yFrom = the points that set the y-axis range.
+  function plot(svg, H, line, season, trendLine, spec, tr, yFrom, label) {
+    const W = 900, L = 58, R = label ? 150 : 16, T = 16, B = 36;
+    const xs = line.map(p => p[0]).concat(season.map(p => p[0]));
     if (!xs.length) { svg.innerHTML = ""; return; }
-    let x0 = Math.floor(Math.min(...xs)), x1 = Math.ceil(Math.max(...xs));
-    let y0 = Math.min(...ys), y1 = Math.max(...ys);
-    let trendLine = null;
-    if (tr && tr.status === "ok" && tr.sen_intercept !== null) {
-      const slope = tr.slope_per_decade / 10, a = tr.first_year, b = tr.last_year;
-      const off = spec.frequency === "monthly" ? 0.625 : 0;
-      trendLine = [[a + off, tr.sen_intercept + slope * a], [b + off, tr.sen_intercept + slope * b]];
-      y0 = Math.min(y0, trendLine[0][1], trendLine[1][1]); y1 = Math.max(y1, trendLine[0][1], trendLine[1][1]);
-    }
+    const x0 = Math.floor(Math.min(...xs)), x1 = Math.ceil(Math.max(...xs));
+    let y0 = Math.min(...yFrom), y1 = Math.max(...yFrom);
     const pad = (y1 - y0) * 0.08 || 1; y0 -= pad; y1 += pad;
+    const nt = niceTicks(y0, y1, H > 360 ? 6 : 5); y0 = nt.a; y1 = nt.b;
     const sx = x => L + (x - x0) / (x1 - x0 || 1) * (W - L - R);
     const sy = y => T + (1 - (y - y0) / (y1 - y0 || 1)) * (H - T - B);
     let g = "";
-    const nT = 5;
-    for (let i = 0; i <= nT; i++) {
-      const yv = y0 + (y1 - y0) * i / nT;
+    for (const yv of nt.ticks) {
       g += `<line x1="${L}" x2="${W - R}" y1="${sy(yv)}" y2="${sy(yv)}" stroke="var(--line)" stroke-width="1"/>`;
-      g += `<text x="${L - 6}" y="${sy(yv) + 4}" text-anchor="end">${fmt(yv, Math.abs(y1 - y0) < 2 ? 2 : 1)}</text>`;
+      g += `<text x="${L - 6}" y="${sy(yv) + 4}" text-anchor="end">${fmt(yv, nt.dec)}</text>`;
     }
     const step = (x1 - x0) > 16 ? 5 : 2;
     for (let yr = Math.ceil(x0 / step) * step; yr <= x1; yr += step) g += `<text x="${sx(yr)}" y="${H - 12}" text-anchor="middle">${yr}</text>`;
     g += `<text x="12" y="${T + (H - T - B) / 2}" transform="rotate(-90 12 ${T + (H - T - B) / 2})" text-anchor="middle">${esc(spec.unit)}</text>`;
-    if (spec.frequency === "monthly" && pts.length > 1) {
+    if (line.length > 1) {
       // break the line where months are missing
       let path = "", prev = null;
-      for (const [x, y] of pts) { path += (prev !== null && x - prev > 0.1) ? `M${sx(x)},${sy(y)}` : (path ? `L${sx(x)},${sy(y)}` : `M${sx(x)},${sy(y)}`); prev = x; }
+      for (const [x, y] of line) { path += (prev !== null && x - prev > 0.1) ? `M${sx(x)},${sy(y)}` : (path ? `L${sx(x)},${sy(y)}` : `M${sx(x)},${sy(y)}`); prev = x; }
       g += `<path d="${path}" fill="none" stroke="var(--month)" stroke-width="1.2"/>`;
     }
-    for (const [x, y] of season) g += `<circle cx="${sx(x)}" cy="${sy(y)}" r="4" fill="var(--dots)"><title>${Math.floor(x)}: ${fmt(y, 2)} ${esc(spec.unit)}</title></circle>`;
+    const r = H > 360 ? 5 : 4;
+    for (const [x, y] of season) g += `<circle cx="${sx(x)}" cy="${sy(y)}" r="${r}" fill="var(--dots)"><title>${Math.floor(x)}: ${fmt(y, 2)} ${esc(spec.unit)}</title></circle>`;
     if (trendLine) g += `<line x1="${sx(trendLine[0][0])}" y1="${sy(trendLine[0][1])}" x2="${sx(trendLine[1][0])}" y2="${sy(trendLine[1][1])}" stroke="var(--trend)" stroke-width="3" stroke-dasharray="${tr.significant ? "" : "8 6"}"/>`;
+    if (trendLine && label) g += `<text class="trend-label" x="${sx(trendLine[1][0]) + 10}" y="${sy(trendLine[1][1]) + 5}">${esc(label)}</text>`;
     svg.innerHTML = g;
-    const what = spec.frequency === "monthly" ? "open-water season (May–Oct) average" : "yearly value";
-    $("legend").innerHTML = (spec.frequency === "monthly" ? `<span><i style="background:var(--month)"></i>monthly values</span>` : "") +
+  }
+  function drawChart(series, v) {
+    const spec = D.variables[v], monthly = spec.frequency === "monthly";
+    const pts = series.points.map(([d, y]) => { const [Y, M] = d.split("-").map(Number); return [Y + (M - 1) / 12 + (monthly ? 1 / 24 : 0), y]; });
+    const season = series.season.map(([yr, y]) => [yr + (monthly ? 0.625 : 0), y]);
+    const tr = series.trend;
+    let trendLine = null;
+    if (tr && tr.status === "ok" && tr.sen_intercept !== null) {
+      const slope = tr.slope_per_decade / 10, a = tr.first_year, b = tr.last_year;
+      const off = monthly ? 0.625 : 0;
+      trendLine = [[a + off, tr.sen_intercept + slope * a], [b + off, tr.sen_intercept + slope * b]];
+    }
+    const tys = trendLine ? [trendLine[0][1], trendLine[1][1]] : [];
+    const ys = pts.map(p => p[1]).concat(season.map(p => p[1]), tys);
+    // Change along the trend line over the record, e.g. "+1.2 °C since 2001".
+    const change = trendLine ? trendLine[1][1] - trendLine[0][1] : null;
+    const cdec = change ? Math.min(4, Math.max(2, 1 - Math.floor(Math.log10(Math.abs(change))))) : 2; // two significant figures for small changes
+    const cunit = spec.unit === "unitless" ? "" : ` ${spec.unit.replace(/\s*\(.*\)$/, "")}`; // "index (−0.2 to 1)" → "index", to fit beside the line
+    const label = trendLine ? `${change >= 0 ? "+" : "−"}${fmt(Math.abs(change), cdec)}${cunit} since ${tr.first_year}` : "";
+    plot($("chart"), 340, monthly ? pts : [], season, trendLine, spec, tr, ys, monthly ? "" : label);
+    // Monthly series swing with the seasons, which squashes the season averages into a flat band.
+    // A second panel scales the y-axis to the season averages and trend only, so the slope is visible.
+    const zoom = monthly && season.length > 1;
+    $("zoomWrap").hidden = !zoom;
+    if (zoom) {
+      const zy = season.map(p => p[1]).concat(tys);
+      plot($("chartZoom"), 400, [], season, trendLine, spec, tr, zy, label);
+      $("zoomNote").textContent = `Same dots and trend line as above, with the y-axis covering only ${fmt(Math.min(...zy), 1)} to ${fmt(Math.max(...zy), 1)} ${spec.unit} instead of the full summer-to-winter swing.`;
+    }
+    const what = monthly ? "open-water season (May–Oct) average" : "yearly value";
+    $("legend").innerHTML = (monthly ? `<span><i style="background:var(--month)"></i>monthly values</span>` : "") +
       `<span><i style="background:var(--dots);height:8px;width:8px;border-radius:50%"></i>${what}</span>` +
       (trendLine ? `<span><i style="background:var(--trend)"></i>trend line (Sen's slope)${tr.significant ? "" : ", dashed = not significant"}</span>` : "");
   }
@@ -668,7 +702,8 @@ footer.site { margin-top: 28px; padding: 20px 16px; }
       spec.frequency === "monthly"
         ? `The thin line shows every month: up in summer, down in winter. That yearly cycle is not a trend, so each dot averages one open-water season (May to October) into one number per year.`
         : `Each dot is one year's value.`,
-      `The orange line is the trend. Its slope is ${fmt(tr.slope_per_decade, 3)} ${spec.unit} per decade, with a 95% range of ${fmt(tr.ci_low_per_decade, 3)} to ${fmt(tr.ci_high_per_decade, 3)}.`,
+      `The orange line is the trend. Its slope is ${fmt(tr.slope_per_decade, 3)} ${spec.unit} per decade, with a 95% range of ${fmt(tr.ci_low_per_decade, 3)} to ${fmt(tr.ci_high_per_decade, 3)}.` +
+        (spec.frequency === "monthly" ? ` The summer-to-winter swing makes it look flat; the zoomed chart below the main one shows only the season averages, where the slope is clear.` : ""),
       d.kind === "significant"
         ? `The range does not include zero, and the Mann-Kendall p-value is ${fmtP(tr.mann_kendall_p)}, below 0.05. Verdict: a significant ${tr.direction === "rising" ? "rise" : "fall"}.`
         : `The p-value is ${fmtP(tr.mann_kendall_p)}, not below 0.05, and the range includes zero. Verdict: the dots wiggle, but we cannot call it a trend. More years might change that.`,
