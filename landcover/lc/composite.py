@@ -74,14 +74,26 @@ def _warp(href: str, grid: Grid, resampling, dtype) -> np.ndarray:
     return out
 
 
-def read_item(item: dict, cfg: Mapping[str, Any], grid: Grid) -> tuple[np.ndarray, np.ndarray]:
-    """(reflectance x 10000 as uint16 with 0 = invalid, shape (6, H, W); valid mask (H, W))."""
+def read_item(item: dict, cfg: Mapping[str, Any], grid: Grid, max_aot: float | None = None) -> tuple[np.ndarray, np.ndarray]:
+    """(reflectance x 10000 as uint16 with 0 = invalid, shape (6, H, W); valid mask (H, W)).
+
+    max_aot: when given, pixels whose aerosol optical thickness exceeds it are invalid (smoke and thick haze pass the
+    scene classification as clear). A missing or unscaled AOT asset fails the item rather than skipping the filter.
+    """
     from rasterio.enums import Resampling
 
     img = cfg["imagery"]
     scaling = [band_scaling(item, b["asset"]) for b in img["model_bands"]]  # fails closed before any read
     scl = _warp(item["assets"][img["scl_asset"]]["href"], grid, Resampling.nearest, np.uint8)
     valid = (scl > 0) & ~np.isin(scl, img["invalid_scl_classes"])
+    if max_aot is not None:
+        a = item["assets"].get(img["aot_asset"])
+        bands = (a or {}).get("raster:bands") or [{}]
+        scale = bands[0].get("scale")
+        if not a or not isinstance(scale, (int, float)) or scale <= 0:
+            raise ImageryError(f"{item.get('id')}: no usable AOT asset; refusing to composite without the aerosol filter")
+        aot = _warp(a["href"], grid, Resampling.nearest, np.float32) * np.float32(scale)
+        valid &= (aot > 0) & (aot <= max_aot)
     stack = np.zeros((len(scaling), grid.height, grid.width), dtype=np.uint16)
     for k, (b, (scale, offset, nodata)) in enumerate(zip(img["model_bands"], scaling)):
         dn = _warp(item["assets"][b["asset"]]["href"], grid, Resampling.bilinear, np.float32)
@@ -97,13 +109,13 @@ def read_item(item: dict, cfg: Mapping[str, Any], grid: Grid) -> tuple[np.ndarra
 
 
 def median_composite(items: list[dict], cfg: Mapping[str, Any], grid: Grid, workers: int = 6,
-                     log=print) -> tuple[np.ndarray, np.ndarray, list[dict]]:
+                     log=print, max_aot: float | None = None) -> tuple[np.ndarray, np.ndarray, list[dict]]:
     """(composite float32 (6, H, W) reflectance with NaN where no observation, count uint16 (H, W), per-item log)."""
     stacks, records = [], []
 
     def work(it):
         try:
-            s, v = read_item(it, cfg, grid)
+            s, v = read_item(it, cfg, grid, max_aot)
             return it, s, v, None
         except (ImageryError, Exception) as exc:  # one bad item must not stop the year; it is logged and skipped
             return it, None, None, f"{type(exc).__name__}: {exc}"

@@ -155,3 +155,42 @@ def test_export_names_match_lakepulse():
     from build_shares import EXPORT, TIER
     assert EXPORT == {"forest": "forest_share", "cropland": "cropland_share", "built_up": "urban_share"}
     assert TIER == "Modeled (Machine learning)"
+
+
+# --- aerosol filter (composite.read_item with max_aot) --------------------------------------------------------------
+def _fake_item(aot_asset=True, scale=0.001):
+    bands = {b["asset"]: {"href": b["asset"], "raster:bands": [{"scale": 0.0001, "offset": 0, "nodata": 0}]}
+             for b in CFG["imagery"]["model_bands"]}
+    bands["scl"] = {"href": "scl"}
+    if aot_asset:
+        bands["aot"] = {"href": "aot", "raster:bands": [{"scale": scale, "offset": 0, "nodata": 0}]}
+    return {"id": "x", "properties": {"earthsearch:boa_offset_applied": True}, "assets": bands}
+
+
+def _patch_warp(monkeypatch, aot_dn):
+    from lc import composite
+    def warp(href, grid, resampling, dtype):
+        if href == "scl":
+            return np.full((grid.height, grid.width), 4, dtype=dtype)       # vegetation: clear
+        if href == "aot":
+            return np.array(aot_dn, dtype=dtype).reshape(grid.height, grid.width)
+        return np.full((grid.height, grid.width), 500, dtype=dtype)          # reflectance 0.05
+    monkeypatch.setattr(composite, "_warp", warp)
+    return composite
+
+
+def test_aot_filter_drops_smoky_pixels_only(monkeypatch):
+    comp = _patch_warp(monkeypatch, [100, 900])                              # AOT 0.1 and 0.9
+    g = geometry.Grid("EPSG:32617", 0.0, 1.0, 1.0, 2, 1)
+    _, valid = comp.read_item(_fake_item(), CFG, g, max_aot=0.4)
+    assert valid.tolist() == [[True, False]]
+    _, valid = comp.read_item(_fake_item(), CFG, g, max_aot=None)            # filter off: both kept
+    assert valid.tolist() == [[True, True]]
+
+
+def test_aot_filter_fails_closed_without_aot_layer(monkeypatch):
+    comp = _patch_warp(monkeypatch, [100, 100])
+    g = geometry.Grid("EPSG:32617", 0.0, 1.0, 1.0, 2, 1)
+    for item in (_fake_item(aot_asset=False), _fake_item(scale=None), _fake_item(scale=0)):
+        with pytest.raises(imagery.ImageryError):
+            comp.read_item(item, CFG, g, max_aot=0.4)

@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import shutil
 import sys
 from pathlib import Path
@@ -100,13 +101,16 @@ Per-class IoU (test block): {json.dumps(ev['test_block']['per_class_iou'])}
 ## Attribution
 - Labels: Contains information licensed under the Open Government Licence - Canada (2020 Land Cover of Canada).
 - Streams, shoreline, watershed units: Contains information licensed under the Open Government Licence - Ontario.
-- Imagery: Contains modified Copernicus Sentinel data [verify: year range and exact wording].
+- Imagery: Contains modified Copernicus Sentinel data 2019–2021.
 
-Alpha Centauri Ventures Inc. (Centauri Research)
+Anjani Duddukuru
 """
     (out / "README.md").write_text(readme)
 
-    mlflow.set_tracking_uri(cfg["colab"]["tracking_uri"])
+    tracking_uri = os.environ.get("MLFLOW_TRACKING_URI") or cfg["colab"].get("tracking_uri")
+    if not tracking_uri:
+        raise SystemExit("Set MLFLOW_TRACKING_URI to the MLflow server address (it is not stored in config.yaml).")
+    mlflow.set_tracking_uri(tracking_uri)
     client = MlflowClient()
     exp = client.get_experiment_by_name(cfg["colab"]["mlflow_experiment"])
     runs = client.search_runs([exp.experiment_id], filter_string=f"tags.mlflow.runName = '{args.run_name}'")

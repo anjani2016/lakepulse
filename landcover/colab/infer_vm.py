@@ -32,6 +32,8 @@ def main() -> None:
     ap.add_argument("--run-name", required=True)
     ap.add_argument("--years", nargs="+", type=int, required=True)
     ap.add_argument("--chips", default="chips_v1", help="manifest the run trained on (normalisation)")
+    ap.add_argument("--composites", default="composites", help="Drive folder with s2_summer_<year>.tif")
+    ap.add_argument("--maps", default="maps", help="output folder name inside the run folder")
     args = ap.parse_args()
     import rasterio
     import torch
@@ -39,7 +41,7 @@ def main() -> None:
     from lightning.pytorch.cli import instantiate_class
 
     run = DRIVE / "runs" / args.run_name
-    out = run / "maps"
+    out = run / args.maps
     out.mkdir(parents=True, exist_ok=True)
     manifest = json.loads((DRIVE / args.chips / "manifest.json").read_text())
     mean = np.array(manifest["band_stats"]["mean"], dtype=np.float32)[:, None, None]
@@ -53,11 +55,11 @@ def main() -> None:
     dev = "cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu")
     model = model.to(dev).eval()
     note = json.loads((run / "best_weights_fp16.json").read_text())
-    summary = {"run": args.run_name, "weights_epoch": note.get("epoch"), "years": {}}
+    summary = {"run": args.run_name, "weights_epoch": note.get("epoch"), "composites": args.composites, "years": {}}
     step = TILE - OVERLAP
     for year in args.years:
         t0 = time.time()
-        with rasterio.open(DRIVE / f"composites/s2_summer_{year}.tif") as src:
+        with rasterio.open(DRIVE / args.composites / f"s2_summer_{year}.tif") as src:
             img, prof = src.read().astype(np.float32), src.profile
         valid = np.isfinite(img).all(axis=0)
         # match training: no-data reflectance replaced by 0 (chips: nan_to_num 0; datamodule no_data_replace 0), then normalised
