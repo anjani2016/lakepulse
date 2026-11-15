@@ -105,3 +105,30 @@ def test_catchment_shares_and_ndvi_exclude_water(tmp_path):
     assert v.loc["2010-01-01", "urban_share"] == pytest.approx(100 / 6, abs=0.01)
     assert v.loc["2010-06-01", "ndvi"] == pytest.approx(0.6)
     assert v.loc["2010-07-01", "ndvi"] == pytest.approx(0.6)  # unreliable cell dropped
+
+
+def test_qc_zero_is_kept_even_when_file_declares_it_as_fill(tmp_path):
+    """AppEEARS writes _FillValue = 0 on QC layers; in MOD11 QC 0 is the best quality."""
+    x = np.array([0, 1]) * CELL + CELL / 2
+    y = np.array([500_000.0])
+    times = pd.to_datetime(["2012-07-04"])
+    day = np.full((1, 1, 2), 295.15)
+    qc = np.zeros((1, 1, 2), dtype="uint8")
+    ds = xr.Dataset(
+        {
+            "LST_Day_1km": (("time", "ydim", "xdim"), day),
+            "LST_Night_1km": (("time", "ydim", "xdim"), day - 4),
+            "QC_Day": (("time", "ydim", "xdim"), qc),
+            "QC_Night": (("time", "ydim", "xdim"), qc),
+            "Day_view_time": (("time", "ydim", "xdim"), np.full((1, 1, 2), 10.5)),
+        },
+        coords={"time": times, "xdim": x, "ydim": y},
+    )
+    for v in ("QC_Day", "QC_Night"):
+        ds[v].encoding["_FillValue"] = 0
+    f = tmp_path / "MOD11A2.061_1km_aid0001.nc"
+    ds.to_netcdf(f)
+    rows, info = ap.lake_lst_rows([f], "simcoe_on", [[float(v), float(y[0])] for v in x])
+    assert info["day_composites_kept"] == 1
+    v = rows.pivot_table(index="date", columns="variable", values="value")
+    assert v.loc["2012-07-01", "lake_skin_temp_day"] == pytest.approx(22.0)

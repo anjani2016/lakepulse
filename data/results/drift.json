@@ -24,8 +24,25 @@
   },
   "simcoe_on": {
     "lake": "simcoe_on",
-    "status": "missing inputs",
-    "flag": null,
-    "text": "The drift check needs both the MODIS lake temperature and the MERRA-2 air temperature."
+    "status": "ok",
+    "late_window_seasons": 10,
+    "lake_day_slope_per_decade": 0.37992424242424244,
+    "lake_day_p": 0.021887110869362444,
+    "lake_night_slope_per_decade": 0.6489473684210538,
+    "lake_night_p": 0.0009455955216862156,
+    "air_slope_per_decade": 1.129145833333336,
+    "air_p": 0.00010475192379110886,
+    "gap_day_full_slope_per_decade": -0.6837121212121228,
+    "gap_day_full_p": 1.041802852031139e-05,
+    "gap_day_late_slope_per_decade": -0.7364999999999987,
+    "gap_day_late_p": 0.1074046363302537,
+    "gap_day_late_years": [
+      2016,
+      2025
+    ],
+    "view_time_slope_minutes_per_decade": -7.728571428571434,
+    "view_time_p": 0.000275041244356656,
+    "flag": true,
+    "text": "MODIS daytime lake trend 0.380 \u00b0C/decade vs MERRA-2 air trend 1.13 \u00b0C/decade. Possible satellite orbit drift: the daytime pass time changed by -7.73 minutes per decade (p < 0.001). Treat late-record daytime lake temperatures with caution; the night-time series is less sensitive to pass time."
   }
 }
